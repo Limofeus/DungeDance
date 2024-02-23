@@ -1,0 +1,4 @@
+Some of the scripts here are not used.
+If you want to see how effect scripts work i really suggest you to check my other project: MuseSync.
+There are a lot more scripts that do the same stuff, but in MuseSync they are a lot easier to use.
+And also there is a good documintation about the scripts in MuseSync packege.
