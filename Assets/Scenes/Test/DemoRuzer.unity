@@ -3505,7 +3505,9 @@ MonoBehaviour:
   NextMonster: {fileID: 0}
   MoansterPrefabs:
   - {fileID: 1810798800220269141, guid: 11f92ea535a144b4a91ed4c8557e2877, type: 3}
-  curseVisualPrefabs: []
+  curseVisualPrefabs:
+  - {fileID: 8011666213749613124, guid: 89f74dcf5a850cf4097893cd894c479d, type: 3}
+  - {fileID: 6621426360280135817, guid: 60f5b6830dba03d45ba812b5a85c34c8, type: 3}
   ratePrefabs:
   - {fileID: 3858108612921909620, guid: 961f51839c1586641bc8e7555a77a987, type: 3}
   - {fileID: 3858108612921909620, guid: 55c625e2a81cd424987070804cc643e0, type: 3}
