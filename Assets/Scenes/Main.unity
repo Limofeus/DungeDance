@@ -750,21 +750,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerStartXp: 0
-  Attraction: 40
+  playerAttraction: 0
   baseAttraction: 40
   maxBaseAttraction: 40
   monsterBonusAttraction: 0
   maxMonsterBonusAttraction: 9999
   bonusAttraction: 0
   maxBonusAttraction: 30
-  OverAttractive: 0
+  overAttractive: 0
   maxCombo: 0
   hitCounts: 
-  HordesOn: 1
-  CustomHordesOn: 1
+  hordesEnabled: 1
+  customHordesEnabled: 1
   Hordes:
   - HordeType: NPC
-    hordeLenght: 11.5
+    hordeLenght: 5
     MonsterTypes: []
     treasureKind: 0
     npcKind: 0
@@ -805,11 +805,22 @@ MonoBehaviour:
     hordeLenght: 15
     MonsterTypes:
     - B
+    - B
+    - B
     treasureKind: 0
     npcKind: 0
     npcLines: []
     npcLinesRandomizer: 
     notAnimatemovingToTime: 0
+  - HordeType: 
+    hordeLenght: 50
+    MonsterTypes:
+    - D
+    treasureKind: 0
+    npcKind: 0
+    npcLines: []
+    npcLinesRandomizer: 
+    notAnimatemovingToTime: 10
   - HordeType: End
     hordeLenght: 0
     MonsterTypes: []
@@ -818,7 +829,7 @@ MonoBehaviour:
     npcLines: []
     npcLinesRandomizer: 
     notAnimatemovingToTime: 0
-  EnableCurses: 0
+  cursesEnabled: 0
   Curses:
   - CurseId: 1
     StartTime: 37
@@ -844,16 +855,16 @@ MonoBehaviour:
   bigPP: {fileID: 1839976973}
   disableMoving: 0
   disableItemUse: 0
-  AutoMod: 0
+  AutoMod: 1
   DisableSpawn: 0
   disableTimer: 0
   levelName: The Monster
   songName: Teminite - Work
   levelId: 0
   musicSource: {fileID: 177484241}
-  Music: {fileID: 8300000, guid: 85e7b251020af0741bb521dce2f1ad41, type: 3}
-  BPM: 128
-  Offset: 0
+  Music: {fileID: 8300000, guid: 02da731597123e24ba9df66898f112c5, type: 3}
+  BPM: 110
+  Offset: 0.2
   AroowSpeed: 10
   AMiSM: 0
   AMaSM: 0
@@ -947,7 +958,7 @@ MonoBehaviour:
   Effect1: {fileID: 2100000, guid: a923bc1a08dcffb44a9dbc0531940375, type: 2}
   Effect2: {fileID: 2100000, guid: 623e6076ea287fe4dbbd2735bcca57e1, type: 2}
   Timer: 0
-  useDebugPlayerData: 0
+  useDebugPlayerData: 1
   debugPlayerData:
     playerName: Abobus
     playerLevel: 0

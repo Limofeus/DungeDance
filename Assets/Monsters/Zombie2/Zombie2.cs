@@ -21,7 +21,7 @@ public class Zombie2 : Monster
     }
     public override void End4Y(float Joy)
     {
-        int attraction = MainMan.Attraction;
+        int attraction = MainMan.playerAttraction;
         if ((Joy >= 90f && attraction >= 45) || (Joy >= 105f && attraction >= 20) || (Joy >= 120f))
         {
             GoodAway();
@@ -51,7 +51,7 @@ public class Zombie2 : Monster
 
     public override int GetRelationLevel(float Joy)
     {
-        int attraction = MainMan.Attraction;
+        int attraction = MainMan.playerAttraction;
         if ((Joy >= 90f && attraction >= 45) || (Joy >= 105f && attraction >= 20) || (Joy >= 120f))
         {
             return 3;

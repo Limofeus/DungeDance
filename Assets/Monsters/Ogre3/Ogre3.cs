@@ -6,7 +6,7 @@ public class Ogre3 : Monster
 {
     public override void End4Y(float Joy)
     {
-        int attraction = MainMan.Attraction;
+        int attraction = MainMan.playerAttraction;
         if ((Joy >= 175f && attraction >= 45) || (Joy >= 180f && attraction >= 20) || (Joy >= 190f))
         {
             GoodAway();
@@ -36,7 +36,7 @@ public class Ogre3 : Monster
 
     public override int GetRelationLevel(float Joy)
     {
-        int attraction = MainMan.Attraction;
+        int attraction = MainMan.playerAttraction;
         if ((Joy >= 175f && attraction >= 45) || (Joy >= 180f && attraction >= 20) || (Joy >= 190f))
         {
             return 3;
