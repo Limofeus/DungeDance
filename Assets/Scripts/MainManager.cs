@@ -307,33 +307,6 @@ public class MainManager : MonoBehaviour
     {
         if (CustomHordesOn)
         {
-            // METHOD 1 - by hand
-
-
-            /*
-            if (Hordes[HordeCounter].MonsterTypes[MonsterHordeCounter] == "L1")
-            {
-                NextMonster = MonsterTypes.L1[Random.Range(0, MonsterTypes.L1.Length)];
-            }
-            else
-            {
-                NextMonster = MonsterTypes.L2[Random.Range(0, MonsterTypes.L2.Length)];
-            }
-            NextMonsterComp = NextMonster.GetComponent<Monster>();
-            MonstersInHorde = Hordes[HordeCounter].MonsterTypes.Length - 1;
-            SpawnCustomHordeMonster()
-            */
-
-            //METHOD 2 - wtf?
-            /*
-            MonsterHordeCounter = -1;
-            CalculateNextMonster();
-            Debug.Log(MonsterHordeCounter);
-            TimeOut();
-            Debug.Log(MonsterHordeCounter);
-            */
-
-            //METHOD 3 - should work;
 
             MonsterHordeCounter = -1;
             CalculateNextMonster();
@@ -378,7 +351,6 @@ public class MainManager : MonoBehaviour
         if (!NoTimeout)
             RTime += - Time.deltaTime;
         Bar.localScale = new Vector3(MaxBarScale * (RTime / RMaxTime), Bar.localScale.y, Bar.localScale.z);
-        //BarMat.color = new Color(255 - (255 * (Mathf.Clamp(Joy, 0, 100) / 100)), 255 * (Mathf.Clamp(Joy, 0, 100) / 100), 0);
         BarMat.SetFloat("MyValueYe", (Mathf.Clamp(Joy, 0, curretMaxJoy) / curretMaxJoy));
         if (RTime <= 1f && monsterSpawnedAttraction)
         {
@@ -590,17 +562,6 @@ public class MainManager : MonoBehaviour
         if (!(Hordes[HordeCounter].notAnimatemovingToTime > 0))
             CharacComp.MoveLocation(true);
         MonsterHordeCounter = 0;
-
-        /*
-        MonstersInHorde = Hordes[HordeCounter].MonsterTypes.Length - 1;
-        if (Hordes[HordeCounter].hordeLenght != 0)
-        {
-            RMaxTime = Hordes[HordeCounter].hordeLenght;
-            RTime = RMaxTime;
-        }
-        */
-        //Moved RTime and RMaxTime here cus of double arrow bug [upd. DOESNT WORK HERE EITHER, moved to TimeOut]
-
         if (!(Hordes[HordeCounter].notAnimatemovingToTime > 0))
             Location.Move();
         if (CustomHordesOn && Hordes[HordeCounter].HordeType == "End")
@@ -626,32 +587,12 @@ public class MainManager : MonoBehaviour
         {
             if (MonsterHordeCounter + 1 < Hordes[HordeCounter].MonsterTypes.Length)
             {
-                /*
-                if (Hordes[HordeCounter].MonsterTypes[MonsterHordeCounter + 1] == "L1")
-                {
-                    NextMonster = MonsterTypes.L1[Random.Range(0, MonsterTypes.L1.Length)];
-                }
-                else
-                {
-                    NextMonster = MonsterTypes.L2[Random.Range(0, MonsterTypes.L2.Length)];
-                }
-                */
                 NextMonster = MonsterFromType(Hordes[HordeCounter].MonsterTypes[MonsterHordeCounter + 1]);
             }
             else
             {
                 if(Hordes[HordeCounter + 1].HordeType == "")
                 {
-                    /*
-                    if(Hordes[HordeCounter + 1].MonsterTypes[0] == "L1")
-                    {
-                        NextMonster = MonsterTypes.L1[Random.Range(0, MonsterTypes.L1.Length)];
-                    }
-                    else
-                    {
-                        NextMonster = MonsterTypes.L2[Random.Range(0, MonsterTypes.L2.Length)];
-                    }
-                    */
 
                     NextMonster = MonsterFromType(Hordes[HordeCounter + 1].MonsterTypes[0]);
                 }
@@ -742,16 +683,6 @@ public class MainManager : MonoBehaviour
     {
         if (!DisableSpawn)
         {
-            /*
-            if(Hordes[HordeCounter].MonsterTypes[MonsterHordeCounter] == "L1")
-            {
-                Monster = Instantiate(MonsterTypes.L1[Random.Range(0, MonsterTypes.L1.Length)], EnimyHolder.position, EnimyHolder.rotation, EnimyHolder);
-            }
-            else
-            {
-             Monster = Instantiate(MonsterTypes.L2[Random.Range(0, MonsterTypes.L2.Length)], EnimyHolder.position, EnimyHolder.rotation, EnimyHolder);
-            }
-            */
             Monster = Instantiate(NextMonster, EnimyHolder.position, EnimyHolder.rotation, EnimyHolder);
             //MonsterComp = NextMonsterComp; <---- This one mistake cost me 4 hours to find
             MonsterComp = Monster.GetComponent<Monster>();
@@ -1621,80 +1552,14 @@ public class MainManager : MonoBehaviour
     }
     public void ItemAttractionBoost(int boost, float retime)
     {
-        StartCoroutine(ItemAttractionBoostCoroutine(boost, retime)); // You'll say: "Ayo, why tf would you pass it like this?", I'll say: ":)"
+        StartCoroutine(ItemAttractionBoostCoroutine(boost, retime));
     }
-    //The shit down here is really bad code I've written at 3 am, therefore I have commented some of this, I'll use coroutines inside item scripts to change multipliers and boosters
-    /*
-    public void AddStatsEffect(float activetime, float scoreAllHitBonus, float scoreAllHitMult, float joyAllHitBonus, float joyAllHitMult, float joyDynamicMult)
-    {
-        AddStatsEffect(activetime, 0f, 0f, 0f, 0f, 0f, scoreAllHitBonus, 0f, 0f, 0f, 0f, 0f, scoreAllHitMult, 0f, 0f, 0f, 0f, joyAllHitBonus, 0f, 0f, 0f, 0f, joyAllHitMult, joyDynamicMult); // You'll say: "Ayo, why tf would you pass it like this?", I'll say: ":)" ----yop, I just copied my code :)
-    }
-    public void AddStatsEffect(float activetime, float scoreMonsterBonus, float scoreHit0Bonus, float scoreHit1Bonus, float scoreHit2Bonus, float scoreHit3Bonus, float scoreAllHitBonus,float scoreMonsterMult, float scoreHit0Mult, float scoreHit1Mult, float scoreHit2Mult, float scoreHit3Mult, float scoreAllHitMult, float joyHit0Bonus, float joyHit1Bonus, float joyHit2Bonus, float joyHit3Bonus, float joyAllHitBonus, float joyHit0Mult, float joyHit1Mult, float joyHit2Mult, float joyHit3Mult, float joyAllHitMult, float joyDynamicMult)
-    {
-        StartCoroutine(StatsEffectCoroutine(activetime, scoreMonsterBonus, scoreHit0Bonus, scoreHit1Bonus, scoreHit2Bonus, scoreHit3Bonus, scoreAllHitBonus, scoreMonsterMult, scoreHit0Mult, scoreHit1Mult, scoreHit2Mult, scoreHit3Mult, scoreAllHitMult, joyHit0Bonus, joyHit1Bonus, joyHit2Bonus, joyHit3Bonus, joyAllHitBonus, joyHit0Mult, joyHit1Mult, joyHit2Mult, joyHit3Mult, joyAllHitMult, joyDynamicMult)); // You'll say: "Ayo, why tf would you pass it like this?", I'll say: ":)" ----yop, I just copied my code :)
-    }
-    */
     public IEnumerator ItemAttractionBoostCoroutine(int boost, float retime)
     {
         ChangeAttr(boost, 3);
         yield return new WaitForSeconds(retime);
         ChangeAttr(boost, 5);
     }
-    /*
-    public IEnumerator StatsEffectCoroutine(float activetime, float scoreMonsterBonusC, float scoreHit0BonusC, float scoreHit1BonusC, float scoreHit2BonusC, float scoreHit3BonusC, float scoreAllHitBonusC, float scoreMonsterMultC, float scoreHit0MultC, float scoreHit1MultC, float scoreHit2MultC, float scoreHit3MultC, float scoreAllHitMultC, float joyHit0BonusC, float joyHit1BonusC, float joyHit2BonusC, float joyHit3BonusC, float joyAllHitBonusC, float joyHit0MultC, float joyHit1MultC, float joyHit2MultC, float joyHit3MultC, float joyAllHitMultC, float joyDynamicMultC)
-    {
-        //ChangeStats
-        scoreMonsterBonus += scoreMonsterBonusC;
-        scoreHitType0Bonus += scoreHit0BonusC;
-        scoreHitType1Bonus += scoreHit1BonusC;
-        scoreHitType2Bonus += scoreHit2BonusC;
-        scoreHitType3Bonus += scoreHit3BonusC;
-        scoreAllHitBonus += scoreAllHitBonusC;
-        scoreMonsterMultiplier += scoreMonsterMultC;
-        scoreHitType0Multiplier += scoreHit0MultC;
-        scoreHitType1Multiplier += scoreHit1MultC;
-        scoreHitType2Multiplier += scoreHit2MultC;
-        scoreHitType3Multiplier += scoreHit3MultC;
-        scoreAllHitMultiplier += scoreAllHitMultC;
-        joyHitType0Bonus += joyHit0BonusC;
-        joyHitType1Bonus += joyHit1BonusC;
-        joyHitType2Bonus += joyHit2BonusC;
-        joyHitType3Bonus += joyHit3BonusC;
-        joyAllHitBonus += joyAllHitBonusC;
-        joyHitType0Multiplier += joyHit0MultC;
-        joyHitType1Multiplier += joyHit1MultC;
-        joyHitType2Multiplier += joyHit2MultC;
-        joyHitType3Multiplier += joyHit3MultC;
-        joyAllHitMultiplier += joyAllHitMultC;
-        joyDynamicHitMultiplier += joyDynamicMultC;
-
-        yield return new WaitForSeconds(activetime);
-        //RevertChanges
-        scoreMonsterBonus -= scoreMonsterBonusC;
-        scoreHitType0Bonus -= scoreHit0BonusC;
-        scoreHitType1Bonus -= scoreHit1BonusC;
-        scoreHitType2Bonus -= scoreHit2BonusC;
-        scoreHitType3Bonus -= scoreHit3BonusC;
-        scoreAllHitBonus -= scoreAllHitBonusC;
-        scoreMonsterMultiplier -= scoreMonsterMultC;
-        scoreHitType0Multiplier -= scoreHit0MultC;
-        scoreHitType1Multiplier -= scoreHit1MultC;
-        scoreHitType2Multiplier -= scoreHit2MultC;
-        scoreHitType3Multiplier -= scoreHit3MultC;
-        scoreAllHitMultiplier -= scoreAllHitMultC;
-        joyHitType0Bonus -= joyHit0BonusC;
-        joyHitType1Bonus -= joyHit1BonusC;
-        joyHitType2Bonus -= joyHit2BonusC;
-        joyHitType3Bonus -= joyHit3BonusC;
-        joyAllHitBonus -= joyAllHitBonusC;
-        joyHitType0Multiplier -= joyHit0MultC;
-        joyHitType1Multiplier -= joyHit1MultC;
-        joyHitType2Multiplier -= joyHit2MultC;
-        joyHitType3Multiplier -= joyHit3MultC;
-        joyAllHitMultiplier -= joyAllHitMultC;
-        joyDynamicHitMultiplier -= joyDynamicMultC;
-    }
-    */
     public IEnumerator ShadowCurse(float final)
     {
         float LocalTimer = 0f;
