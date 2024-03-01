@@ -32,13 +32,7 @@ public class MainManager : MonoBehaviour
     public bool hordesEnabled;
     public bool customHordesEnabled;
     public Horde[] hordes;
-    public bool cursesEnabled;
-    public Curse[] Curses;
-    public int CurseCounter;
-    public int FullCurseCounter;
-    bool Cursed;
-    bool FullCursed;
-    int CurseID;
+    [SerializeField] private CurseHandler curseHandler;
     public int HordeCounter;
     public int MonstersInHorde;
     private int MonsterHordeCounter;
@@ -98,19 +92,10 @@ public class MainManager : MonoBehaviour
     public GameObject NextMonster;
     private Monster nextMonsterComp;
     public GameObject[] MoansterPrefabs;
-    private CurseVisual currentCurseVisual;
-    [SerializeField] private GameObject[] curseVisualPrefabs; //Buy thats a sneaky one
     public GameObject[] ratePrefabs;
     public MonsterTypes MonsterTypes;
     public bool ItemSpawned;
     private bool monsterSpawnedAttraction;
-    /*
-    //!!public Sprite[] assignItemSprites;
-    public string[] ItemTitles;
-    public string[] ItemDescriptions; // Those three lines were used for manual item and NPC name assigment
-    public string[] npcNames;
-    //!!public static Sprite[] itemSprites;
-    */
     public static Color crazycolor1;
     public static Color crazycolor2;
     public Color CC1;
@@ -118,7 +103,6 @@ public class MainManager : MonoBehaviour
     public SoundSource soundSource;
     public MonsterFollow MonsterFollow;
     public SpeedChangeVisual speedChangeVisual;
-    public CurseWarningUI curseWarningUI;
     public GameObject TreasurePrefab;
     public GameObject npcPrefab;
     public GameObject BlackScreen;
@@ -144,9 +128,6 @@ public class MainManager : MonoBehaviour
     public Animator monsterGaugeAnimator;
     public SpriteRenderer monsterGaugeSR;
     public Sprite[] monsterGaugeSprites;
-    public Volume curseVolumeObj;
-    public VolumeProfile shadowCurseVolumeProfile;
-    public VolumeProfile rageCurseVolumeProfile;
     public Material attractionTextPink;
     public Material attractionTextGreen;
     public Material attractionTextBlue;
@@ -239,8 +220,12 @@ public class MainManager : MonoBehaviour
         Location.SendMessage("SkipStart");
         audioSource = this.GetComponent<AudioSource>();
         audioSource.clip = Music;
+
         if (characterYes)
             CharacComp.Init(TimeBetweenBeats);
+
+        if (curseHandler != null)
+            curseHandler.Initialize(this);
 
         int item1Id;
         int item2Id;
@@ -334,8 +319,9 @@ public class MainManager : MonoBehaviour
             NextBeatTime += TimeBetweenBeats;
             Beat();
         }
-        if (cursesEnabled)
-            HandleCurses();
+
+        curseHandler.HandleCurses(Timer, TimeToGo);
+
         if (dialogueMode)
             HandleDialogue();
         if (!NoTimeout)
@@ -354,129 +340,7 @@ public class MainManager : MonoBehaviour
         if (RTime <= 0f && !NoTimeout)
             TimeOut();
     }
-    void HandleCurses()
-    {
-        if (CurseCounter < Curses.Length)
-        {
-            if (!Cursed)
-            {
-                if (Timer + TimeToGo > Curses[CurseCounter].StartTime)
-                {
-                    Cursed = true;
-                    //Debug.Log("CUSE TO TRUE!");
-                    CurseID = Curses[CurseCounter].CurseId;
-                }
-            }
-            else
-            {
-                if (Timer + TimeToGo > Curses[CurseCounter].EndTime)
-                {
-                    Cursed = false;
-                    //Debug.Log("CUSE TO FALSE!");
-                    CurseCounter++;
-                }
-            }
-        }
-        if (FullCurseCounter < Curses.Length)
-        {
-            if (!FullCursed)
-            {
-                if (Timer > Curses[FullCurseCounter].StartTime)
-                {
-                    FullCursed = true;
-                    CastCurse(true);
-                }
-            }
-            else
-            {
-                if (Timer > Curses[FullCurseCounter].EndTime)
-                {
-                    FullCursed = false;
-                    CastCurse(false);
-                    FullCurseCounter++;
-                }
-            }
-        }
-    }
-    void DisableCurseEffects()
-    {
-        CastRageCurse(false);
-        CastShadowCurse(false);
-    }
-    void CastCurse(bool CastDecast)
-    {
-        switch (CurseID)
-        {
-            case 0:
-                CastShadowCurse(CastDecast);
-                break;
-            case 1:
-                CastRageCurse(CastDecast);
-                break;
-            default:
-                Debug.Log("Wrong curse ID");
-                break;
-        }
-        //Creating prefab for the curse
-        if (CastDecast)
-        {
-            currentCurseVisual = Instantiate(curseVisualPrefabs[CurseID], Vector3.zero, Quaternion.identity).GetComponent<CurseVisual>();
-            currentCurseVisual.StartCurse();
-        }
-        else
-        {
-            currentCurseVisual.EndCurse(); //IT SHOULD DESTROY ITSELF HERE!!!
-        }
-    }
     //Curses castng
-    void CastShadowCurse(bool CastDecast)
-    {
-        curseWarningUI.UpdateCurse(0, CastDecast, "curse_warning_id0");
-        if (CastDecast)
-        {
-            followMonsterToJoyMultiplier -= 0.9f;
-            followMonsterToScoreMultiplier -= 0.9f;
-            soundSource.PlayCurseSound(0);
-            StartCoroutine(ShadowCurse(1f));
-            if (MonsterComp != null)
-                MonsterComp.AddCurse(0, true);
-        }
-        else
-        {
-            followMonsterToJoyMultiplier += 0.9f;
-            followMonsterToScoreMultiplier += 0.9f;
-            StartCoroutine(ShadowCurse(0f));
-            if (MonsterComp != null)
-                MonsterComp.AddCurse(0, false);
-        }
-    }
-    void CastRageCurse(bool CastDecast)
-    {
-        curseWarningUI.UpdateCurse(1, CastDecast, "curse_warning_id1");
-        if (CastDecast)
-        {
-            joyAllHitMultiplier += 0.15f;
-            joyHitType0Multiplier += 0.5f;
-            scoreAllHitMultiplier += 0.15f;
-            scoreHitType0Multiplier += 0.5f;
-
-            soundSource.PlayCurseSound(1);
-            StartCoroutine(RageCurse(1f));
-            if (MonsterComp != null)
-                MonsterComp.AddCurse(1, true);
-        }
-        else
-        {
-            joyAllHitMultiplier -= 0.15f;
-            joyHitType0Multiplier -= 0.5f;
-            scoreAllHitMultiplier -= 0.15f;
-            scoreHitType0Multiplier -= 0.5f;
-
-            StartCoroutine(RageCurse(0f));
-            if (MonsterComp != null)
-                MonsterComp.AddCurse(1, false);
-        }
-    }
     void Beat()
     {
         SpawnArrow();
@@ -621,8 +485,9 @@ public class MainManager : MonoBehaviour
             //Monster.SendMessage("Init", this.gameObject);
             MonsterComp.Init(gameObject, TimeBetweenBeats);
             monsterGaugeSR.sprite = monsterGaugeSprites[MonsterComp.GetRelationLevel(Joy)];
-            if (FullCursed)
-                MonsterComp.AddCurse(CurseID, true);
+
+            if (curseHandler.fullCursed)
+                MonsterComp.AddCurse(curseHandler.currentCurseId, true);
         }
     }
     void OnNewLocation()
@@ -668,8 +533,8 @@ public class MainManager : MonoBehaviour
             MonsterComp.Init(gameObject, TimeBetweenBeats);
             monsterGaugeSR.sprite = monsterGaugeSprites[MonsterComp.GetRelationLevel(Joy)];
             //Debug.Log("TBB: " + TimeBetweenBeats);
-            if (FullCursed)
-                MonsterComp.AddCurse(CurseID, true);
+            if (curseHandler.fullCursed)
+                MonsterComp.AddCurse(curseHandler.currentCurseId, true);
         }
         RTime = RMaxTime;
         monsterSpawnedAttraction = true;
@@ -951,8 +816,8 @@ public class MainManager : MonoBehaviour
                 }
                 //NewArComp.Manager.Monster = Monster;
                 NewArComp.starto();
-                if (Cursed)
-                    NewArComp.arrowVisual.AddCurse(CurseID);
+                if (curseHandler.preCursed)
+                    NewArComp.arrowVisual.AddCurse(curseHandler.currentCurseId);
                 //Monster.SendMessage("ArrowSpawned", NewArComp);
             }
         }
@@ -1317,7 +1182,7 @@ public class MainManager : MonoBehaviour
         DisableSpawn = true;
         disableMoving = true;
         disableItemUse = true;
-        cursesEnabled = false;
+        curseHandler.ToggleCurse(false);
         NoAfterLocationChange = true;
         if (maxCombo < combo)
             maxCombo = combo;
@@ -1378,7 +1243,7 @@ public class MainManager : MonoBehaviour
         monsterCounterHolderAnimator.SetTrigger("HideForewer");
         comboScoreAnimator.SetTrigger("HideForewer");
         UUHAIHAnimator.SetTrigger("HideForewer");
-        DisableCurseEffects();
+        curseHandler.DisableCurseEffects();
         DestroyAllArrows();
     }
     public void AddMoney(int amount)
@@ -1484,34 +1349,6 @@ public class MainManager : MonoBehaviour
         ChangeAttr(boost, 3);
         yield return new WaitForSeconds(retime);
         ChangeAttr(boost, 5);
-    }
-    public IEnumerator ShadowCurse(float final)
-    {
-        float LocalTimer = 0f;
-        if(final == 1f)
-            curseVolumeObj.profile = shadowCurseVolumeProfile;
-        while(LocalTimer < 1f)
-        {
-            curseVolumeObj.weight = Mathf.Lerp(curseVolumeObj.weight, final, 2f * Time.deltaTime);
-            LocalTimer += Time.deltaTime;
-            yield return new WaitForEndOfFrame();
-        }
-    }
-    public IEnumerator RageCurse(float final)
-    {
-        float LocalTimer = 0f;;
-        if(final == 1f)
-            curseVolumeObj.profile = rageCurseVolumeProfile;
-        if(final == 1f)
-            StartCoroutine(ChangeArrowSpeed(0.2f,6f));
-        else
-            StartCoroutine(ChangeArrowSpeed(0.2f,-6f));
-        while (LocalTimer < 1f)
-        {
-            curseVolumeObj.weight = Mathf.Lerp(curseVolumeObj.weight, final, 2f * Time.deltaTime);
-            LocalTimer += Time.deltaTime;
-            yield return new WaitForEndOfFrame();
-        }
     }
     public IEnumerator ChangeArrowSpeed(float sleepFor, float speedChange)
     {

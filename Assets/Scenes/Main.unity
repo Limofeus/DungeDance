@@ -371,6 +371,67 @@ Animator:
   m_CorrespondingSourceObject: {fileID: 773799883702010524, guid: 8c28190ad0ee8a8458652df6e724c214, type: 3}
   m_PrefabInstance: {fileID: 773799883760660140}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &135185992
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 135185993}
+  - component: {fileID: 135185994}
+  m_Layer: 0
+  m_Name: CurseHandler
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &135185993
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 135185992}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 177484240}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &135185994
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 135185992}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a23067177623e1b43a101a9937e9d235, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cursesEnabled: 1
+  "\u0441urses":
+  - CurseId: 0
+    StartTime: 10
+    EndTime: 17
+  - CurseId: 1
+    StartTime: 20
+    EndTime: 70
+  CurseCounter: 0
+  FullCurseCounter: 0
+  curseWarningUI: {fileID: 726154500}
+  curseVisualPrefabs:
+  - {fileID: 8011666213749613124, guid: 89f74dcf5a850cf4097893cd894c479d, type: 3}
+  - {fileID: 6621426360280135817, guid: 60f5b6830dba03d45ba812b5a85c34c8, type: 3}
+  curseVolumeObj: {fileID: 617015138}
+  shadowCurseVolumeProfile: {fileID: 11400000, guid: d82554656bcaefe4eb44a088f06e6758, type: 2}
+  rageCurseVolumeProfile: {fileID: 11400000, guid: 27970b9f9e75b574b90522dcccd8e632, type: 2}
 --- !u!1 &153199828
 GameObject:
   m_ObjectHideFlags: 0
@@ -828,13 +889,7 @@ MonoBehaviour:
     npcLines: []
     npcLinesRandomizer: 
     notAnimatemovingToTime: 0
-  cursesEnabled: 0
-  Curses:
-  - CurseId: 1
-    StartTime: 37
-    EndTime: 50
-  CurseCounter: 0
-  FullCurseCounter: 0
+  curseHandler: {fileID: 135185994}
   HordeCounter: 0
   MonstersInHorde: 1
   MonsterCounter: {fileID: 1444004681}
@@ -887,9 +942,6 @@ MonoBehaviour:
   NextMonster: {fileID: 0}
   MoansterPrefabs:
   - {fileID: 1810798800220269141, guid: 11f92ea535a144b4a91ed4c8557e2877, type: 3}
-  curseVisualPrefabs:
-  - {fileID: 8011666213749613124, guid: 89f74dcf5a850cf4097893cd894c479d, type: 3}
-  - {fileID: 6621426360280135817, guid: 60f5b6830dba03d45ba812b5a85c34c8, type: 3}
   ratePrefabs:
   - {fileID: 3858108612921909620, guid: 961f51839c1586641bc8e7555a77a987, type: 3}
   - {fileID: 3858108612921909620, guid: 55c625e2a81cd424987070804cc643e0, type: 3}
@@ -918,7 +970,6 @@ MonoBehaviour:
   soundSource: {fileID: 1765523130}
   MonsterFollow: {fileID: 937560573}
   speedChangeVisual: {fileID: 3907913130475310704}
-  curseWarningUI: {fileID: 726154500}
   TreasurePrefab: {fileID: 1084039056789249846, guid: 9c563698a3d87a84888751c2c1e30d54, type: 3}
   npcPrefab: {fileID: 1704442914799134375, guid: 2417b06289a85e04eadd6d7408cb0d2c, type: 3}
   BlackScreen: {fileID: 1265681825}
@@ -948,9 +999,6 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 81a56b72746944441b41d85304965f51, type: 3}
   - {fileID: 21300000, guid: d28eb7a31ec3be64680f027f2e8f9331, type: 3}
   - {fileID: 21300000, guid: 2f45749c8d150e34f82fcb7c9e3b8b6d, type: 3}
-  curseVolumeObj: {fileID: 617015138}
-  shadowCurseVolumeProfile: {fileID: 11400000, guid: d82554656bcaefe4eb44a088f06e6758, type: 2}
-  rageCurseVolumeProfile: {fileID: 11400000, guid: 27970b9f9e75b574b90522dcccd8e632, type: 2}
   attractionTextPink: {fileID: 2100000, guid: 5ed4a4489f672de45a19bc483d45d02e, type: 2}
   attractionTextGreen: {fileID: 2100000, guid: d22639ab613bda44aa81f7fa25426a70, type: 2}
   attractionTextBlue: {fileID: 2100000, guid: a898807c92abdb94c95493cd55009ec1, type: 2}
@@ -1015,6 +1063,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 135185993}
   - {fileID: 617015137}
   - {fileID: 937560572}
   m_Father: {fileID: 0}
@@ -2724,7 +2773,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 177484240}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &617015138
 MonoBehaviour:
@@ -3423,7 +3472,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 177484240}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &937560573
 MonoBehaviour:
