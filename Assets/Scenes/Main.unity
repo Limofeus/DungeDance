@@ -749,7 +749,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb0b0f0a4a3d97848acb96c1eb504ce3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerStartXp: 0
   playerAttraction: 0
   baseAttraction: 40
   maxBaseAttraction: 40
@@ -762,7 +761,7 @@ MonoBehaviour:
   hitCounts: 
   hordesEnabled: 1
   customHordesEnabled: 1
-  Hordes:
+  hordes:
   - HordeType: NPC
     hordeLenght: 5
     MonsterTypes: []
