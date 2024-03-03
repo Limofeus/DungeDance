@@ -29,11 +29,9 @@ public class MainManager : MonoBehaviour
     private int greatComboCount = 0;
     private float multiplier = 1f;
     private bool greatCombo = true;
-    public bool hordesEnabled;
-    public bool customHordesEnabled;
     public Horde[] hordes;
     [SerializeField] private CurseHandler curseHandler;
-    public int HordeCounter;
+    private int hordeCounter;
     public int MonstersInHorde;
     private int MonsterHordeCounter;
     public MonsterCounter MonsterCounter;
@@ -197,7 +195,7 @@ public class MainManager : MonoBehaviour
         levelNameText.text = levelName;
         songNameText.text = songName;
         crazycolor1 = CC1;
-        HordeCounter = 0;
+        hordeCounter = 0;
         crazycolor2 = CC2;
         Timer = -3f;
         MonsterHordeCounter = 0;
@@ -280,21 +278,12 @@ public class MainManager : MonoBehaviour
 
     public void StartLevel()
     {
-        if (customHordesEnabled)
-        {
 
-            MonsterHordeCounter = -1;
-            CalculateNextMonster();
-            MonsterHordeCounter = 0;
-            OnNewLocation();
-        }
-        else
-        {
-            MonsterHordeCounter = -1;
-            CalculateNextMonster();
-            MonsterHordeCounter = 0;
-            OnNewLocation();
-        }
+        MonsterHordeCounter = -1;
+        CalculateNextMonster();
+        MonsterHordeCounter = 0;
+        OnNewLocation();
+
         attractionText.text = playerAttraction.ToString();
         NoTimeout = false;
         NotSpawnArrows = false;
@@ -353,41 +342,29 @@ public class MainManager : MonoBehaviour
             EndItem();
         else
             EndMonster();
-        if (hordesEnabled)
+        if (!ItemSpawned)
         {
-            if (!ItemSpawned)
+            if (MonsterHordeCounter >= MonstersInHorde)
             {
-                if (MonsterHordeCounter >= MonstersInHorde)
+                hordeCounter += 1;
+                /*
+                MonstersInHorde = Hordes[HordeCounter].MonsterTypes.Length - 1;
+                if (Hordes[HordeCounter].hordeLenght != 0)
                 {
-                    HordeCounter += 1;
-                    /*
-                    MonstersInHorde = Hordes[HordeCounter].MonsterTypes.Length - 1;
-                    if (Hordes[HordeCounter].hordeLenght != 0)
-                    {
-                        RMaxTime = Hordes[HordeCounter].hordeLenght; //USELESS POS
-                        RTime = RMaxTime;
-                        Debug.Log(RTime);
-                    }
-                    */
-                    MoveLocation();
+                    RMaxTime = Hordes[HordeCounter].hordeLenght; //USELESS POS
+                    RTime = RMaxTime;
+                    Debug.Log(RTime);
                 }
-                else
-                {
-                    MonsterHordeCounter += 1;
-                    if (customHordesEnabled)
-                    {
-                        SpawnCustomHordeMonster();
-                    }
-                    else
-                    {
-                        SpawnMonster();
-                    }
-                }
-                UpdateMonsterCounter();
+                */
+                MoveLocation();
             }
+            else
+            {
+                MonsterHordeCounter += 1;
+                SpawnCustomHordeMonster();
+            }
+            UpdateMonsterCounter();
         }
-        else
-            SpawnMonster();
     }
     void EndMonster()
     {
@@ -401,53 +378,40 @@ public class MainManager : MonoBehaviour
         NotSpawnArrows = true;
         NoTimeout = true;
         disableMoving = true;
-        if (!(hordes[HordeCounter].notAnimatemovingToTime > 0))
+        if (!(hordes[hordeCounter].notAnimatemovingToTime > 0))
             CharacComp.MoveLocation(true);
         MonsterHordeCounter = 0;
-        if (!(hordes[HordeCounter].notAnimatemovingToTime > 0))
+        if (!(hordes[hordeCounter].notAnimatemovingToTime > 0))
             Location.Move();
-        if (customHordesEnabled && hordes[HordeCounter].HordeType == "End")
+        if (hordes[hordeCounter].HordeType == "End")
         {
             DisableSpawn = true;
         }
-        if (customHordesEnabled && hordes[HordeCounter].HordeType != "")
+        if (hordes[hordeCounter].HordeType != "")
         {
             monsterGaugeAnimator.SetBool("Shown", false);
         }
         UpdateMonsterCounter();
         if(!NoAfterLocationChange)
-            StartCoroutine(AfterMoveLocation(hordes[HordeCounter].notAnimatemovingToTime));
+            StartCoroutine(AfterMoveLocation(hordes[hordeCounter].notAnimatemovingToTime));
     }
     void CalculateNextMonster()
     {
-        if (!customHordesEnabled)
+        if (MonsterHordeCounter + 1 < hordes[hordeCounter].MonsterTypes.Length)
         {
-            NextMonster = MoansterPrefabs[Random.Range(0, MoansterPrefabs.Length)];
-            nextMonsterComp = NextMonster.GetComponent<Monster>();
+            NextMonster = MonsterFromType(hordes[hordeCounter].MonsterTypes[MonsterHordeCounter + 1]);
         }
         else
         {
-            if (MonsterHordeCounter + 1 < hordes[HordeCounter].MonsterTypes.Length)
+            if(hordes[hordeCounter + 1].HordeType == "")
             {
-                NextMonster = MonsterFromType(hordes[HordeCounter].MonsterTypes[MonsterHordeCounter + 1]);
+                NextMonster = MonsterFromType(hordes[hordeCounter + 1].MonsterTypes[0]);
             }
-            else
-            {
-                if(hordes[HordeCounter + 1].HordeType == "")
-                {
-
-                    NextMonster = MonsterFromType(hordes[HordeCounter + 1].MonsterTypes[0]);
-                }
-                else
-                {
-                    //SomeFunctions will go in here
-                }
-            }
-            if (NextMonster != null)
-                nextMonsterComp = NextMonster.GetComponent<Monster>();
-            else
-                Debug.Log("NextMonsterIsNull here!");
         }
+        if (NextMonster != null)
+            nextMonsterComp = NextMonster.GetComponent<Monster>();
+        else
+            Debug.Log("NextMonsterIsNull here!");
     }
     GameObject MonsterFromType(string Type)
     {
@@ -471,56 +435,32 @@ public class MainManager : MonoBehaviour
                 return null;
         }
     }
-    void SpawnMonster()
-    {
-        if (!DisableSpawn)
-        {
-            //Debug.Log(MonsterHordeCounter);
-            RTime = RMaxTime;
-            monsterSpawnedAttraction = true;
-            Monster = Instantiate(NextMonster, EnimyHolder.position, EnimyHolder.rotation, EnimyHolder);
-            MonsterComp = Monster.GetComponent<Monster>();
-            CalculateNextMonster();
-            //Monster.SendMessage("Init", TimeBetweenBeats);
-            //Monster.SendMessage("Init", this.gameObject);
-            MonsterComp.Init(gameObject, TimeBetweenBeats);
-            monsterGaugeSR.sprite = monsterGaugeSprites[MonsterComp.GetRelationLevel(Joy)];
-
-            if (curseHandler.fullCursed)
-                MonsterComp.AddCurse(curseHandler.currentCurseId, true);
-        }
-    }
     void OnNewLocation()
     {
         disableMoving = false;
         CharacComp.MoveLocation(false);
-        if (customHordesEnabled)
+        MonstersInHorde = hordes[hordeCounter].MonsterTypes.Length - 1;
+        if (hordes[hordeCounter].hordeLenght != 0)                         //Moved This part to the start of location move cus of double arrow bug
+            RMaxTime = hordes[hordeCounter].hordeLenght;
+        if (hordes[hordeCounter].HordeType == "Treasure")
         {
-            MonstersInHorde = hordes[HordeCounter].MonsterTypes.Length - 1;
-            if (hordes[HordeCounter].hordeLenght != 0)                         //Moved This part to the start of location move cus of double arrow bug
-                RMaxTime = hordes[HordeCounter].hordeLenght;
-            if (hordes[HordeCounter].HordeType == "Treasure")
-            {
-                SpawnTreasure();
-            }
-            else if(hordes[HordeCounter].HordeType == "NPC")
-            {
-                SpawnNPC();
-            }
-            else if (hordes[HordeCounter].HordeType == "End")
-            {
-                //RTime = RMaxTime;
-                //NoTimeout = true;
-                CompleteLevel();
-            }
-            else
-            {
-                monsterGaugeAnimator.SetBool("Shown", true);
-                SpawnCustomHordeMonster();
-            }
+            SpawnTreasure();
+        }
+        else if(hordes[hordeCounter].HordeType == "NPC")
+        {
+            SpawnNPC();
+        }
+        else if (hordes[hordeCounter].HordeType == "End")
+        {
+            //RTime = RMaxTime;
+            //NoTimeout = true;
+            CompleteLevel();
         }
         else
-            SpawnMonster();
+        {
+            monsterGaugeAnimator.SetBool("Shown", true);
+            SpawnCustomHordeMonster();
+        }
     }
     void SpawnCustomHordeMonster()
     {
@@ -552,7 +492,7 @@ public class MainManager : MonoBehaviour
         RTime = RMaxTime;
         ItemSpawned = true;
         Monster = Instantiate(TreasurePrefab, EnimyHolder.position, EnimyHolder.rotation, EnimyHolder);
-        Monster.GetComponent<Chest>().InitializeChestParameters(this, hordes[HordeCounter].treasureKind);
+        Monster.GetComponent<Chest>().InitializeChestParameters(this, hordes[hordeCounter].treasureKind);
         MonsterHordeCounter = MonstersInHorde;
         CalculateNextMonster();
     }
@@ -562,12 +502,12 @@ public class MainManager : MonoBehaviour
         RTime = RMaxTime;
         ItemSpawned = true;
         Monster = Instantiate(npcPrefab, EnimyHolder.position, EnimyHolder.rotation, EnimyHolder);
-        Monster.GetComponent<NPC>().InitializeNPCParameters(this, hordes[HordeCounter].npcKind);
-        dialogueLineLength = RMaxTime / hordes[HordeCounter].npcLines.Length;
+        Monster.GetComponent<NPC>().InitializeNPCParameters(this, hordes[hordeCounter].npcKind);
+        dialogueLineLength = RMaxTime / hordes[hordeCounter].npcLines.Length;
         //Debug.Log("DIAL LENGTH IS: " + dialogueLineLength.ToString());
         MonsterHordeCounter = MonstersInHorde;
         CalculateNextMonster();
-        DisplayText(GetNPCNameById(hordes[HordeCounter].npcKind), LocalisationSystem.GetLocalizedValue(hordes[HordeCounter].npcLines[0]));
+        DisplayText(GetNPCNameById(hordes[hordeCounter].npcKind), LocalisationSystem.GetLocalizedValue(hordes[hordeCounter].npcLines[0]));
         dialogueCounter = 0;
         dialogueMode = true;
     }
@@ -720,8 +660,8 @@ public class MainManager : MonoBehaviour
     }
     
     void UpdateMonsterCounter()
-    {
-        if(!customHordesEnabled || hordes[HordeCounter].HordeType == "")
+    { 
+        if(hordes[hordeCounter].HordeType == "")
         {
             string[] CircleTypes = new string[MonstersInHorde + 1];
             for (int i = 0; i < CircleTypes.Length; i++)
@@ -754,66 +694,39 @@ public class MainManager : MonoBehaviour
             GameObject Arrow;
             //GameObject Arrow = Instantiate(ArrowPrefabs[Random.Range(0, ArrowPrefabs.Length)], Spawner.position, Quaternion.identity);
             if (RTime > TimeToGo)
-                if (!customHordesEnabled)
+            {
+                if(hordes[hordeCounter].HordeType == "")
                 {
                     Arrow = Instantiate(MonsterComp.ArrowPrefabs[Random.Range(0, MonsterComp.ArrowPrefabs.Length)],Spawner.position, Spawner.rotation, allUiHolder);
                 }
                 else
                 {
-                    if(hordes[HordeCounter].HordeType == "")
-                    {
-                        Arrow = Instantiate(MonsterComp.ArrowPrefabs[Random.Range(0, MonsterComp.ArrowPrefabs.Length)],Spawner.position, Spawner.rotation, allUiHolder);
-                    }
-                    else
-                    {
-                        Arrow = null;
-                    }
+                    Arrow = null;
                 }
+            }
             else
-                if (!customHordesEnabled)
-                {
-                    if (MonsterHordeCounter < MonstersInHorde)
-                        Arrow = Instantiate(nextMonsterComp.ArrowPrefabs[Random.Range(0, nextMonsterComp.ArrowPrefabs.Length)], Spawner.position, Spawner.rotation, allUiHolder);
-                    else
-                        Arrow = null;
-                }
-                else //OH SHIT, ITS LINE 666 (he is somwere around here O_O)
-                {
-                    if (MonsterHordeCounter + 1 < hordes[HordeCounter].MonsterTypes.Length)
-                        Arrow = Instantiate(nextMonsterComp.ArrowPrefabs[Random.Range(0, nextMonsterComp.ArrowPrefabs.Length)], Spawner.position, Spawner.rotation, allUiHolder);
-                    else
-                        Arrow = null;
-                }
+            { //OH SHIT, ITS LINE 666 (he is somwere around here O_O)
+                if (MonsterHordeCounter + 1 < hordes[hordeCounter].MonsterTypes.Length)
+                    Arrow = Instantiate(nextMonsterComp.ArrowPrefabs[Random.Range(0, nextMonsterComp.ArrowPrefabs.Length)], Spawner.position, Spawner.rotation, allUiHolder);
+                else
+                    Arrow = null;
+            }
             if (Arrow != null)
             {
                 Arrow NewArComp = Arrow.GetComponent<Arrow>();
                 NewArComp.Speed = AroowSpeed;
                 NewArComp.Auto = AutoMod;
                 NewArComp.Manager = this;
-                if (!customHordesEnabled)
+
+                if (MonsterHordeCounter + 1 < hordes[hordeCounter].MonsterTypes.Length)
                 {
-                    if ((RTime < (SpawnerOffset + (TimeBetweenBeats * AroowSpeed)) / AroowSpeed) && RTime > 0)
-                    {
-                        NewArComp.lastArrow = true;
-                        Debug.Log("LastMArrow");
-                    }
-                    else
-                    {
-                        NewArComp.lastArrow = false;
-                    }
+                    NewArComp.lastArrow = false;
                 }
                 else
                 {
-                    if (MonsterHordeCounter + 1 < hordes[HordeCounter].MonsterTypes.Length)
-                    {
-                        NewArComp.lastArrow = false;
-                    }
-                    else
-                    {
-                        NewArComp.lastArrow = (RTime < (SpawnerOffset + (TimeBetweenBeats * AroowSpeed)) / AroowSpeed) && RTime > 0;  // WELP, -3 hours of my life, and i have a fix that looks like SHIT and works like SHIT
-                    }
-
+                    NewArComp.lastArrow = (RTime < (SpawnerOffset + (TimeBetweenBeats * AroowSpeed)) / AroowSpeed) && RTime > 0;  // WELP, -3 hours of my life, and i have a fix that looks like SHIT and works like SHIT
                 }
+
                 //NewArComp.Manager.Monster = Monster;
                 NewArComp.starto();
                 if (curseHandler.preCursed)
@@ -1267,17 +1180,17 @@ public class MainManager : MonoBehaviour
     }
     void HandleDialogue()
     {
-        int dialLen = hordes[HordeCounter].npcLines.Length;
-        bool dialRand = hordes[HordeCounter].npcLines.Length == hordes[HordeCounter].npcLinesRandomizer.Length;
+        int dialLen = hordes[hordeCounter].npcLines.Length;
+        bool dialRand = hordes[hordeCounter].npcLines.Length == hordes[hordeCounter].npcLinesRandomizer.Length;
         if (dialogueCounter < dialLen)
         {
             if((dialogueCounter + 1) * dialogueLineLength < RMaxTime - RTime)
             {
                 dialogueCounter++;
-                if(!dialRand || hordes[HordeCounter].npcLinesRandomizer[dialogueCounter] < 2)
-                    DisplayText(GetNPCNameById(hordes[HordeCounter].npcKind), LocalisationSystem.GetLocalizedValue(hordes[HordeCounter].npcLines[dialogueCounter]));
+                if(!dialRand || hordes[hordeCounter].npcLinesRandomizer[dialogueCounter] < 2)
+                    DisplayText(GetNPCNameById(hordes[hordeCounter].npcKind), LocalisationSystem.GetLocalizedValue(hordes[hordeCounter].npcLines[dialogueCounter]));
                 else
-                    DisplayText(GetNPCNameById(hordes[HordeCounter].npcKind), LocalisationSystem.GetLocalizedValue(hordes[HordeCounter].npcLines[dialogueCounter] + "_r" + Random.Range(1, hordes[HordeCounter].npcLinesRandomizer[dialogueCounter] + 1).ToString()));
+                    DisplayText(GetNPCNameById(hordes[hordeCounter].npcKind), LocalisationSystem.GetLocalizedValue(hordes[hordeCounter].npcLines[dialogueCounter] + "_r" + Random.Range(1, hordes[hordeCounter].npcLinesRandomizer[dialogueCounter] + 1).ToString()));
             }
         }
         else
