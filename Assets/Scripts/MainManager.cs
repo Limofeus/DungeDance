@@ -13,17 +13,8 @@ public class MainManager : MonoBehaviour
     private DanceStyle[] selectedDanceStyles = new DanceStyle[1] {new DefaultDanceStyle()};
     //public int playerStartMoney; // <- sussy amogass 1 (wont use for now)
     [HideInInspector] public int playerStartXp { get; private set; }
-    public int playerAttraction;
-    public int baseAttraction;
-    public int maxBaseAttraction;
-    public int monsterBonusAttraction;
-    public int maxMonsterBonusAttraction; // <- Welp, wont use this one
-    public int bonusAttraction;
-    public int maxBonusAttraction;
-    public bool overAttractive;
-    private bool itemBonusAttr;
     public int maxCombo = 0;
-    public int[] hitCounts;
+    [HideInInspector] public int[] hitCounts;
     private int score = 0;
     private int combo = 0;
     private int greatComboCount = 0;
@@ -32,6 +23,7 @@ public class MainManager : MonoBehaviour
     public Horde[] hordes;
     [SerializeField] private CurseHandler curseHandler;
     [SerializeField] private LocationItemHandler locationItemHandler;
+    public PlayerStats playerStats;
     public BottomTextHandler bottomTextHandler;
     [HideInInspector] public int hordeCounter { get; private set; }
     public int MonstersInHorde;
@@ -92,7 +84,7 @@ public class MainManager : MonoBehaviour
     public GameObject[] ratePrefabs;
     public MonsterTypes MonsterTypes;
     public bool ItemSpawned;
-    private bool monsterSpawnedAttraction;
+    private bool animateAttractionBlink;
     public static Color crazycolor1;
     public static Color crazycolor2;
     public Color CC1;
@@ -107,10 +99,8 @@ public class MainManager : MonoBehaviour
     public TextMeshPro scoreText;
     public TextMeshPro comboText;
     public TextMeshPro multiplyerText;
-    public TextMeshPro attractionText;
     public TextMeshPro levelNameText;
     public TextMeshPro songNameText;
-    public Animator attractionAnimator;
     public Animator coinCountAnimator;
     public Animator downUI;
     public Animator comboUI;
@@ -121,9 +111,6 @@ public class MainManager : MonoBehaviour
     public Animator monsterGaugeAnimator;
     public SpriteRenderer monsterGaugeSR;
     public Sprite[] monsterGaugeSprites;
-    public Material attractionTextPink;
-    public Material attractionTextGreen;
-    public Material attractionTextBlue;
     public Material Effect1;
     public Material Effect2;
     private AudioSource audioSource;
@@ -234,7 +221,7 @@ public class MainManager : MonoBehaviour
         MonsterHordeCounter = 0;
         OnNewLocation();
 
-        attractionText.text = playerAttraction.ToString();
+        playerStats.TextUpdate();
         NoTimeout = false;
         NotSpawnArrows = false;
         audioSource.Play();
@@ -266,14 +253,10 @@ public class MainManager : MonoBehaviour
             RTime += - Time.deltaTime;
         Bar.localScale = new Vector3(MaxBarScale * (RTime / RMaxTime), Bar.localScale.y, Bar.localScale.z);
         BarMat.SetFloat("MyValueYe", (Mathf.Clamp(Joy, 0, curretMaxJoy) / curretMaxJoy));
-        if (RTime <= 1f && monsterSpawnedAttraction)
+        if (RTime <= 1f && animateAttractionBlink)
         {
-            monsterSpawnedAttraction = false;
-            if(!overAttractive && !(playerAttraction <= maxBaseAttraction / 2f))
-            {
-                //Debug.Log("ShowingAttraction");
-                attractionAnimator.SetTrigger("BeforeBlink");
-            }
+            animateAttractionBlink = false;
+            playerStats.BlinkAttraction();
         }
         if (RTime <= 0f && !NoTimeout)
             TimeOut();
@@ -432,14 +415,14 @@ public class MainManager : MonoBehaviour
             //Dunge Dance <---- This one mistake cost me 400 hours to make
             MonsterComp = Monster.GetComponent<Monster>();
             CalculateNextMonster();
-            MonsterComp.Init(gameObject, TimeBetweenBeats);
+            MonsterComp.Init(this, playerStats, TimeBetweenBeats);
             monsterGaugeSR.sprite = monsterGaugeSprites[MonsterComp.GetRelationLevel(Joy)];
             //Debug.Log("TBB: " + TimeBetweenBeats);
             if (curseHandler.fullCursed)
                 MonsterComp.AddCurse(curseHandler.currentCurseId, true);
         }
         RTime = RMaxTime;
-        monsterSpawnedAttraction = true;
+        animateAttractionBlink = true;
         UpdateMonsterCounter();
     }
     void Yeeemput()
@@ -548,8 +531,7 @@ public class MainManager : MonoBehaviour
             NextArrow.GetComponent<Arrow>().Yes(WhatToPress);
         CharacComp.Press(WhatToPress);
     }
-    
-    GameObject CalculateNextArrow()
+    public static GameObject CalculateNextArrow(float additionalDist = 0f)
     {
         if (Arrows == null)
             return null;
@@ -564,7 +546,7 @@ public class MainManager : MonoBehaviour
                 if (Mathf.Abs(Arrow.transform.localPosition.x) < Mathf.Abs(Wanana.transform.localPosition.x) && !Arrow.GetComponent<Arrow>().disabled)
                     Wanana = Arrow;
             }
-            if (Wanana != null && Mathf.Abs(Wanana.transform.localPosition.x) < 3)
+            if (Wanana != null && Mathf.Abs(Wanana.transform.localPosition.x) < (3 + additionalDist))
                 return Wanana;
             else
                 return null;
@@ -863,126 +845,7 @@ public class MainManager : MonoBehaviour
     }
     public void ChangeAttr(int bywhat, int mode) //mode - 0) hit (first remove bonus then monster then base); 1) monster (added to monster bonus if attraction is over maximum); 2) monster loose (remove monster bonus attraction); 3) bonus (added to bonus if attraction is over maximum); 4) blink (thats it); 5) bonus loose (for whenewer the bonus ends, removes bonus attraction, just like monster loose does)
     {
-        switch (mode)
-        {
-            case 0:
-                if(bywhat > bonusAttraction)
-                {
-                    bywhat -= bonusAttraction;
-                    bonusAttraction = 0;
-                    if(bywhat > monsterBonusAttraction)
-                    {
-                        bywhat -= monsterBonusAttraction;
-                        monsterBonusAttraction = 0;
-                        baseAttraction = Mathf.Clamp(baseAttraction - bywhat, 0, maxBaseAttraction);
-                    }
-                    else
-                    {
-                        //Debug.Log("Should Go here");
-                        monsterBonusAttraction -= bywhat;
-                    }
-                }
-                else
-                {
-                    bonusAttraction -= bywhat;
-                }
-                break;
-            case 1:
-                if (baseAttraction + bywhat > maxBaseAttraction)
-                {
-                    bywhat -= (maxBaseAttraction - baseAttraction);
-                    baseAttraction = maxBaseAttraction;
-                    //Debug.Log(bywhat);
-                    monsterBonusAttraction = Mathf.Clamp(monsterBonusAttraction + bywhat, 0, maxMonsterBonusAttraction);
-                    //Debug.Log((baseAttraction + monsterBonusAttraction).ToString());
-                }
-                else
-                    baseAttraction += bywhat;
-                break;
-            case 2:
-                if(monsterBonusAttraction - bywhat > 0)
-                {
-                    monsterBonusAttraction -= bywhat;
-                }
-                else
-                {
-                    monsterBonusAttraction = 0;
-                }
-                break;
-            case 3:
-                if (baseAttraction + bywhat > maxBaseAttraction)
-                {
-                    bywhat -= (maxBaseAttraction - baseAttraction);
-                    baseAttraction = maxBaseAttraction;
-                    bonusAttraction = bonusAttraction + bywhat;
-                   
-                }
-                else
-                    baseAttraction += bywhat;
-                break;
-            case 4:
-                Debug.Log("Blinkin"); //okay, now what?
-                break;
-            case 5:
-                if(bonusAttraction - bywhat > 0)
-                {
-                    bonusAttraction -= bywhat;
-                }
-                else
-                {
-                    bonusAttraction = 0;
-                }
-                break;
-            default:
-                Debug.LogError("ERROR Mode ERROR selected ERROR the ERROR humanity ERROR is ERROR fucERRORked");
-                break;
-        }
-        playerAttraction = baseAttraction + monsterBonusAttraction + bonusAttraction;
-        attractionText.text = playerAttraction.ToString();
-        if (playerAttraction > maxBaseAttraction)
-            overAttractive = true;
-        else
-            overAttractive = false;
-        if (bonusAttraction > 0)
-            itemBonusAttr = true;
-        else
-            itemBonusAttr = false;
-        if (playerAttraction <= maxBaseAttraction / 2f)
-        {
-            attractionAnimator.SetBool("LowAttraction", true);
-            attractionAnimator.SetBool("OverAttraction", false);
-            attractionAnimator.SetBool("BonusAttraction", false);
-            attractionAnimator.SetBool("KeepShown", true);
-            //attractionText.material = attractionTextPink;
-            attractionText.fontMaterial = attractionTextPink;
-            //attractionText.fontSharedMaterial = attractionTextPink;
-        }
-        else if (itemBonusAttr) //CHANGE THAT!!!!
-        {
-            attractionAnimator.SetBool("LowAttraction", false);
-            attractionAnimator.SetBool("OverAttraction", false);
-            attractionAnimator.SetBool("BonusAttraction", true);
-            attractionAnimator.SetBool("KeepShown", true);
-            attractionText.fontMaterial = attractionTextBlue;
-        }
-        else if(overAttractive)
-        {
-            attractionAnimator.SetBool("LowAttraction", false);
-            attractionAnimator.SetBool("OverAttraction", true);
-            attractionAnimator.SetBool("BonusAttraction", false);
-            attractionAnimator.SetBool("KeepShown", true);
-            attractionText.fontMaterial = attractionTextGreen;
-        }
-        else
-        {
-            attractionAnimator.SetBool("LowAttraction", false);
-            attractionAnimator.SetBool("OverAttraction", false);
-            attractionAnimator.SetBool("BonusAttraction", false);
-            attractionAnimator.SetBool("KeepShown", false);
-            attractionText.fontMaterial = attractionTextPink;
-        }
-        //attractionText.UpdateFontAsset();
-        attractionAnimator.SetTrigger("Blink");
+        playerStats.ChangeAttraction(bywhat, mode);
     }
     public void DisplayCombo(bool displayHide)
     {
