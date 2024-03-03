@@ -45,10 +45,10 @@ public class DefaultDanceStyle : DanceStyle
                 break;
         }
         //Debug.Log($"Pre add: MtJ: {followMonsterToJoyMultiplier} | MtS: {followMonsterToScoreMultiplier} | JtA: {joyToAdd} | StA: {scoreToAdd}");
-        joyToAdd += (mainManager.followMonsterToJoyMultiplier * mainManager.followMonstersCount) / 2f; //—юды вписывать :)
-        joyToAdd += (mainManager.attractionToJoyMultiplier * mainManager.playerAttraction) / 100f;
-        scoreToAdd += (mainManager.followMonsterToScoreMultiplier * mainManager.followMonstersCount) / 3f; //Also style dependant + hardcoded
-        scoreToAdd += (mainManager.attractionToScoreMultiplier * mainManager.playerAttraction) / 150f;
+        joyToAdd += (mainManager.bonusesAndMultiplers.followMonsterToJoyMultiplier * mainManager.followMonstersCount) / 2f; //—юды вписывать :)
+        joyToAdd += (mainManager.bonusesAndMultiplers.attractionToJoyMultiplier * mainManager.playerAttraction) / 100f;
+        scoreToAdd += (mainManager.bonusesAndMultiplers.followMonsterToScoreMultiplier * mainManager.followMonstersCount) / 3f; //Also style dependant + hardcoded
+        scoreToAdd += (mainManager.bonusesAndMultiplers.attractionToScoreMultiplier * mainManager.playerAttraction) / 150f;
         //Debug.Log($"After add: JtA: {joyToAdd} | StA: {scoreToAdd}");
 
         if (miniArrow && joyToAdd < 0) //I'll make this thing style dependant as well then lol

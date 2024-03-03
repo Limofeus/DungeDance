@@ -142,39 +142,7 @@ public class MainManager : MonoBehaviour
     private int screenH;
     private int touchZone;
 
-    //BONUSES AND MULTIPLIERS
-    //Score bonuses
-    [HideInInspector] public float scoreMonsterBonus = 0f; //This one is for when the monster gives player score, not tied to follows
-    [HideInInspector] public float scoreHitType0Bonus = 0f;
-    [HideInInspector] public float scoreHitType1Bonus = 0f;
-    [HideInInspector] public float scoreHitType2Bonus = 0f;
-    [HideInInspector] public float scoreHitType3Bonus = 0f;
-    [HideInInspector] public float scoreAllHitBonus = 0f;
-    //Score multipliers
-    [HideInInspector] public float scoreMonsterMultiplier = 1f; //Same as above
-    [HideInInspector] public float scoreHitType0Multiplier = 1f;
-    [HideInInspector] public float scoreHitType1Multiplier = 1f;
-    [HideInInspector] public float scoreHitType2Multiplier = 1f;
-    [HideInInspector] public float scoreHitType3Multiplier = 1f;
-    [HideInInspector] public float scoreAllHitMultiplier = 1f;
-    //Joy bonuses
-    [HideInInspector] public float joyHitType0Bonus = 0f;
-    [HideInInspector] public float joyHitType1Bonus = 0f;
-    [HideInInspector] public float joyHitType2Bonus = 0f;
-    [HideInInspector] public float joyHitType3Bonus = 0f;
-    [HideInInspector] public float joyAllHitBonus = 0f;
-    //Joy multipliers
-    [HideInInspector] public float joyHitType0Multiplier = 1f;
-    [HideInInspector] public float joyHitType1Multiplier = 1f;
-    [HideInInspector] public float joyHitType2Multiplier = 1f;
-    [HideInInspector] public float joyHitType3Multiplier = 1f;
-    [HideInInspector] public float joyAllHitMultiplier = 1f;
-    [HideInInspector] public float joyDynamicHitMultiplier = 1f;
-    //Some other stat changes
-    [HideInInspector] public float followMonsterToScoreMultiplier = 1f;
-    [HideInInspector] public float followMonsterToJoyMultiplier = 1f;
-    [HideInInspector] public float attractionToScoreMultiplier = 1f;
-    [HideInInspector] public float attractionToJoyMultiplier = 1f;
+    [HideInInspector] public ScoreJoyBonuses bonusesAndMultiplers = new ScoreJoyBonuses();
 
     void Awake()
     {
@@ -782,32 +750,32 @@ public class MainManager : MonoBehaviour
         switch (hitType)
         {
             case 0:
-                firstAmmount += joyHitType0Bonus;
+                firstAmmount += bonusesAndMultiplers.joyHitType0Bonus;
                 break;
             case 1:
-                firstAmmount += joyHitType1Bonus;
+                firstAmmount += bonusesAndMultiplers.joyHitType1Bonus;
                 break;
             case 2:
-                firstAmmount += joyHitType2Bonus;
+                firstAmmount += bonusesAndMultiplers.joyHitType2Bonus;
                 break;
             case 3:
-                firstAmmount += joyHitType3Bonus;
+                firstAmmount += bonusesAndMultiplers.joyHitType3Bonus;
                 break;
         }
-        firstAmmount += joyAllHitBonus;
+        firstAmmount += bonusesAndMultiplers.joyAllHitBonus;
         switch (hitType)
         {
             case 0:
-                firstAmmount *= joyHitType0Multiplier + joyAllHitMultiplier -1f + ((firstAmmount > 0f )? (joyDynamicHitMultiplier -1f):0f);
+                firstAmmount *= bonusesAndMultiplers.joyHitType0Multiplier + bonusesAndMultiplers.joyAllHitMultiplier -1f + ((firstAmmount > 0f )? (bonusesAndMultiplers.joyDynamicHitMultiplier -1f):0f);
                 break;
             case 1:
-                firstAmmount *= joyHitType1Multiplier + joyAllHitMultiplier - 1f + ((firstAmmount > 0f )? (joyDynamicHitMultiplier - 1f) : 0f);
+                firstAmmount *= bonusesAndMultiplers.joyHitType1Multiplier + bonusesAndMultiplers.joyAllHitMultiplier - 1f + ((firstAmmount > 0f )? (bonusesAndMultiplers.joyDynamicHitMultiplier - 1f) : 0f);
                 break;
             case 2:
-                firstAmmount *= joyHitType2Multiplier + joyAllHitMultiplier - 1f + ((firstAmmount > 0f )? (joyDynamicHitMultiplier - 1f) : 0f);
+                firstAmmount *= bonusesAndMultiplers.joyHitType2Multiplier + bonusesAndMultiplers.joyAllHitMultiplier - 1f + ((firstAmmount > 0f )? (bonusesAndMultiplers.joyDynamicHitMultiplier - 1f) : 0f);
                 break;
             case 3:
-                firstAmmount *= joyHitType3Multiplier + joyAllHitMultiplier - 1f + ((firstAmmount > 0f )? (joyDynamicHitMultiplier - 1f) : 0f);
+                firstAmmount *= bonusesAndMultiplers.joyHitType3Multiplier + bonusesAndMultiplers.joyAllHitMultiplier - 1f + ((firstAmmount > 0f )? (bonusesAndMultiplers.joyDynamicHitMultiplier - 1f) : 0f);
                 break;
         }
         int roundedJoy = Mathf.RoundToInt(firstAmmount);
@@ -822,22 +790,22 @@ public class MainManager : MonoBehaviour
         float firstAmmount = amount;
         switch (hitType) {
             case -2:
-                firstAmmount += scoreMonsterBonus;
+                firstAmmount += bonusesAndMultiplers.scoreMonsterBonus;
                 break;
             case 0:
-                firstAmmount += scoreHitType0Bonus;
+                firstAmmount += bonusesAndMultiplers.scoreHitType0Bonus;
                 break;
             case 1:
-                firstAmmount += scoreHitType1Bonus;
+                firstAmmount += bonusesAndMultiplers.scoreHitType1Bonus;
                 break;
             case 2:
-                firstAmmount += scoreHitType2Bonus;
+                firstAmmount += bonusesAndMultiplers.scoreHitType2Bonus;
                 break;
             case 3:
-                firstAmmount += scoreHitType3Bonus;
+                firstAmmount += bonusesAndMultiplers.scoreHitType3Bonus;
                 break;
         }
-        firstAmmount += scoreAllHitBonus;
+        firstAmmount += bonusesAndMultiplers.scoreAllHitBonus;
 
         firstAmmount = Mathf.Clamp(firstAmmount, 0, float.MaxValue); //Why TF did I add that here? Does it even.. do anything?
         float unroundedScore = multiplier * firstAmmount;
@@ -845,19 +813,19 @@ public class MainManager : MonoBehaviour
         switch (hitType)
         {
             case -2:
-                unroundedScore *= scoreMonsterMultiplier + scoreAllHitMultiplier - 1f;
+                unroundedScore *= bonusesAndMultiplers.scoreMonsterMultiplier + bonusesAndMultiplers.scoreAllHitMultiplier - 1f;
                 break;
             case 0:
-                unroundedScore *= scoreHitType0Multiplier + scoreAllHitMultiplier - 1f;
+                unroundedScore *= bonusesAndMultiplers.scoreHitType0Multiplier + bonusesAndMultiplers.scoreAllHitMultiplier - 1f;
                 break;
             case 1:
-                unroundedScore *= scoreHitType1Multiplier + scoreAllHitMultiplier - 1f;
+                unroundedScore *= bonusesAndMultiplers.scoreHitType1Multiplier + bonusesAndMultiplers.scoreAllHitMultiplier - 1f;
                 break;
             case 2:
-                unroundedScore *= scoreHitType2Multiplier + scoreAllHitMultiplier - 1f;
+                unroundedScore *= bonusesAndMultiplers.scoreHitType2Multiplier + bonusesAndMultiplers.scoreAllHitMultiplier - 1f;
                 break;
             case 3:
-                unroundedScore *= scoreHitType3Multiplier + scoreAllHitMultiplier - 1f;
+                unroundedScore *= bonusesAndMultiplers.scoreHitType3Multiplier + bonusesAndMultiplers.scoreAllHitMultiplier - 1f;
                 break;
         }
         score += Mathf.RoundToInt(unroundedScore);
@@ -1026,7 +994,7 @@ public class MainManager : MonoBehaviour
     }
     public void DisplayMultiplier()
     {
-        multiplyerText.text = "x" + Mathf.RoundToInt(multiplier * scoreAllHitMultiplier).ToString(); // Kind of a poor way of adding scoreBonusMultiplier, but it's fii~~~~~iine Upd: Idk i'll need to do something with all that Upd2: Idk added allHitMult. or smth...
+        multiplyerText.text = "x" + Mathf.RoundToInt(multiplier * bonusesAndMultiplers.scoreAllHitMultiplier).ToString(); // Kind of a poor way of adding scoreBonusMultiplier, but it's fii~~~~~iine Upd: Idk i'll need to do something with all that Upd2: Idk added allHitMult. or smth...
         if (lastMultiplier < Mathf.RoundToInt(multiplier))
         {
             comboUI.SetTrigger("ShowM");

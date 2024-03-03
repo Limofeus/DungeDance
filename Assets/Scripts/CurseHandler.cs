@@ -106,8 +106,8 @@ public class CurseHandler : MonoBehaviour
         curseWarningUI.UpdateCurse(0, CastDecast, "curse_warning_id0");
         if (CastDecast)
         {
-            _mainManager.followMonsterToJoyMultiplier -= 0.9f;
-            _mainManager.followMonsterToScoreMultiplier -= 0.9f;
+            _mainManager.bonusesAndMultiplers.followMonsterToJoyMultiplier -= 0.9f;
+            _mainManager.bonusesAndMultiplers.followMonsterToScoreMultiplier -= 0.9f;
             _mainManager.soundSource.PlayCurseSound(0);
             StartCoroutine(ShadowCurse(1f));
             if (_mainManager.MonsterComp != null)
@@ -115,8 +115,8 @@ public class CurseHandler : MonoBehaviour
         }
         else
         {
-            _mainManager.followMonsterToJoyMultiplier += 0.9f;
-            _mainManager.followMonsterToScoreMultiplier += 0.9f;
+            _mainManager.bonusesAndMultiplers.followMonsterToJoyMultiplier += 0.9f;
+            _mainManager.bonusesAndMultiplers.followMonsterToScoreMultiplier += 0.9f;
             StartCoroutine(ShadowCurse(0f));
             if (_mainManager.MonsterComp != null)
                 _mainManager.MonsterComp.AddCurse(0, false);
@@ -127,10 +127,10 @@ public class CurseHandler : MonoBehaviour
         curseWarningUI.UpdateCurse(1, CastDecast, "curse_warning_id1");
         if (CastDecast)
         {
-            _mainManager.joyAllHitMultiplier += 0.15f;
-            _mainManager.joyHitType0Multiplier += 0.5f;
-            _mainManager.scoreAllHitMultiplier += 0.15f;
-            _mainManager.scoreHitType0Multiplier += 0.5f;
+            _mainManager.bonusesAndMultiplers.joyAllHitMultiplier += 0.15f;
+            _mainManager.bonusesAndMultiplers.joyHitType0Multiplier += 0.5f;
+            _mainManager.bonusesAndMultiplers.scoreAllHitMultiplier += 0.15f;
+            _mainManager.bonusesAndMultiplers.scoreHitType0Multiplier += 0.5f;
 
             _mainManager.soundSource.PlayCurseSound(1);
             StartCoroutine(RageCurse(1f));
@@ -139,10 +139,10 @@ public class CurseHandler : MonoBehaviour
         }
         else
         {
-            _mainManager.joyAllHitMultiplier -= 0.15f;
-            _mainManager.joyHitType0Multiplier -= 0.5f;
-            _mainManager.scoreAllHitMultiplier -= 0.15f;
-            _mainManager.scoreHitType0Multiplier -= 0.5f;
+            _mainManager.bonusesAndMultiplers.joyAllHitMultiplier -= 0.15f;
+            _mainManager.bonusesAndMultiplers.joyHitType0Multiplier -= 0.5f;
+            _mainManager.bonusesAndMultiplers.scoreAllHitMultiplier -= 0.15f;
+            _mainManager.bonusesAndMultiplers.scoreHitType0Multiplier -= 0.5f;
 
             StartCoroutine(RageCurse(0f));
             if (_mainManager.MonsterComp != null)
