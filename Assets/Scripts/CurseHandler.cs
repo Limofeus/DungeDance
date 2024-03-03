@@ -18,12 +18,9 @@ public class CurseHandler : MonoBehaviour
     [HideInInspector] public bool fullCursed { get; private set; }
     [HideInInspector] public int currentCurseId { get; private set; } //0 - Shadow, 1 - Rage
     private CurseVisual currentCurseVisual;
-    private MainManager _mainManager;
 
-    public void Initialize(MainManager mainManager)
-    {
-        _mainManager = mainManager;
-    }
+    [SerializeField] private MainManager _mainManager;
+
     public void ToggleCurse(bool enabled)
     {
         cursesEnabled = enabled;

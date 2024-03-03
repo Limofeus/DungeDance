@@ -31,7 +31,9 @@ public class MainManager : MonoBehaviour
     private bool greatCombo = true;
     public Horde[] hordes;
     [SerializeField] private CurseHandler curseHandler;
-    private int hordeCounter;
+    [SerializeField] private LocationItemHandler locationItemHandler;
+    public BottomTextHandler bottomTextHandler;
+    [HideInInspector] public int hordeCounter { get; private set; }
     public int MonstersInHorde;
     private int MonsterHordeCounter;
     public MonsterCounter MonsterCounter;
@@ -70,11 +72,8 @@ public class MainManager : MonoBehaviour
     public float ArrowChance = 1f;
     public float TimeBetweenBeats;
     public float TimeToGo;
-    private bool dialogueMode;
-    private int dialogueCounter;
     private int lastMultiplier = 1;
     public int followMonstersCount = 0;
-    private float dialogueLineLength;
     float NextBeatTime;
     public Location Location;
     public bool characterYes;
@@ -101,13 +100,9 @@ public class MainManager : MonoBehaviour
     public SoundSource soundSource;
     public MonsterFollow MonsterFollow;
     public SpeedChangeVisual speedChangeVisual;
-    public GameObject TreasurePrefab;
-    public GameObject npcPrefab;
     public GameObject BlackScreen;
     public GameObject endScreenPrefab;
     public ItemHolder itemHolder;
-    public TextMeshPro textGuiTitle;
-    public TextMeshPro textGuiText;
     public TextMeshPro coinCountText;
     public TextMeshPro scoreText;
     public TextMeshPro comboText;
@@ -222,9 +217,6 @@ public class MainManager : MonoBehaviour
         if (characterYes)
             CharacComp.Init(TimeBetweenBeats);
 
-        if (curseHandler != null)
-            curseHandler.Initialize(this);
-
         int item1Id;
         int item2Id;
         int item3Id;
@@ -248,16 +240,6 @@ public class MainManager : MonoBehaviour
             //Debug.Log("FUUUCK!!");
             ChangeStageVolume(debugPlayerData.settingsData.soundVolume, debugPlayerData.settingsData.musicVolume);
         }
-        /*
-        Debug.Log(MenuDataManager.saveData.playerName);
-        Debug.Log(MenuDataManager.saveData.moneyAmount);
-        Debug.Log(MenuDataManager.saveData.item1Id);
-        Debug.Log(MenuDataManager.saveData.item2Id);
-        Debug.Log(MenuDataManager.saveData.item3Id);
-        Debug.Log(item1Id);
-        Debug.Log(item2Id);
-        Debug.Log(item3Id);
-        */
         if (item1Id != -1)
         {
             itemHolder.AddItem(item1Id);
@@ -310,9 +292,8 @@ public class MainManager : MonoBehaviour
         }
 
         curseHandler.HandleCurses(Timer, TimeToGo);
+        bottomTextHandler.HandleDialogue();
 
-        if (dialogueMode)
-            HandleDialogue();
         if (!NoTimeout)
             RTime += - Time.deltaTime;
         Bar.localScale = new Vector3(MaxBarScale * (RTime / RMaxTime), Bar.localScale.y, Bar.localScale.z);
@@ -339,7 +320,7 @@ public class MainManager : MonoBehaviour
     {
         //Debug.Log(MonsterHordeCounter);
         if (ItemSpawned)
-            EndItem();
+            locationItemHandler.EndItem();
         else
             EndMonster();
         if (!ItemSpawned)
@@ -413,6 +394,10 @@ public class MainManager : MonoBehaviour
         else
             Debug.Log("NextMonsterIsNull here!");
     }
+    public Horde GetCurrentHorde()
+    {
+        return hordes[hordeCounter];
+    }
     GameObject MonsterFromType(string Type)
     {
         switch (Type)
@@ -444,11 +429,13 @@ public class MainManager : MonoBehaviour
             RMaxTime = hordes[hordeCounter].hordeLenght;
         if (hordes[hordeCounter].HordeType == "Treasure")
         {
-            SpawnTreasure();
+            LocationItemPreporation();
+            locationItemHandler.SpawnTreasure();
         }
         else if(hordes[hordeCounter].HordeType == "NPC")
         {
-            SpawnNPC();
+            LocationItemPreporation();
+            locationItemHandler.SpawnNPC();
         }
         else if (hordes[hordeCounter].HordeType == "End")
         {
@@ -461,6 +448,13 @@ public class MainManager : MonoBehaviour
             monsterGaugeAnimator.SetBool("Shown", true);
             SpawnCustomHordeMonster();
         }
+    }
+    void LocationItemPreporation()
+    {
+        RTime = RMaxTime;
+        ItemSpawned = true;
+        MonsterHordeCounter = MonstersInHorde;
+        CalculateNextMonster();
     }
     void SpawnCustomHordeMonster()
     {
@@ -479,43 +473,6 @@ public class MainManager : MonoBehaviour
         RTime = RMaxTime;
         monsterSpawnedAttraction = true;
         UpdateMonsterCounter();
-    }
-    void EndItem()
-    {
-        //Debug.Log("Here i go!");
-        ItemSpawned = false;
-        Monster.GetComponent<ItemAway>().GoAway();
-        Destroy(Monster);
-    }
-    void SpawnTreasure()
-    {
-        RTime = RMaxTime;
-        ItemSpawned = true;
-        Monster = Instantiate(TreasurePrefab, EnimyHolder.position, EnimyHolder.rotation, EnimyHolder);
-        Monster.GetComponent<Chest>().InitializeChestParameters(this, hordes[hordeCounter].treasureKind);
-        MonsterHordeCounter = MonstersInHorde;
-        CalculateNextMonster();
-    }
-
-    void SpawnNPC()
-    {
-        RTime = RMaxTime;
-        ItemSpawned = true;
-        Monster = Instantiate(npcPrefab, EnimyHolder.position, EnimyHolder.rotation, EnimyHolder);
-        Monster.GetComponent<NPC>().InitializeNPCParameters(this, hordes[hordeCounter].npcKind);
-        dialogueLineLength = RMaxTime / hordes[hordeCounter].npcLines.Length;
-        //Debug.Log("DIAL LENGTH IS: " + dialogueLineLength.ToString());
-        MonsterHordeCounter = MonstersInHorde;
-        CalculateNextMonster();
-        DisplayText(GetNPCNameById(hordes[hordeCounter].npcKind), LocalisationSystem.GetLocalizedValue(hordes[hordeCounter].npcLines[0]));
-        dialogueCounter = 0;
-        dialogueMode = true;
-    }
-
-    string GetNPCNameById(int npcId)
-    {
-        //Debug.Log(npcId);
-        return LocalisationSystem.GetLocalizedValue("npc_name_id"+npcId.ToString());
     }
     void Yeeemput()
     {
@@ -660,7 +617,7 @@ public class MainManager : MonoBehaviour
     }
     
     void UpdateMonsterCounter()
-    { 
+    {
         if(hordes[hordeCounter].HordeType == "")
         {
             string[] CircleTypes = new string[MonstersInHorde + 1];
@@ -1178,39 +1135,6 @@ public class MainManager : MonoBehaviour
         Camera.GetComponent<Animator>().SetTrigger("Hit");
         bigPP.GetComponent<Animator>().SetTrigger("Hit");
     }
-    void HandleDialogue()
-    {
-        int dialLen = hordes[hordeCounter].npcLines.Length;
-        bool dialRand = hordes[hordeCounter].npcLines.Length == hordes[hordeCounter].npcLinesRandomizer.Length;
-        if (dialogueCounter < dialLen)
-        {
-            if((dialogueCounter + 1) * dialogueLineLength < RMaxTime - RTime)
-            {
-                dialogueCounter++;
-                if(!dialRand || hordes[hordeCounter].npcLinesRandomizer[dialogueCounter] < 2)
-                    DisplayText(GetNPCNameById(hordes[hordeCounter].npcKind), LocalisationSystem.GetLocalizedValue(hordes[hordeCounter].npcLines[dialogueCounter]));
-                else
-                    DisplayText(GetNPCNameById(hordes[hordeCounter].npcKind), LocalisationSystem.GetLocalizedValue(hordes[hordeCounter].npcLines[dialogueCounter] + "_r" + Random.Range(1, hordes[hordeCounter].npcLinesRandomizer[dialogueCounter] + 1).ToString()));
-            }
-        }
-        else
-        {
-            ChangeUIType(false);
-            dialogueMode = false;
-        }
-    }
-    public void DisplayItemText(int itemId)
-    {
-        DisplayText(LocalisationSystem.GetLocalizedValue("item_name_id" + itemId.ToString()), LocalisationSystem.GetLocalizedValue("item_desc_id" + itemId.ToString()));
-    }
-    public  void DisplayText(string title, string text)
-    {
-        textGuiTitle.text = title;
-        //textGuiText.text = text;
-        textGuiText.text = "";
-        StartCoroutine(SmoothShowText(text));
-        ChangeUIType(true);
-    }
     public void ChangeUIType(bool TextUI)
     {
         downUI.SetBool("TextUI", TextUI);
@@ -1231,22 +1155,6 @@ public class MainManager : MonoBehaviour
             audioSource.volume = Mathf.Lerp(volume, volume * 0.22f, localTimer);
             yield return new WaitForEndOfFrame();
         }
-    }
-
-    public IEnumerator SmoothShowText(string text)
-    {
-        bool skipArgument = false;
-        foreach (char ch in text)
-        {
-            textGuiText.text += ch;
-            if (ch == '<')
-                skipArgument = true;
-            if (ch == '>')
-                skipArgument = false;
-            if(!skipArgument)
-                yield return new WaitForSeconds(0.025f);
-        }
-        yield return null;
     }
     public IEnumerator CountDown()
     {

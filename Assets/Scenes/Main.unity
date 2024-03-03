@@ -432,6 +432,7 @@ MonoBehaviour:
   curseVolumeObj: {fileID: 617015138}
   shadowCurseVolumeProfile: {fileID: 11400000, guid: d82554656bcaefe4eb44a088f06e6758, type: 2}
   rageCurseVolumeProfile: {fileID: 11400000, guid: 27970b9f9e75b574b90522dcccd8e632, type: 2}
+  _mainManager: {fileID: 177484239}
 --- !u!1 &153199828
 GameObject:
   m_ObjectHideFlags: 0
@@ -820,9 +821,16 @@ MonoBehaviour:
   overAttractive: 0
   maxCombo: 0
   hitCounts: 
-  hordesEnabled: 1
-  customHordesEnabled: 1
   hordes:
+  - HordeType: 
+    hordeLenght: 5
+    MonsterTypes:
+    - L1
+    treasureKind: 0
+    npcKind: 0
+    npcLines: []
+    npcLinesRandomizer: 
+    notAnimatemovingToTime: 0
   - HordeType: NPC
     hordeLenght: 5
     MonsterTypes: []
@@ -834,6 +842,23 @@ MonoBehaviour:
     - key_test_3
     - A B O B A
     npcLinesRandomizer: 00000000000000000300000000000000
+    notAnimatemovingToTime: 0
+  - HordeType: 
+    hordeLenght: 5
+    MonsterTypes:
+    - L1
+    treasureKind: 0
+    npcKind: 0
+    npcLines: []
+    npcLinesRandomizer: 
+    notAnimatemovingToTime: 0
+  - HordeType: Treasure
+    hordeLenght: 10
+    MonsterTypes: []
+    treasureKind: 0
+    npcKind: 0
+    npcLines: []
+    npcLinesRandomizer: 
     notAnimatemovingToTime: 0
   - HordeType: 
     hordeLenght: 20
@@ -853,14 +878,6 @@ MonoBehaviour:
     npcLines: []
     npcLinesRandomizer: 
     notAnimatemovingToTime: 11.4
-  - HordeType: Treasure
-    hordeLenght: 10
-    MonsterTypes: []
-    treasureKind: 0
-    npcKind: 0
-    npcLines: []
-    npcLinesRandomizer: 
-    notAnimatemovingToTime: 0
   - HordeType: 
     hordeLenght: 15
     MonsterTypes:
@@ -890,7 +907,8 @@ MonoBehaviour:
     npcLinesRandomizer: 
     notAnimatemovingToTime: 0
   curseHandler: {fileID: 135185994}
-  HordeCounter: 0
+  locationItemHandler: {fileID: 1407991000}
+  bottomTextHandler: {fileID: 1356944841}
   MonstersInHorde: 1
   MonsterCounter: {fileID: 1444004681}
   NotSpawnArrows: 0
@@ -970,13 +988,9 @@ MonoBehaviour:
   soundSource: {fileID: 1765523130}
   MonsterFollow: {fileID: 937560573}
   speedChangeVisual: {fileID: 3907913130475310704}
-  TreasurePrefab: {fileID: 1084039056789249846, guid: 9c563698a3d87a84888751c2c1e30d54, type: 3}
-  npcPrefab: {fileID: 1704442914799134375, guid: 2417b06289a85e04eadd6d7408cb0d2c, type: 3}
   BlackScreen: {fileID: 1265681825}
   endScreenPrefab: {fileID: 4107291328604603940, guid: d108f49860a50da4191f679640ab2e1e, type: 3}
   itemHolder: {fileID: 1069016246}
-  textGuiTitle: {fileID: 1214816035}
-  textGuiText: {fileID: 155689673}
   coinCountText: {fileID: 362355875}
   scoreText: {fileID: 1434778814}
   comboText: {fileID: 2117436041}
@@ -1064,6 +1078,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 135185993}
+  - {fileID: 1407990999}
+  - {fileID: 1356944840}
   - {fileID: 617015137}
   - {fileID: 937560572}
   m_Father: {fileID: 0}
@@ -2773,7 +2789,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 177484240}
-  m_RootOrder: 1
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &617015138
 MonoBehaviour:
@@ -3472,7 +3488,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 177484240}
-  m_RootOrder: 2
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &937560573
 MonoBehaviour:
@@ -4810,6 +4826,101 @@ MonoBehaviour:
   itemNummber: 1
   dropItem: 0
   itemHolder: {fileID: 1069016246}
+--- !u!1 &1356944839
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1356944840}
+  - component: {fileID: 1356944841}
+  m_Layer: 0
+  m_Name: BottomTextHandler
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1356944840
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1356944839}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 177484240}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1356944841
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1356944839}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9afed485e13e464db1b37a176eac037, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _mainManager: {fileID: 177484239}
+  textGuiTitle: {fileID: 1214816035}
+  textGuiText: {fileID: 155689673}
+--- !u!1 &1407990998
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1407990999}
+  - component: {fileID: 1407991000}
+  m_Layer: 0
+  m_Name: LocationItemHandler
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1407990999
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1407990998}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 177484240}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1407991000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1407990998}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c5909959f2c93f4ba1ba7e5734fee30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _mainManager: {fileID: 177484239}
+  _bottomTextHandler: {fileID: 1356944841}
+  TreasurePrefab: {fileID: 1084039056789249846, guid: 9c563698a3d87a84888751c2c1e30d54, type: 3}
+  npcPrefab: {fileID: 1704442914799134375, guid: 2417b06289a85e04eadd6d7408cb0d2c, type: 3}
 --- !u!1 &1434778812
 GameObject:
   m_ObjectHideFlags: 0

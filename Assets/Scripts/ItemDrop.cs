@@ -25,7 +25,7 @@ public class ItemDrop : MonoBehaviour
         itemId = itemIds[Random.Range(0, itemIds.Length)];
         //!!itemSprite.sprite = MainManager.itemSprites[itemId];
         itemSprite.sprite = ItemSpriteDictionary.itemSprites[itemId];
-        manager.DisplayItemText(itemId);
+        manager.bottomTextHandler.DisplayItemText(itemId);
         freeSpace = manager.itemHolder.CheckForSpace();
         if (!freeSpace)
             manager.itemHolder.SpawnInventoryWarning();
