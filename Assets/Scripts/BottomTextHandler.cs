@@ -8,6 +8,7 @@ public class BottomTextHandler : MonoBehaviour
     [SerializeField] private MainManager _mainManager;
     [SerializeField] private TextMeshPro textGuiTitle;
     [SerializeField] private TextMeshPro textGuiText;
+    [SerializeField] private Animator downUI;
     private bool dialogueMode;
     private int dialogueCounter;
     private float dialogueLineLength;
@@ -36,7 +37,7 @@ public class BottomTextHandler : MonoBehaviour
         }
         else
         {
-            _mainManager.ChangeUIType(false);
+            ChangeUIType(false);
             dialogueMode = false;
         }
     }
@@ -55,7 +56,15 @@ public class BottomTextHandler : MonoBehaviour
         //textGuiText.text = text;
         textGuiText.text = "";
         StartCoroutine(SmoothShowText(text));
-        _mainManager.ChangeUIType(true);
+        ChangeUIType(true);
+    }
+    public void HideBottomUI()
+    {
+        downUI.SetTrigger("HideForewer");
+    }
+    public void ChangeUIType(bool TextUI)
+    {
+        downUI.SetBool("TextUI", TextUI);
     }
 
     public IEnumerator SmoothShowText(string text)

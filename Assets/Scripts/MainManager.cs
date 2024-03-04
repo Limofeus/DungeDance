@@ -23,6 +23,7 @@ public class MainManager : MonoBehaviour
     public Horde[] hordes;
     [SerializeField] private CurseHandler curseHandler;
     [SerializeField] private LocationItemHandler locationItemHandler;
+    [SerializeField] private MainUiHandler mainUiHandler;
     public PlayerStats playerStats;
     public BottomTextHandler bottomTextHandler;
     [HideInInspector] public int hordeCounter { get; private set; }
@@ -95,20 +96,6 @@ public class MainManager : MonoBehaviour
     public GameObject BlackScreen;
     public GameObject endScreenPrefab;
     public ItemHolder itemHolder;
-    public TextMeshPro coinCountText;
-    public TextMeshPro scoreText;
-    public TextMeshPro comboText;
-    public TextMeshPro multiplyerText;
-    public TextMeshPro levelNameText;
-    public TextMeshPro songNameText;
-    public Animator coinCountAnimator;
-    public Animator downUI;
-    public Animator comboUI;
-    public Animator barHolderAnimator;
-    public Animator monsterCounterHolderAnimator;
-    public Animator comboScoreAnimator;
-    public Animator UUHAIHAnimator;
-    public Animator monsterGaugeAnimator;
     public SpriteRenderer monsterGaugeSR;
     public Sprite[] monsterGaugeSprites;
     public Material Effect1;
@@ -142,8 +129,6 @@ public class MainManager : MonoBehaviour
         ItemSpawned = false;
         NoTimeout = true;
         NotSpawnArrows = true;
-        levelNameText.text = levelName;
-        songNameText.text = songName;
         crazycolor1 = CC1;
         hordeCounter = 0;
         crazycolor2 = CC2;
@@ -171,6 +156,8 @@ public class MainManager : MonoBehaviour
 
         if (characterYes)
             CharacComp.Init(TimeBetweenBeats);
+
+        mainUiHandler.UpdateLevelname(levelName, songName);
 
         int item1Id;
         int item2Id;
@@ -321,7 +308,7 @@ public class MainManager : MonoBehaviour
         }
         if (hordes[hordeCounter].HordeType != "")
         {
-            monsterGaugeAnimator.SetBool("Shown", false);
+            mainUiHandler.SetMonsterGaugeShown(false);
         }
         UpdateMonsterCounter();
         if(!NoAfterLocationChange)
@@ -396,7 +383,7 @@ public class MainManager : MonoBehaviour
         }
         else
         {
-            monsterGaugeAnimator.SetBool("Shown", true);
+            mainUiHandler.SetMonsterGaugeShown(true);
             SpawnCustomHordeMonster();
         }
     }
@@ -811,7 +798,7 @@ public class MainManager : MonoBehaviour
                 break;
         }
         score += Mathf.RoundToInt(unroundedScore);
-        scoreText.text = score.ToString();
+        mainUiHandler.SetScoreText(score.ToString());
     }
     public void AddCombo(bool greatOrHigher)
     {
@@ -849,23 +836,28 @@ public class MainManager : MonoBehaviour
     }
     public void DisplayCombo(bool displayHide)
     {
-        comboText.text = (greatCombo?combo.ToString()+ "•": combo.ToString());
+        mainUiHandler.SetComboText(greatCombo?combo.ToString()+ "•": combo.ToString());
         if (displayHide)
-            comboUI.SetTrigger("Show");
+            mainUiHandler.SetComboUITrigger("Show");
         else
-            comboUI.SetTrigger("Hide");
+            mainUiHandler.SetComboUITrigger("Hide");
+    }
+
+    public void ChangeUIType(bool uiType)
+    {
+        bottomTextHandler.ChangeUIType(uiType);
     }
     public void DisplayMultiplier()
     {
-        multiplyerText.text = "x" + Mathf.RoundToInt(multiplier * bonusesAndMultiplers.scoreAllHitMultiplier).ToString(); // Kind of a poor way of adding scoreBonusMultiplier, but it's fii~~~~~iine Upd: Idk i'll need to do something with all that Upd2: Idk added allHitMult. or smth...
+        mainUiHandler.SetMultiplierText("x" + Mathf.RoundToInt(multiplier * bonusesAndMultiplers.scoreAllHitMultiplier).ToString()); // Kind of a poor way of adding scoreBonusMultiplier, but it's fii~~~~~iine Upd: Idk i'll need to do something with all that Upd2: Idk added allHitMult. or smth...
         if (lastMultiplier < Mathf.RoundToInt(multiplier))
         {
-            comboUI.SetTrigger("ShowM");
+            mainUiHandler.SetComboUITrigger("ShowM");
             if (lastMultiplier == 3)
                 soundSource.PlayOtherSound(1);
         }
         if (lastMultiplier > Mathf.RoundToInt(multiplier))
-            comboUI.SetTrigger("HideM");
+            mainUiHandler.SetComboUITrigger("HideM");
     }
     public void KillPlayer()
     {
@@ -939,36 +931,28 @@ public class MainManager : MonoBehaviour
     //Just came up with meme no one will understand, here it is: 16B2 16BA 16D6 16DA 0020 16CF 16C1
     public void HideAllUiForever()
     {
-        downUI.SetTrigger("HideForewer");
-        barHolderAnimator.SetTrigger("HideForewer");
-        monsterCounterHolderAnimator.SetTrigger("HideForewer");
-        comboScoreAnimator.SetTrigger("HideForewer");
-        UUHAIHAnimator.SetTrigger("HideForewer");
+        mainUiHandler.HideAllUI();
+        bottomTextHandler.HideBottomUI();
         curseHandler.DisableCurseEffects();
         DestroyAllArrows();
     }
     public void AddMoney(int amount)
     {
-        coinCountAnimator.SetTrigger("Jump");
         if (!useDebugPlayerData)
         {
             MenuDataManager.saveData.moneyAmount += amount;
-            coinCountText.text = MenuDataManager.saveData.moneyAmount.ToString();
+            mainUiHandler.UpdateCoinUI(MenuDataManager.saveData.moneyAmount.ToString());
         }
         else
         {
             debugPlayerData.moneyAmount += amount;
-            coinCountText.text = debugPlayerData.moneyAmount.ToString();
+            mainUiHandler.UpdateCoinUI(debugPlayerData.moneyAmount.ToString());
         }
     }
     public void ScreenHit()
     {
         Camera.GetComponent<Animator>().SetTrigger("Hit");
         bigPP.GetComponent<Animator>().SetTrigger("Hit");
-    }
-    public void ChangeUIType(bool TextUI)
-    {
-        downUI.SetBool("TextUI", TextUI);
     }
     public void ChangeStageVolume(float soundVolume, float musicVolume)
     {
