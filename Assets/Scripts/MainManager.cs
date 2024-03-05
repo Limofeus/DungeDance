@@ -699,16 +699,17 @@ public class MainManager : MonoBehaviour
         (float, float) joyScore;
         foreach(DanceStyle danceStyle in selectedDanceStyles)
         {
-            if (danceStyle.affectsScore)
+            AffectsHitScore hitScoreAffection = danceStyle as AffectsHitScore;
+            if (hitScoreAffection != null)
             {
                 joyScoreCount++;
-                joyScore = selectedDanceStyles[0].CalculateHitScore(hitType, miniArrow, thisMainManager);
+                joyScore = hitScoreAffection.CalculateHitScore(hitType, miniArrow, thisMainManager);
                 joyToAdd += joyScore.Item1;
                 scoreToAdd += joyScore.Item2;
             }
         }
         joyToAdd /= joyScoreCount;
-        joyToAdd /= joyScoreCount;
+        scoreToAdd /= joyScoreCount;
         AddJoy(joyToAdd, hitType);
         AddScore(scoreToAdd, hitType);
     }

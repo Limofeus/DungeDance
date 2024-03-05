@@ -3,22 +3,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class DanceStyle
+interface AffectsHitScore
 {
-    public bool affectsScore = false;
-    public abstract (float, float) CalculateHitScore(int hitType, bool miniArrow, MainManager mainManager); //(float, float) = Joy, Score
-
-    public abstract void OnMonsterSpawn();
+    (float, float) CalculateHitScore(int hitType, bool miniArrow, MainManager mainManager); //(float, float) = Joy, Score
 }
 
-public class DefaultDanceStyle : DanceStyle
+interface AffectsMonsterSpawn
 {
-    public override void OnMonsterSpawn()
+    void OnMonsterSpawn();
+}
+public abstract class DanceStyle
+{
+    //Ха ха пусто капуста
+}
+
+public class DefaultDanceStyle : DanceStyle, AffectsHitScore
+{
+    public (float, float) CalculateHitScore(int hitType, bool miniArrow, MainManager mainManager)
     {
-        //throw new System.NotImplementedException();
-    }
-    public override (float, float) CalculateHitScore(int hitType, bool miniArrow, MainManager mainManager)
-    {
+        //Debug.Log("Trololo default dance style workin'");
         float joyToAdd = 0;
         float scoreToAdd = 0;
 
@@ -59,19 +62,15 @@ public class DefaultDanceStyle : DanceStyle
 
     public DefaultDanceStyle()
     {
-        affectsScore = true;
+
     }
 }
 
-public class MonsterFollowerStyle : DanceStyle
+public class MonsterFollowerStyle : DanceStyle, AffectsMonsterSpawn
 {
-    public override void OnMonsterSpawn()
+    public void OnMonsterSpawn()
     {
         throw new NotImplementedException();
-    }
-    public override (float, float) CalculateHitScore(int hitType, bool miniArrow, MainManager mainManager)
-    {
-        return (0f, 0f);
     }
     public MonsterFollowerStyle()
     {

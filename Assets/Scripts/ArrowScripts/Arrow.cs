@@ -63,7 +63,7 @@ public class Arrow : MonoBehaviour
         }
         if (Auto && transform.localPosition.x < 0 && !disabled)
         {
-            Debug.Log("NOW! " + direction);
+            //Debug.Log("NOW! " + direction);
             Manager.PressThis(direction);
         }
     }
