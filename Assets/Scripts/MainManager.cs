@@ -699,8 +699,7 @@ public class MainManager : MonoBehaviour
         (float, float) joyScore;
         foreach(DanceStyle danceStyle in selectedDanceStyles)
         {
-            AffectsHitScore hitScoreAffection = danceStyle as AffectsHitScore;
-            if (hitScoreAffection != null)
+            if (danceStyle is AffectsHitScore hitScoreAffection)
             {
                 joyScoreCount++;
                 joyScore = hitScoreAffection.CalculateHitScore(hitType, miniArrow, thisMainManager);
