@@ -26,7 +26,7 @@ public class BottomTextHandler : MonoBehaviour
         bool dialRand = _mainManager.hordes[_mainManager.hordeCounter].npcLines.Length == _mainManager.hordes[_mainManager.hordeCounter].npcLinesRandomizer.Length;
         if (dialogueCounter < dialLen)
         {
-            if ((dialogueCounter + 1) * dialogueLineLength < _mainManager.RMaxTime - _mainManager.RTime)
+            if ((dialogueCounter + 1) * dialogueLineLength < _mainManager.RMaxTime - _mainManager.timeRemaining)
             {
                 dialogueCounter++;
                 if (!dialRand || _mainManager.GetCurrentHorde().npcLinesRandomizer[dialogueCounter] < 2)

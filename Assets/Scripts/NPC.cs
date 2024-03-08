@@ -14,7 +14,7 @@ public class NPC : MonoBehaviour
         npcPrefabId = prefabId;
         mainManager = mm;
         npc = Instantiate(npcPrefabs[prefabId], transform);
-        beatSpeed = 1f / mainManager.TimeBetweenBeats;
+        beatSpeed = 1f / mainManager.timeBetweenBeats;
         npc.GetComponent<Animator>().speed = beatSpeed;
         //Debug.Log(npc.GetComponent<Animator>().speed);
     }

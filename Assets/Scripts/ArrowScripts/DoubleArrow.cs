@@ -16,7 +16,7 @@ public class DoubleArrow : Arrow
         //Debug.Log(instatiateMini);
         if (instatiateMini)
         {
-            miniArrow = Instantiate(miniArrowPrefab, transform.position + (transform.right * (Manager.TimeBetweenBeats * Speed / 2f)), transform.rotation, transform.parent);
+            miniArrow = Instantiate(miniArrowPrefab, transform.position + (transform.right * (Manager.timeBetweenBeats * Speed / 2f)), transform.rotation, transform.parent);
             miniArrowComponent = miniArrow.GetComponent<Arrow>();
             miniArrowComponent.Speed = Speed;
             miniArrowComponent.Auto = Auto;

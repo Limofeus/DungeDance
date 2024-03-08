@@ -24,7 +24,7 @@ public class MonsterFollow : MonoBehaviour
         GameObject Monster = Instantiate(monsterPrefab, transform.position, Quaternion.identity, transform);
         Monster.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = Textures[TextureId];
         Animator MonsAni = Monster.GetComponent<Animator>();
-        MonsAni.speed = (1f / mainManager.TimeBetweenBeats);
+        MonsAni.speed = (1f / mainManager.timeBetweenBeats);
         MonsAni.SetTrigger("Appear");
         miniMonsters.Add(Monster);
         animators.Add(MonsAni);

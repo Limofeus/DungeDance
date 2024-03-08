@@ -50,7 +50,7 @@ public class ItemDrop : MonoBehaviour
                 }
             }
         }
-        if(canPickup && manager.RTime <= 0f)
+        if(canPickup && manager.timeRemaining <= 0f)
         {
             if(!manager.itemHolder.CheckForSpace())
                 manager.itemHolder.ClearInventoryWarning();

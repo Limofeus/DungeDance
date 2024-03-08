@@ -24,13 +24,13 @@ public class MainManager : MonoBehaviour
     [SerializeField] private CurseHandler curseHandler;
     [SerializeField] private LocationItemHandler locationItemHandler;
     [SerializeField] private MainUiHandler mainUiHandler;
+    [SerializeField] private ArrowHandler arrowHandler;
     public PlayerStats playerStats;
     public BottomTextHandler bottomTextHandler;
     [HideInInspector] public int hordeCounter { get; private set; }
     public int MonstersInHorde;
-    private int MonsterHordeCounter;
+    [HideInInspector] public int MonsterHordeCounter { get; private set; }
     public MonsterCounter MonsterCounter;
-    public bool NotSpawnArrows;
     public bool NoTimeout;
     public bool NoAfterLocationChange;
     public Transform Bar;
@@ -39,14 +39,13 @@ public class MainManager : MonoBehaviour
     public int effectPower;
     public float Joy;
     public float curretMaxJoy;
-    public float RTime;
+    public float timeRemaining;
     public float RMaxTime;
     public float MaxBarScale;
     public GameObject Camera;
     public GameObject bigPP;
     public bool disableMoving;
     public bool disableItemUse;
-    public bool AutoMod;
     public bool DisableSpawn;
     public bool disableTimer;
     public string levelName;
@@ -56,18 +55,15 @@ public class MainManager : MonoBehaviour
     public AudioClip Music;
     public float BPM;
     public float Offset;
-    public float AroowSpeed;
     public float AMiSM;
     public float AMaSM;
-    public Transform Spawner;
-    public float SpawnerOffset;
     public GameObject[] ArrowPrefabs;
     public float ArrowChance = 1f;
-    public float TimeBetweenBeats;
-    public float TimeToGo;
+    public float timeBetweenBeats;
+    public float arrowTravelTime;
     private int lastMultiplier = 1;
     public int followMonstersCount = 0;
-    float NextBeatTime;
+    float nextBeatTime;
     public Location Location;
     public bool characterYes;
     public GameObject Character;
@@ -80,7 +76,6 @@ public class MainManager : MonoBehaviour
     public Transform allUiHolder;
     public Transform rateHalder;
     public GameObject NextMonster;
-    private Monster nextMonsterComp;
     public GameObject[] MoansterPrefabs;
     public GameObject[] ratePrefabs;
     public MonsterTypes MonsterTypes;
@@ -128,15 +123,15 @@ public class MainManager : MonoBehaviour
         publicCharacter = Character;
         ItemSpawned = false;
         NoTimeout = true;
-        NotSpawnArrows = true;
+        arrowHandler.notSpawnArrows = true;
         crazycolor1 = CC1;
         hordeCounter = 0;
         crazycolor2 = CC2;
         Timer = -3f;
         MonsterHordeCounter = 0;
-        TimeBetweenBeats = 60f / BPM;
-        SyncTempoAnimator.speedForAnimator = 1f / TimeBetweenBeats;
-        NextBeatTime = Offset;
+        timeBetweenBeats = 60f / BPM;
+        SyncTempoAnimator.speedForAnimator = 1f / timeBetweenBeats;
+        nextBeatTime = Offset;
     }
 
     void Start()
@@ -155,7 +150,7 @@ public class MainManager : MonoBehaviour
         audioSource.clip = Music;
 
         if (characterYes)
-            CharacComp.Init(TimeBetweenBeats);
+            CharacComp.Init(timeBetweenBeats);
 
         mainUiHandler.UpdateLevelname(levelName, songName);
 
@@ -210,14 +205,14 @@ public class MainManager : MonoBehaviour
 
         playerStats.TextUpdate();
         NoTimeout = false;
-        NotSpawnArrows = false;
+        arrowHandler.notSpawnArrows = false;
         audioSource.Play();
         UpdateMonsterCounter();
     }
 
     void Update()
     {
-        TimeToGo = SpawnerOffset / AroowSpeed;
+        arrowTravelTime = arrowHandler.spawnerOffset / arrowHandler.arrowSpeed;
         if(!disableTimer)
             Timer += Time.deltaTime;
         if (mobileInput)
@@ -227,31 +222,31 @@ public class MainManager : MonoBehaviour
         //if (NextBeatTime < Time.time - (SpawnerOffset / AroowSpeed)) <- is this the thing that causes THE BUG?
         //AND YES IT FUCKING WAS!!!!!!!!!!!!!
         //P.S. for some unknown reason Time.time resets on scene change in editor but still goes in build. How the fuck was i suppost to know this?
-        if (NextBeatTime < Timer - (SpawnerOffset / AroowSpeed))
+        if (nextBeatTime < Timer - (arrowHandler.spawnerOffset / arrowHandler.arrowSpeed))
         {
-            NextBeatTime += TimeBetweenBeats;
+            nextBeatTime += timeBetweenBeats;
             Beat();
         }
 
-        curseHandler.HandleCurses(Timer, TimeToGo);
+        curseHandler.HandleCurses(Timer, arrowTravelTime);
         bottomTextHandler.HandleDialogue();
 
         if (!NoTimeout)
-            RTime += - Time.deltaTime;
-        Bar.localScale = new Vector3(MaxBarScale * (RTime / RMaxTime), Bar.localScale.y, Bar.localScale.z);
+            timeRemaining += - Time.deltaTime;
+        Bar.localScale = new Vector3(MaxBarScale * (timeRemaining / RMaxTime), Bar.localScale.y, Bar.localScale.z);
         BarMat.SetFloat("MyValueYe", (Mathf.Clamp(Joy, 0, curretMaxJoy) / curretMaxJoy));
-        if (RTime <= 1f && animateAttractionBlink)
+        if (timeRemaining <= 1f && animateAttractionBlink)
         {
             animateAttractionBlink = false;
             playerStats.BlinkAttraction();
         }
-        if (RTime <= 0f && !NoTimeout)
+        if (timeRemaining <= 0f && !NoTimeout)
             TimeOut();
     }
     //Curses castng
     void Beat()
     {
-        SpawnArrow();
+        arrowHandler.SpawnArrow();
         //Debug.Log("Beat!");
     }
     void TimeOut()
@@ -294,7 +289,7 @@ public class MainManager : MonoBehaviour
     }
     void MoveLocation()
     {
-        NotSpawnArrows = true;
+        arrowHandler.notSpawnArrows = true;
         NoTimeout = true;
         disableMoving = true;
         if (!(hordes[hordeCounter].notAnimatemovingToTime > 0))
@@ -328,7 +323,7 @@ public class MainManager : MonoBehaviour
             }
         }
         if (NextMonster != null)
-            nextMonsterComp = NextMonster.GetComponent<Monster>();
+            arrowHandler.SetNextMonsterComp(NextMonster.GetComponent<Monster>());
         else
             Debug.Log("NextMonsterIsNull here!");
     }
@@ -389,7 +384,7 @@ public class MainManager : MonoBehaviour
     }
     void LocationItemPreporation()
     {
-        RTime = RMaxTime;
+        timeRemaining = RMaxTime;
         ItemSpawned = true;
         MonsterHordeCounter = MonstersInHorde;
         CalculateNextMonster();
@@ -402,13 +397,13 @@ public class MainManager : MonoBehaviour
             //Dunge Dance <---- This one mistake cost me 400 hours to make
             MonsterComp = Monster.GetComponent<Monster>();
             CalculateNextMonster();
-            MonsterComp.Init(this, playerStats, TimeBetweenBeats);
+            MonsterComp.Init(this, playerStats, timeBetweenBeats);
             monsterGaugeSR.sprite = monsterGaugeSprites[MonsterComp.GetRelationLevel(Joy)];
             //Debug.Log("TBB: " + TimeBetweenBeats);
             if (curseHandler.fullCursed)
                 MonsterComp.AddCurse(curseHandler.currentCurseId, true);
         }
-        RTime = RMaxTime;
+        timeRemaining = RMaxTime;
         animateAttractionBlink = true;
         UpdateMonsterCounter();
     }
@@ -578,55 +573,6 @@ public class MainManager : MonoBehaviour
         else
         {
             MonsterCounter.HideCounter();
-        }
-    }
-    
-    void SpawnArrow()
-    {
-        if (!NotSpawnArrows)
-        {
-            GameObject Arrow;
-            //GameObject Arrow = Instantiate(ArrowPrefabs[Random.Range(0, ArrowPrefabs.Length)], Spawner.position, Quaternion.identity);
-            if (RTime > TimeToGo)
-            {
-                if(hordes[hordeCounter].HordeType == "")
-                {
-                    Arrow = Instantiate(MonsterComp.ArrowPrefabs[Random.Range(0, MonsterComp.ArrowPrefabs.Length)],Spawner.position, Spawner.rotation, allUiHolder);
-                }
-                else
-                {
-                    Arrow = null;
-                }
-            }
-            else
-            { //OH SHIT, ITS LINE 666 (he is somwere around here O_O)
-                if (MonsterHordeCounter + 1 < hordes[hordeCounter].MonsterTypes.Length)
-                    Arrow = Instantiate(nextMonsterComp.ArrowPrefabs[Random.Range(0, nextMonsterComp.ArrowPrefabs.Length)], Spawner.position, Spawner.rotation, allUiHolder);
-                else
-                    Arrow = null;
-            }
-            if (Arrow != null)
-            {
-                Arrow NewArComp = Arrow.GetComponent<Arrow>();
-                NewArComp.Speed = AroowSpeed;
-                NewArComp.Auto = AutoMod;
-                NewArComp.Manager = this;
-
-                if (MonsterHordeCounter + 1 < hordes[hordeCounter].MonsterTypes.Length)
-                {
-                    NewArComp.lastArrow = false;
-                }
-                else
-                {
-                    NewArComp.lastArrow = (RTime < (SpawnerOffset + (TimeBetweenBeats * AroowSpeed)) / AroowSpeed) && RTime > 0;  // WELP, -3 hours of my life, and i have a fix that looks like SHIT and works like SHIT
-                }
-
-                //NewArComp.Manager.Monster = Monster;
-                NewArComp.starto();
-                if (curseHandler.preCursed)
-                    NewArComp.arrowVisual.AddCurse(curseHandler.currentCurseId);
-                //Monster.SendMessage("ArrowSpawned", NewArComp);
-            }
         }
     }
 
@@ -871,7 +817,7 @@ public class MainManager : MonoBehaviour
     private void GameEnded(bool levelCompleted)
     {
         NoTimeout = true;
-        NotSpawnArrows = true;
+        arrowHandler.notSpawnArrows = true;
         DisableSpawn = true;
         disableMoving = true;
         disableItemUse = true;
@@ -989,33 +935,33 @@ public class MainManager : MonoBehaviour
     public IEnumerator ChangeArrowSpeed(float sleepFor, float speedChange)
     {
         bool startNSA;
-        startNSA = NotSpawnArrows;
-        NotSpawnArrows = true;
-        AroowSpeed += speedChange;
+        startNSA = arrowHandler.notSpawnArrows;
+        arrowHandler.notSpawnArrows = true;
+        arrowHandler.arrowSpeed += speedChange;
         speedChangeVisual.Popup();
-        yield return new WaitForSeconds(NextBeatTime - Timer + TimeBetweenBeats);
+        yield return new WaitForSeconds(nextBeatTime - Timer + timeBetweenBeats);
         foreach (GameObject arow in Arrows)
         {
             Destroy(arow);
         }
         Arrows.Clear();
         yield return new WaitForSeconds(sleepFor);
-        NotSpawnArrows = startNSA;
+        arrowHandler.notSpawnArrows = startNSA;
     }
     public IEnumerator AfterMoveLocation(float standingTime)
     {
         if(standingTime > 0f)
         {
             Debug.Log("StandingForSeconds: " + standingTime.ToString());
-            yield return new WaitForSeconds(( standingTime + 0.1f) - TimeToGo);
-            NotSpawnArrows = false;
-            yield return new WaitForSeconds(TimeToGo - 0.1f);
+            yield return new WaitForSeconds(( standingTime + 0.1f) - arrowTravelTime);
+            arrowHandler.notSpawnArrows = false;
+            yield return new WaitForSeconds(arrowTravelTime - 0.1f);
         }
         else
         {
-            yield return new WaitForSeconds(2.1f - TimeToGo);
-            NotSpawnArrows = false;
-            yield return new WaitForSeconds(TimeToGo - 0.1f);
+            yield return new WaitForSeconds(2.1f - arrowTravelTime);
+            arrowHandler.notSpawnArrows = false;
+            yield return new WaitForSeconds(arrowTravelTime - 0.1f);
         }
         NoTimeout = false;
         OnNewLocation();

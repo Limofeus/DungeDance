@@ -401,7 +401,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 177484240}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &135185994
 MonoBehaviour:
@@ -901,11 +901,11 @@ MonoBehaviour:
   curseHandler: {fileID: 135185994}
   locationItemHandler: {fileID: 1407991000}
   mainUiHandler: {fileID: 1272623700}
+  arrowHandler: {fileID: 2071869052}
   playerStats: {fileID: 992267009}
   bottomTextHandler: {fileID: 1356944841}
   MonstersInHorde: 1
   MonsterCounter: {fileID: 1444004681}
-  NotSpawnArrows: 0
   NoTimeout: 0
   NoAfterLocationChange: 0
   Bar: {fileID: 1153707203}
@@ -914,14 +914,13 @@ MonoBehaviour:
   effectPower: 2
   Joy: 0
   curretMaxJoy: 100
-  RTime: 10
+  timeRemaining: 0
   RMaxTime: 10
   MaxBarScale: 16
   Camera: {fileID: 519420028}
   bigPP: {fileID: 1839976973}
   disableMoving: 0
   disableItemUse: 0
-  AutoMod: 1
   DisableSpawn: 0
   disableTimer: 0
   levelName: The Monster
@@ -931,17 +930,14 @@ MonoBehaviour:
   Music: {fileID: 8300000, guid: 02da731597123e24ba9df66898f112c5, type: 3}
   BPM: 110
   Offset: 0.2
-  AroowSpeed: 10
   AMiSM: 0
   AMaSM: 0
-  Spawner: {fileID: 1887508454}
-  SpawnerOffset: 15
   ArrowPrefabs:
   - {fileID: 6252222051995053563, guid: 441b13f72be3ddd44967b8593a8edbbb, type: 3}
   - {fileID: 6709060165216638355, guid: 9dffb6907b480204fb3acc2eb5032d4e, type: 3}
   ArrowChance: 1
   TimeBetweenBeats: 0
-  TimeToGo: 0
+  arrowTravelTime: 0
   followMonstersCount: 0
   Location: {fileID: 440721510}
   characterYes: 1
@@ -1027,6 +1023,7 @@ Transform:
   m_Children:
   - {fileID: 992267008}
   - {fileID: 1272623699}
+  - {fileID: 2071869051}
   - {fileID: 135185993}
   - {fileID: 1407990999}
   - {fileID: 1356944840}
@@ -2740,7 +2737,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 177484240}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &617015138
 MonoBehaviour:
@@ -3439,7 +3436,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 177484240}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &937560573
 MonoBehaviour:
@@ -4922,7 +4919,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 177484240}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1356944841
 MonoBehaviour:
@@ -4970,7 +4967,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 177484240}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1407991000
 MonoBehaviour:
@@ -6771,6 +6768,58 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c80f05b60e17d5b468a6470f988f649e, type: 3}
+--- !u!1 &2071869050
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2071869051}
+  - component: {fileID: 2071869052}
+  m_Layer: 0
+  m_Name: ArrowHandler
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2071869051
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2071869050}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 177484240}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2071869052
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2071869050}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 226b8883946d7904fa93b110b4fc6f0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  notSpawnArrows: 0
+  beatsLeft: 0
+  autoMod: 1
+  arrowSpeed: 10
+  arrowSpawner: {fileID: 1887508454}
+  spawnerOffset: 15
+  mainManager: {fileID: 177484239}
+  curseHandler: {fileID: 135185994}
 --- !u!1 &2074188162
 GameObject:
   m_ObjectHideFlags: 0
