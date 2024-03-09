@@ -86,7 +86,7 @@ public class MainManager : MonoBehaviour
     public Color CC1;
     public Color CC2;
     public SoundSource soundSource;
-    public MonsterFollow MonsterFollow;
+    public MonsterFollow monsterFollow;
     public SpeedChangeVisual speedChangeVisual;
     public GameObject BlackScreen;
     public GameObject endScreenPrefab;
@@ -104,12 +104,6 @@ public class MainManager : MonoBehaviour
     public bool useDebugPlayerData;
     public SaveData debugPlayerData; // Does save money and values after the end of the level?
     public int[] debugPlayerLevelupXps;
-
-    //MOBILE STUFF
-    public bool mobileInput;
-    private int screenW;
-    private int screenH;
-    private int touchZone;
 
     [HideInInspector] public ScoreJoyBonuses bonusesAndMultiplers = new ScoreJoyBonuses();
 
@@ -136,14 +130,6 @@ public class MainManager : MonoBehaviour
 
     void Start()
     {
-        //Mobile st
-        if (mobileInput)
-        {
-            screenH = Screen.height;
-            screenW = Screen.width;
-            touchZone = Mathf.RoundToInt(screenW / 3.75f);
-        }
-        //mobile ed
         CharacComp = Character.GetComponent<Character>();
         Location.SendMessage("SkipStart");
         audioSource = this.GetComponent<AudioSource>();
@@ -215,10 +201,6 @@ public class MainManager : MonoBehaviour
         arrowTravelTime = arrowHandler.spawnerOffset / arrowHandler.arrowSpeed;
         if(!disableTimer)
             Timer += Time.deltaTime;
-        if (mobileInput)
-            MobileYeeemput();
-        else
-            Yeeemput();
         //if (NextBeatTime < Time.time - (SpawnerOffset / AroowSpeed)) <- is this the thing that causes THE BUG?
         //AND YES IT FUCKING WAS!!!!!!!!!!!!!
         //P.S. for some unknown reason Time.time resets on scene change in editor but still goes in build. How the fuck was i suppost to know this?
@@ -407,111 +389,23 @@ public class MainManager : MonoBehaviour
         animateAttractionBlink = true;
         UpdateMonsterCounter();
     }
-    void Yeeemput()
-    {
-        if (!disableMoving)
-        {
-            if (Input.GetButtonDown("R"))
-            {
-                PressThis("R");
-                MonsterFollow.Animate("Right");
-            }
-            if (Input.GetButtonDown("L"))
-            {
-                PressThis("L");
-                MonsterFollow.Animate("Left");
-            }
-            if (Input.GetButtonDown("U"))
-            {
-                PressThis("U");
-                MonsterFollow.Animate("Up");
-            }
-            if (Input.GetButtonDown("D"))
-            {
-                PressThis("D");
-                MonsterFollow.Animate("Down");
-            }
-        }
-        if (!disableItemUse) 
-        {
-            if (Input.GetButtonDown("1"))
-            {
-                ActivateItem(1);
-            }
-            if (Input.GetButtonDown("2"))
-            {
-                ActivateItem(2);
-            }
-            if (Input.GetButtonDown("3"))
-            {
-                ActivateItem(3);
-            }
-        }
-    }
-    private void ActivateItem(int itemId)
+
+    public void ActivateItem(int itemId)
     {
         if (!Input.GetButton("AltAction"))
             itemHolder.UseItem(itemId);
         else
             itemHolder.DropItem(itemId);
     }
-    private void MobileYeeemput()
+    public Arrow PressThis(string WhatToPress, string monsterFollowString = "")
     {
-        Touch lastTouch;
-        if (Input.touches.Length > 0)
-        {
-            lastTouch = Input.touches[Input.touches.Length - 1];
-            if(lastTouch.phase == TouchPhase.Began)
-            {
-                if(lastTouch.position.y < touchZone)
-                {
-                    if(lastTouch.position.x < touchZone)
-                    {
-                        MobileYeeemput2(lastTouch.position.y / touchZone, lastTouch.position.x / touchZone);
-                    }
-                    else if(lastTouch.position.x > (screenW - touchZone))
-                    {
-                        MobileYeeemput2(lastTouch.position.y / touchZone, (lastTouch.position.x - (screenW - touchZone)) / touchZone);
-                    }
-                }
-            }
-        }
-    }
-    private void MobileYeeemput2(float touchX, float TouchY)
-    {
-        if(TouchY > (1f - touchX))
-        {
-            if(TouchY > touchX)
-            {
-                PressThis("R");
-                MonsterFollow.Animate("Right");
-            }
-            else
-            {
-                PressThis("U");
-                MonsterFollow.Animate("Up");
-            }
-        }
-        else
-        {
-            if (TouchY > touchX)
-            {
-                PressThis("D");
-                MonsterFollow.Animate("Down");
-            }
-            else
-            {
-                PressThis("L");
-                MonsterFollow.Animate("Left");
-            }
-        }
-    }
-    public void PressThis(string WhatToPress)
-    {
-        GameObject NextArrow = CalculateNextArrow();
-        if(NextArrow != null)
-            NextArrow.GetComponent<Arrow>().Yes(WhatToPress);
+        if(monsterFollowString != "")
+            monsterFollow.Animate(monsterFollowString);
+        Arrow nextArrowComponent = CalculateNextArrow()?.GetComponent<Arrow>();
+        if(nextArrowComponent != null)
+            nextArrowComponent.ArrowHit(WhatToPress);
         CharacComp.Press(WhatToPress);
+        return nextArrowComponent;
     }
     public static GameObject CalculateNextArrow(float additionalDist = 0f)
     {

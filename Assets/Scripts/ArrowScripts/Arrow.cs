@@ -48,7 +48,7 @@ public class Arrow : MonoBehaviour
         transform.localPosition = transform.localPosition + Vector3.left * Speed * Time.deltaTime;
         if (transform.localPosition.x < -3 && !disabled)
         {
-            Yes("POH");
+            ArrowHit("POH");
         }
         if (transform.localPosition.x < -15)
             Despawn();
@@ -72,7 +72,7 @@ public class Arrow : MonoBehaviour
         MainManager.Arrows.Remove(gameObject);
         Destroy(gameObject);
     }
-    public virtual void Yes(string Direction)
+    public virtual void ArrowHit(string Direction)
     {
         if (Manager.Monster != null)
         {
@@ -94,6 +94,10 @@ public class Arrow : MonoBehaviour
             }
             disabled = true;
         }
+    }
+    public virtual void ArrowHitStop()
+    {
+        Debug.Log($"Arrow hit stop, dir: {direction}");
     }
     public void SwitchDir(string dir)
     {

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AnyDirectionArrow : Arrow
 {
-    public override void Yes(string Direction)
+    public override void ArrowHit(string Direction)
     {
         if (Manager.Monster != null)
         {

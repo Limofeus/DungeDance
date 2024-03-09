@@ -34,12 +34,12 @@ public class ItemDrop : MonoBehaviour
 
     private void Update()
     {
-        if ((Input.GetButtonDown("R") || (manager.mobileInput && Input.GetMouseButton(0))) && canPickup)
+        if ((Input.GetButtonDown("R") || (InputHandler.mobileInput && Input.GetMouseButton(0))) && canPickup)
         {
             if(freeSpace)
             {
                 Pickup();
-                if (manager.mobileInput)
+                if (InputHandler.mobileInput)
                     manager.PressThis("R");
             }
             else

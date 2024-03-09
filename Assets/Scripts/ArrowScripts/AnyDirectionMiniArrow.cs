@@ -9,7 +9,7 @@ public class AnyDirectionMiniArrow : Arrow
         transform.localPosition = transform.localPosition + Vector3.left * Speed * Time.deltaTime;
         if (transform.localPosition.x < -3 && !disabled)
         {
-            Yes("POH");
+            ArrowHit("POH");
         }
         if (transform.localPosition.x < -15)
             Despawn();
@@ -29,7 +29,7 @@ public class AnyDirectionMiniArrow : Arrow
             Manager.PressThis(direction);
         }
     }
-    public override void Yes(string Direction)
+    public override void ArrowHit(string Direction)
     {
         if (Manager.Monster != null)
         {
