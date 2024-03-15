@@ -50,9 +50,9 @@ public class ArrowHandler : MonoBehaviour
             if (Arrow != null)
             {
                 Arrow NewArComp = Arrow.GetComponent<Arrow>();
-                NewArComp.Speed = arrowSpeed;
+                NewArComp.arrowSpeed = arrowSpeed;
                 NewArComp.Auto = autoMod;
-                NewArComp.Manager = mainManager;
+                NewArComp.mainManager = mainManager;
 
                 if (mainManager.MonsterHordeCounter + 1 < currentHorde.MonsterTypes.Length)
                 {
@@ -70,8 +70,11 @@ public class ArrowHandler : MonoBehaviour
                 //Monster.SendMessage("ArrowSpawned", NewArComp);
             }
         }
+        else
+        {
+            if (beatsToWait > 0) beatsToWait--;
+        }
 
-        if (beatsToWait > 0) beatsToWait--;
 
     }
 }

@@ -24,7 +24,7 @@ public class MainManager : MonoBehaviour
     [SerializeField] private CurseHandler curseHandler;
     [SerializeField] private LocationItemHandler locationItemHandler;
     [SerializeField] private MainUiHandler mainUiHandler;
-    [SerializeField] private ArrowHandler arrowHandler;
+    public ArrowHandler arrowHandler;
     public PlayerStats playerStats;
     public BottomTextHandler bottomTextHandler;
     [HideInInspector] public int hordeCounter { get; private set; }
@@ -472,9 +472,13 @@ public class MainManager : MonoBehaviour
 
     public void ArrowHit(float offset, float arrowSpeed, bool rightdir, Transform arrowTrans)
     {
-        ArrowHit(offset, arrowSpeed, rightdir, arrowTrans, false);
+        ArrowHit(offset, arrowSpeed, rightdir, arrowTrans.position, false);
     }
     public void ArrowHit(float offset, float arrowSpeed, bool rightdir, Transform arrowTrans, bool miniArrow)
+    {
+        ArrowHit(offset, arrowSpeed, rightdir, arrowTrans.position, miniArrow);
+    }
+    public void ArrowHit(float offset, float arrowSpeed, bool rightdir, Vector3 hitArrowPos, bool miniArrow)
     {
         float timeOffset = offset / arrowSpeed;
         //Debug.Log(timeOffset.ToString() + " DIR: " + rightdir.ToString());
@@ -484,11 +488,11 @@ public class MainManager : MonoBehaviour
                 ScreenHit();
             if (effectPower >= 1 && timeOffset < 0.05f)
             {
-                if(effectPower >= 2 && timeOffset < 0.02f)
+                if(effectPower >= 2 && timeOffset < 0.03f)
                 {
                     hitCounts[3]++;
                     soundSource.PlayHitSound(3);
-                    Instantiate(ratePrefabs[3], arrowTrans.position, Quaternion.identity);
+                    Instantiate(ratePrefabs[3], hitArrowPos, Quaternion.identity);
                     CalculateHitScore(3, miniArrow);
                     AddCombo(true);
                     //LEGENDARY
@@ -497,7 +501,7 @@ public class MainManager : MonoBehaviour
                 {
                     hitCounts[2]++;
                     soundSource.PlayHitSound(2);
-                    Instantiate(ratePrefabs[2], arrowTrans.position, Quaternion.identity);
+                    Instantiate(ratePrefabs[2], hitArrowPos, Quaternion.identity);
                     CalculateHitScore(2, miniArrow);
                     AddCombo(true);
                     //GREAT
@@ -507,7 +511,7 @@ public class MainManager : MonoBehaviour
             {
                 hitCounts[1]++;
                 soundSource.PlayHitSound(1);
-                Instantiate(ratePrefabs[0], arrowTrans.position, Quaternion.identity);
+                Instantiate(ratePrefabs[0], hitArrowPos, Quaternion.identity);
                 CalculateHitScore(1, miniArrow);
                 AddCombo(false);
                 //NORMAL
@@ -520,7 +524,7 @@ public class MainManager : MonoBehaviour
                 soundSource.PlayHitSound(0);
             else
                 soundSource.PlayHitSound(0, 0.5f);
-            Instantiate(ratePrefabs[1], arrowTrans.position, Quaternion.identity);
+            Instantiate(ratePrefabs[1], hitArrowPos, Quaternion.identity);
             CalculateHitScore(0, miniArrow);
             if(!miniArrow)
                 LooseCombo();

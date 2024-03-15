@@ -817,6 +817,15 @@ MonoBehaviour:
   - HordeType: 
     hordeLenght: 20
     MonsterTypes:
+    - O
+    treasureKind: 0
+    npcKind: 0
+    npcLines: []
+    npcLinesRandomizer: 
+    notAnimatemovingToTime: 0
+  - HordeType: 
+    hordeLenght: 20
+    MonsterTypes:
     - S
     treasureKind: 0
     npcKind: 0
@@ -971,7 +980,8 @@ MonoBehaviour:
     - {fileID: 1810798800220269141, guid: 11f92ea535a144b4a91ed4c8557e2877, type: 3}
     S:
     - {fileID: 4553243096115960484, guid: c0aedf39c8ba43547ad257bd2bf71e5b, type: 3}
-    O: []
+    O:
+    - {fileID: 1510738873111087513, guid: 134a11510c4e9784292379df6b8ed39d, type: 3}
   ItemSpawned: 0
   CC1: {r: 0, g: 0, b: 0, a: 0}
   CC2: {r: 0, g: 0, b: 0, a: 0}

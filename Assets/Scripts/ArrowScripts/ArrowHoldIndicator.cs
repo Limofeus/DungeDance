@@ -5,7 +5,6 @@ using UnityEngine;
 public class ArrowHoldIndicator : MonoBehaviour
 {
     [SerializeField] private float length;
-    [SerializeField] private float progres;
 
     [SerializeField] private Transform backgroundHolder;
     [SerializeField] private Transform gradientHolder;
@@ -20,27 +19,51 @@ public class ArrowHoldIndicator : MonoBehaviour
 
     private GradientAlphaKey[] gradAlphaKeys = new GradientAlphaKey[2] { new GradientAlphaKey(1.0f, 0.0f) , new GradientAlphaKey(1.0f, 1.0f) }; //В идеале эта херь константа, но этот класс не может быть константой :(
 
-    private void Start()
+    public void InitializeIndicator(float tlength)
     {
+        length = tlength;
+
         backgroundHolder.localScale = new Vector3(length, backgroundHolder.localScale.y, backgroundHolder.localScale.z);
         gradientHolder.localScale = new Vector3(0f, gradientHolder.localScale.y, gradientHolder.localScale.z);
         endCircleHolder.localPosition = new Vector3(length, 0f, 0f);
 
         circleSR.color = backgroundSR.color;
     }
-
-    private void Update()
+    public void SetGradientStartColor(Color stColor)
     {
-        UpdateHoldProgress(progres);
+        holdStartColor = stColor;
     }
+    public void SetGradientEbdColor(Color stColor)
+    {
+        holdEndColor = stColor;
+    }
+    public void CalculateEndColor(float offset)
+    {
+        float maxOffset = 0.1f;
 
+        if (offset < 0.1f)
+        {
+            float MakeYellow;
+            MakeYellow = (0.5f - Mathf.Abs((offset / maxOffset) - 0.5f));
+            Color NeededColor = new Color((offset / maxOffset) + MakeYellow, (1f - (offset / maxOffset)) + MakeYellow, 0f);
+            holdEndColor = NeededColor;
+            //Auto upd progress if offset is low
+            UpdateHoldProgress(1f);
+        }
+        else
+        {
+            holdEndColor = Color.red;
+        }
+    }
     public void UpdateHoldProgress(float progress)
     {
+        progress = Mathf.Clamp01(progress);
+
         gradientHolder.localScale = new Vector3(progress * length, gradientHolder.localScale.y, gradientHolder.localScale.z);
 
         // Blend color from red at 0% to blue at 100%
         var gradColors = new GradientColorKey[2];
-        gradColors[0] = new GradientColorKey(holdStartColor, 0.0f);
+        gradColors[0] = new GradientColorKey(holdStartColor, 0.2f);
         gradColors[1] = new GradientColorKey(Color.Lerp(holdStartColor, holdEndColor, progress), 1.0f);
 
         Gradient gradient = new Gradient();

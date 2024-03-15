@@ -6,20 +6,20 @@ public class AnyDirectionArrow : Arrow
 {
     public override void ArrowHit(string Direction)
     {
-        if (Manager.Monster != null)
+        if (mainManager.Monster != null)
         {
             if (!disabled)
             {
                 if(Direction != "POH")
                 {
                     float offset = Mathf.Abs(transform.localPosition.x);
-                    Manager.ArrowHit(offset, Speed, true, transform);
-                    arrowVisual.Effect(offset / Speed, true);
+                    mainManager.ArrowHit(offset, arrowSpeed, true, transform);
+                    arrowVisual.Effect(offset / arrowSpeed, true);
                 }
                 else
                 {
-                    Manager.ArrowHit(0f, Speed, false, transform);
-                    arrowVisual.Effect(0f / Speed, false);
+                    mainManager.ArrowHit(0f, arrowSpeed, false, transform);
+                    arrowVisual.Effect(0f / arrowSpeed, false);
                 }
                 disabled = true;
             }

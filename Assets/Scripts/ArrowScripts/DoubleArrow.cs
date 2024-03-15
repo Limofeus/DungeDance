@@ -16,11 +16,11 @@ public class DoubleArrow : Arrow
         //Debug.Log(instatiateMini);
         if (instatiateMini)
         {
-            miniArrow = Instantiate(miniArrowPrefab, transform.position + (transform.right * (Manager.timeBetweenBeats * Speed / 2f)), transform.rotation, transform.parent);
+            miniArrow = Instantiate(miniArrowPrefab, transform.position + (transform.right * (mainManager.timeBetweenBeats * arrowSpeed / 2f)), transform.rotation, transform.parent);
             miniArrowComponent = miniArrow.GetComponent<Arrow>();
-            miniArrowComponent.Speed = Speed;
+            miniArrowComponent.arrowSpeed = arrowSpeed;
             miniArrowComponent.Auto = Auto;
-            miniArrowComponent.Manager = Manager;
+            miniArrowComponent.mainManager = mainManager;
         }
         base.starto();
         if(instatiateMini)
