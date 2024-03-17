@@ -41,9 +41,10 @@ namespace Shop
 
         private void BuyItem(int cellId)
         {
-            if (_saveData.moneyAmount >= cellId)
+            var price = _itemCells[cellId].Price;
+            if (_saveData.moneyAmount >= price)
             {
-                _saveData.moneyAmount -= _itemCells[cellId].Price;
+                _saveData.moneyAmount -= price;
                 _itemCells[cellId].IsSold();
             }
         }

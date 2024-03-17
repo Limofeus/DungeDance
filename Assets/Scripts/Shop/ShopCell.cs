@@ -14,6 +14,9 @@ namespace Shop
         [SerializeField] private Sprite _closedIcon;
         [SerializeField] private Color[] _rarityColor;
         [SerializeField] private SpriteRenderer _discountSprite;
+        private Animator _animator;
+        private const string _isSelect = "IsSelect";
+        private const string _isBuy = "IsBuy";
         private Collider2D _collider;
         private int _itemID;
         private bool _mouseOnButton;
@@ -26,6 +29,7 @@ namespace Shop
 
         private void Awake()
         {
+            _animator = GetComponent<Animator>();
             _collider = GetComponent<Collider2D>();
         }
 
@@ -38,7 +42,7 @@ namespace Shop
             Price = 200 * _itemRarity[id] + 300;
             if (isDiscount)
                 Price /= 2;
-            _discountSprite.enabled = isDiscount;
+            _discountSprite.gameObject.SetActive(isDiscount);
             _priceText.text = Price.ToString();
             _collider.enabled = true;
         }
@@ -53,8 +57,8 @@ namespace Shop
         }
         public void IsSold()
         {
+            _animator.SetTrigger(_isBuy);
             _itemID = default;
-            _mainSprite.sprite = default;
             _raritySprite.sprite = default;
             _priceText.text = "SOLD";
             _collider.enabled = false;
@@ -69,12 +73,14 @@ namespace Shop
 
         private void OnMouseEnter()
         {
+            _animator.SetBool(_isSelect, true);
             _mouseOnButton = true;
             OnSelect?.Invoke(_itemID);
         }
 
         private void OnMouseExit()
         {
+            _animator.SetBool(_isSelect, false);
             _mouseOnButton = false;
         }
     }
