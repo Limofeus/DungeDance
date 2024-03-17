@@ -5,11 +5,11 @@ using UnityEngine;
 public class Arrow : MonoBehaviour
 {
     public ArrowVisual arrowVisual;
-    public MainManager Manager;
+    public MainManager mainManager;
     public string[] directions;
     //string[] directions = { "R", "L" };
     public string direction;
-    public float Speed;
+    public float arrowSpeed;
     public bool disabled = false;
     public bool Auto;
     public bool sent;
@@ -45,26 +45,27 @@ public class Arrow : MonoBehaviour
     }
     public virtual void UpdateStuff()
     {
-        transform.localPosition = transform.localPosition + Vector3.left * Speed * Time.deltaTime;
+        transform.localPosition = transform.localPosition + Vector3.left * arrowSpeed * Time.deltaTime;
         if (transform.localPosition.x < -3 && !disabled)
         {
-            Yes("POH");
+            ArrowHit("POH");
+            ArrowHitStop();
         }
         if (transform.localPosition.x < -15)
             Despawn();
         if (transform.localPosition.x < 1 && !sent)
         {
-            if (Manager.Monster != null)
+            if (mainManager.Monster != null)
             {
-                Manager.MonsterComp.ArrowThere(this); // If this wont work, ill try lower one
+                mainManager.MonsterComp.ArrowThere(this); // If this wont work, ill try lower one
                 //Manager.Monster.SendMessage("ArrowThere", this);
                 sent = true;
             }
         }
         if (Auto && transform.localPosition.x < 0 && !disabled)
         {
-            Debug.Log("NOW! " + direction);
-            Manager.PressThis(direction);
+            //Debug.Log("NOW! " + direction);
+            mainManager.PressThis(direction);
         }
     }
     public void Despawn()
@@ -72,9 +73,9 @@ public class Arrow : MonoBehaviour
         MainManager.Arrows.Remove(gameObject);
         Destroy(gameObject);
     }
-    public virtual void Yes(string Direction)
+    public virtual void ArrowHit(string Direction)
     {
-        if (Manager.Monster != null)
+        if (mainManager.Monster != null)
         {
             if (!disabled)
             {
@@ -82,18 +83,22 @@ public class Arrow : MonoBehaviour
                 {
                     //Debug.Log("Good, good");
                     float offset = Mathf.Abs(transform.localPosition.x);
-                    Manager.ArrowHit(offset, Speed, true, transform);
-                    arrowVisual.Effect(offset / Speed, true);
+                    mainManager.ArrowHit(offset, arrowSpeed, true, transform);
+                    arrowVisual.Effect(offset / arrowSpeed, true);
                 }
                 else
                 {
                     //Debug.Log("Всё хуйня, ты мимо нажал");
-                    Manager.ArrowHit(1f, Speed, false, transform);
-                    arrowVisual.Effect(0f / Speed, false);
+                    mainManager.ArrowHit(1f, arrowSpeed, false, transform);
+                    arrowVisual.Effect(0f / arrowSpeed, false);
                 }
             }
             disabled = true;
         }
+    }
+    public virtual void ArrowHitStop()
+    {
+        Debug.Log($"Arrow hit stop, dir: {direction}");
     }
     public void SwitchDir(string dir)
     {

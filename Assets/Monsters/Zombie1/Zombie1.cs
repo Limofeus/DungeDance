@@ -16,7 +16,7 @@ public class Zombie1 : Monster
     {
         if (Joy >= 90)
         {
-            MainMan.MonsterFollow.AddMonster(1, 5);
+            MainMan.monsterFollow.AddMonster(1, 5);
             MainMan.AddScore(100);
             DropMoney(Random.Range(7, 12));
             GoodAway();

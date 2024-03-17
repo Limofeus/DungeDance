@@ -6,7 +6,8 @@ public class Monster : MonoBehaviour
 {
     public float ArrowChance;
     public Animator Animator;
-    public MainManager MainMan;
+    protected MainManager MainMan;
+    protected PlayerStats playerStats;
     public GameObject[] ArrowPrefabs;
     public string[] animationNames;
     public GameObject killText;
@@ -24,13 +25,14 @@ public class Monster : MonoBehaviour
     public GameObject coin4;
     public GameObject coin5;
     // Start is called before the first frame update
-    public void Init(GameObject maiman, float speed)
+    public void Init(MainManager maiman, PlayerStats playerStatsPass, float speed)
     {
         AnimatorSpeed = 1f / speed;
         if (Animator != null)
             Animator.speed = AnimatorSpeed;
         //Debug.Log("ANIMS: " + AnimatorSpeed);
-        MainMan = maiman.GetComponent<MainManager>();
+        playerStats = playerStatsPass;
+        MainMan = maiman;
         MainMan.Joy = DefaultJoy;
         MainMan.curretMaxJoy = maxJoy;
         MainMan.ArrowPrefabs = ArrowPrefabs;

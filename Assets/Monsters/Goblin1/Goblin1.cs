@@ -16,7 +16,7 @@ public class Goblin1 : Monster
     {
         if (Joy >= 90)
         {
-            MainMan.MonsterFollow.AddMonster(0, 6);
+            MainMan.monsterFollow.AddMonster(0, 6);
             MainMan.AddScore(120);
             DropMoney(Random.Range(8, 13));
             GoodAway();

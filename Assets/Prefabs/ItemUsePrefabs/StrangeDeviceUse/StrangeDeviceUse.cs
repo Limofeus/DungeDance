@@ -18,8 +18,8 @@ public class StrangeDeviceUse : MonoBehaviour
         mainManager.ItemAttractionBoost(20, itemUseTime);
         //mainManager.ScoreBonusMultiplier(0.6f, itemUseTime); //rework needed
         //mainManager.AddStatsEffect(5f, 0f, 0.6f, 0f, 0f, 0f);
-        mainManager.scoreAllHitMultiplier += 0.6f;
-        mainManager.joyDynamicHitMultiplier += 0.2f;
+        mainManager.bonusesAndMultiplers.scoreAllHitMultiplier += 0.6f;
+        mainManager.bonusesAndMultiplers.joyDynamicHitMultiplier += 0.2f;
         StartCoroutine(Use());
     }
 
@@ -43,8 +43,8 @@ public class StrangeDeviceUse : MonoBehaviour
             transform.localScale = Vector3.Lerp(Vector3.one * 5, Vector3.one, lerpy);
             yield return new WaitForEndOfFrame();
         }
-        mainManager.scoreAllHitMultiplier -= 0.6f;
-        mainManager.joyDynamicHitMultiplier -= 0.2f;
+        mainManager.bonusesAndMultiplers.scoreAllHitMultiplier -= 0.6f;
+        mainManager.bonusesAndMultiplers.joyDynamicHitMultiplier -= 0.2f;
         Destroy(gameObject);
     }
 }

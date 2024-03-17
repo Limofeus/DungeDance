@@ -4,44 +4,33 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Rendering;
+using System.Linq;
 
 public class MainManager : MonoBehaviour
 {
     public static float followTime = 15f;
-    public static int danceStyle = 0; // 0 - Default; 1 - Intence...
+    //public static int danceStyle = 0; // 0 - Default; 1 - Intence...
+    private DanceStyle[] selectedDanceStyles = new DanceStyle[1] {new DefaultDanceStyle()};
     //public int playerStartMoney; // <- sussy amogass 1 (wont use for now)
-    public int playerStartXp;
-    public int Attraction;
-    public int baseAttraction;
-    public int maxBaseAttraction;
-    public int monsterBonusAttraction;
-    public int maxMonsterBonusAttraction; // <- Welp, wont use this one
-    public int bonusAttraction;
-    public int maxBonusAttraction;
-    public bool OverAttractive;
-    private bool itemBonusAttr;
+    [HideInInspector] public int playerStartXp { get; private set; }
     public int maxCombo = 0;
-    public int[] hitCounts;
+    [HideInInspector] public int[] hitCounts;
     private int score = 0;
     private int combo = 0;
     private int greatComboCount = 0;
     private float multiplier = 1f;
     private bool greatCombo = true;
-    public bool HordesOn;
-    public bool CustomHordesOn;
-    public Horde[] Hordes;
-    public bool EnableCurses;
-    public Curse[] Curses;
-    public int CurseCounter;
-    public int FullCurseCounter;
-    bool Cursed;
-    bool FullCursed;
-    int CurseID;
-    public int HordeCounter;
+    public Horde[] hordes;
+    [SerializeField] private CurseHandler curseHandler;
+    [SerializeField] private LocationItemHandler locationItemHandler;
+    [SerializeField] private MainUiHandler mainUiHandler;
+    public ArrowHandler arrowHandler;
+    public PlayerStats playerStats;
+    public BottomTextHandler bottomTextHandler;
+    [HideInInspector] public int hordeCounter { get; private set; }
     public int MonstersInHorde;
-    private int MonsterHordeCounter;
+    [HideInInspector] public int MonsterHordeCounter { get; private set; }
     public MonsterCounter MonsterCounter;
-    public bool NotSpawnArrows;
     public bool NoTimeout;
     public bool NoAfterLocationChange;
     public Transform Bar;
@@ -50,14 +39,13 @@ public class MainManager : MonoBehaviour
     public int effectPower;
     public float Joy;
     public float curretMaxJoy;
-    public float RTime;
+    public float timeRemaining;
     public float RMaxTime;
     public float MaxBarScale;
     public GameObject Camera;
     public GameObject bigPP;
     public bool disableMoving;
     public bool disableItemUse;
-    public bool AutoMod;
     public bool DisableSpawn;
     public bool disableTimer;
     public string levelName;
@@ -67,21 +55,15 @@ public class MainManager : MonoBehaviour
     public AudioClip Music;
     public float BPM;
     public float Offset;
-    public float AroowSpeed;
     public float AMiSM;
     public float AMaSM;
-    public Transform Spawner;
-    public float SpawnerOffset;
     public GameObject[] ArrowPrefabs;
     public float ArrowChance = 1f;
-    public float TimeBetweenBeats;
-    public float TimeToGo;
-    private bool dialogueMode;
-    private int dialogueCounter;
+    public float timeBetweenBeats;
+    public float arrowTravelTime;
     private int lastMultiplier = 1;
     public int followMonstersCount = 0;
-    private float dialogueLineLength;
-    float NextBeatTime;
+    float nextBeatTime;
     public Location Location;
     public bool characterYes;
     public GameObject Character;
@@ -94,60 +76,23 @@ public class MainManager : MonoBehaviour
     public Transform allUiHolder;
     public Transform rateHalder;
     public GameObject NextMonster;
-    private Monster NextMonsterComp;
     public GameObject[] MoansterPrefabs;
-    private CurseVisual currentCurseVisual;
-    [SerializeField] private GameObject[] curseVisualPrefabs; //Buy thats a sneaky one
     public GameObject[] ratePrefabs;
     public MonsterTypes MonsterTypes;
     public bool ItemSpawned;
-    private bool monsterSpawnedAttraction;
-    /*
-    //!!public Sprite[] assignItemSprites;
-    public string[] ItemTitles;
-    public string[] ItemDescriptions; // Those three lines were used for manual item and NPC name assigment
-    public string[] npcNames;
-    //!!public static Sprite[] itemSprites;
-    */
+    private bool animateAttractionBlink;
     public static Color crazycolor1;
     public static Color crazycolor2;
     public Color CC1;
     public Color CC2;
     public SoundSource soundSource;
-    public MonsterFollow MonsterFollow;
+    public MonsterFollow monsterFollow;
     public SpeedChangeVisual speedChangeVisual;
-    public CurseWarningUI curseWarningUI;
-    public GameObject TreasurePrefab;
-    public GameObject npcPrefab;
     public GameObject BlackScreen;
     public GameObject endScreenPrefab;
     public ItemHolder itemHolder;
-    public TextMeshPro textGuiTitle;
-    public TextMeshPro textGuiText;
-    public TextMeshPro coinCountText;
-    public TextMeshPro scoreText;
-    public TextMeshPro comboText;
-    public TextMeshPro multiplyerText;
-    public TextMeshPro attractionText;
-    public TextMeshPro levelNameText;
-    public TextMeshPro songNameText;
-    public Animator attractionAnimator;
-    public Animator coinCountAnimator;
-    public Animator downUI;
-    public Animator comboUI;
-    public Animator barHolderAnimator;
-    public Animator monsterCounterHolderAnimator;
-    public Animator comboScoreAnimator;
-    public Animator UUHAIHAnimator;
-    public Animator monsterGaugeAnimator;
     public SpriteRenderer monsterGaugeSR;
     public Sprite[] monsterGaugeSprites;
-    public Volume curseVolumeObj;
-    public VolumeProfile shadowCurseVolumeProfile;
-    public VolumeProfile rageCurseVolumeProfile;
-    public Material attractionTextPink;
-    public Material attractionTextGreen;
-    public Material attractionTextBlue;
     public Material Effect1;
     public Material Effect2;
     private AudioSource audioSource;
@@ -160,45 +105,7 @@ public class MainManager : MonoBehaviour
     public SaveData debugPlayerData; // Does save money and values after the end of the level?
     public int[] debugPlayerLevelupXps;
 
-    //MOBILE STUFF
-    public bool mobileInput;
-    private int screenW;
-    private int screenH;
-    private int touchZone;
-
-    //BONUSES AND MULTIPLIERS
-    //Score bonuses
-    [HideInInspector] public float scoreMonsterBonus = 0f; //This one is for when the monster gives player score, not tied to follows
-    [HideInInspector] public float scoreHitType0Bonus = 0f;
-    [HideInInspector] public float scoreHitType1Bonus = 0f;
-    [HideInInspector] public float scoreHitType2Bonus = 0f;
-    [HideInInspector] public float scoreHitType3Bonus = 0f;
-    [HideInInspector] public float scoreAllHitBonus = 0f;
-    //Score multipliers
-    [HideInInspector] public float scoreMonsterMultiplier = 1f; //Same as above
-    [HideInInspector] public float scoreHitType0Multiplier = 1f;
-    [HideInInspector] public float scoreHitType1Multiplier = 1f;
-    [HideInInspector] public float scoreHitType2Multiplier = 1f;
-    [HideInInspector] public float scoreHitType3Multiplier = 1f;
-    [HideInInspector] public float scoreAllHitMultiplier = 1f;
-    //Joy bonuses
-    [HideInInspector] public float joyHitType0Bonus = 0f;
-    [HideInInspector] public float joyHitType1Bonus = 0f;
-    [HideInInspector] public float joyHitType2Bonus = 0f;
-    [HideInInspector] public float joyHitType3Bonus = 0f;
-    [HideInInspector] public float joyAllHitBonus = 0f;
-    //Joy multipliers
-    [HideInInspector] public float joyHitType0Multiplier = 1f;
-    [HideInInspector] public float joyHitType1Multiplier = 1f;
-    [HideInInspector] public float joyHitType2Multiplier = 1f;
-    [HideInInspector] public float joyHitType3Multiplier = 1f;
-    [HideInInspector] public float joyAllHitMultiplier = 1f;
-    [HideInInspector] public float joyDynamicHitMultiplier = 1f;
-    //Some other stat changes
-    [HideInInspector] public float followMonsterToScoreMultiplier = 1f;
-    [HideInInspector] public float followMonsterToJoyMultiplier = 1f;
-    [HideInInspector] public float attractionToScoreMultiplier = 1f;
-    [HideInInspector] public float attractionToJoyMultiplier = 1f;
+    [HideInInspector] public ScoreJoyBonuses bonusesAndMultiplers = new ScoreJoyBonuses();
 
     void Awake()
     {
@@ -210,49 +117,29 @@ public class MainManager : MonoBehaviour
         publicCharacter = Character;
         ItemSpawned = false;
         NoTimeout = true;
-        NotSpawnArrows = true;
-        levelNameText.text = levelName;
-        songNameText.text = songName;
+        arrowHandler.notSpawnArrows = true;
         crazycolor1 = CC1;
-        HordeCounter = 0;
+        hordeCounter = 0;
         crazycolor2 = CC2;
         Timer = -3f;
         MonsterHordeCounter = 0;
-        TimeBetweenBeats = 60f / BPM;
-        SyncTempoAnimator.speedForAnimator = 1f / TimeBetweenBeats;
-        NextBeatTime = Offset;
+        timeBetweenBeats = 60f / BPM;
+        SyncTempoAnimator.speedForAnimator = 1f / timeBetweenBeats;
+        nextBeatTime = Offset;
     }
 
     void Start()
     {
-        //Mobile st
-        if (mobileInput)
-        {
-            screenH = Screen.height;
-            screenW = Screen.width;
-            touchZone = Mathf.RoundToInt(screenW / 3.75f);
-        }
-        //mobile ed
         CharacComp = Character.GetComponent<Character>();
         Location.SendMessage("SkipStart");
         audioSource = this.GetComponent<AudioSource>();
         audioSource.clip = Music;
+
         if (characterYes)
-            CharacComp.Init(TimeBetweenBeats);
-        // V [Old stuff, need to get rid of it] V
-        /*
-        MonsterComp = Monster.GetComponent<Monster>();
-        if (characterYes)
-            CharacComp.Init(TimeBetweenBeats);
-        MonsterComp.Init(gameObject, TimeBetweenBeats);
-        if (CustomHordesOn)
-        {
-            MonstersInHorde = Hordes[HordeCounter].MonsterTypes.Length - 1;
-        }
-        UpdateMonsterCounter();
-        CalculateNextMonster();
-        */
-        //playerStartMoney = MenuDataManager.saveData.moneyAmount; // <- sussy amogass 2
+            CharacComp.Init(timeBetweenBeats);
+
+        mainUiHandler.UpdateLevelname(levelName, songName);
+
         int item1Id;
         int item2Id;
         int item3Id;
@@ -276,16 +163,6 @@ public class MainManager : MonoBehaviour
             //Debug.Log("FUUUCK!!");
             ChangeStageVolume(debugPlayerData.settingsData.soundVolume, debugPlayerData.settingsData.musicVolume);
         }
-        /*
-        Debug.Log(MenuDataManager.saveData.playerName);
-        Debug.Log(MenuDataManager.saveData.moneyAmount);
-        Debug.Log(MenuDataManager.saveData.item1Id);
-        Debug.Log(MenuDataManager.saveData.item2Id);
-        Debug.Log(MenuDataManager.saveData.item3Id);
-        Debug.Log(item1Id);
-        Debug.Log(item2Id);
-        Debug.Log(item3Id);
-        */
         if (item1Id != -1)
         {
             itemHolder.AddItem(item1Id);
@@ -299,313 +176,142 @@ public class MainManager : MonoBehaviour
                 }
             }
         }
+
         BlackScreen.GetComponent<Animator>().SetTrigger("Starto!");
         StartCoroutine(CountDown());
     }
 
     public void StartLevel()
     {
-        if (CustomHordesOn)
-        {
 
-            MonsterHordeCounter = -1;
-            CalculateNextMonster();
-            MonsterHordeCounter = 0;
-            OnNewLocation();
-        }
-        else
-        {
-            MonsterHordeCounter = -1;
-            CalculateNextMonster();
-            MonsterHordeCounter = 0;
-            OnNewLocation();
-        }
-        attractionText.text = Attraction.ToString();
+        MonsterHordeCounter = -1;
+        CalculateNextMonster();
+        MonsterHordeCounter = 0;
+        OnNewLocation();
+
+        playerStats.TextUpdate();
         NoTimeout = false;
-        NotSpawnArrows = false;
+        arrowHandler.notSpawnArrows = false;
         audioSource.Play();
         UpdateMonsterCounter();
     }
 
     void Update()
     {
-        TimeToGo = SpawnerOffset / AroowSpeed;
+        arrowTravelTime = arrowHandler.spawnerOffset / arrowHandler.arrowSpeed;
         if(!disableTimer)
             Timer += Time.deltaTime;
-        if (mobileInput)
-            MobileYeeemput();
-        else
-            Yeeemput();
         //if (NextBeatTime < Time.time - (SpawnerOffset / AroowSpeed)) <- is this the thing that causes THE BUG?
         //AND YES IT FUCKING WAS!!!!!!!!!!!!!
         //P.S. for some unknown reason Time.time resets on scene change in editor but still goes in build. How the fuck was i suppost to know this?
-        if (NextBeatTime < Timer - (SpawnerOffset / AroowSpeed))
+        if (nextBeatTime < Timer - (arrowHandler.spawnerOffset / arrowHandler.arrowSpeed))
         {
-            NextBeatTime += TimeBetweenBeats;
+            nextBeatTime += timeBetweenBeats;
             Beat();
         }
-        if (EnableCurses)
-            HandleCurses();
-        if (dialogueMode)
-            HandleDialogue();
+
+        curseHandler.HandleCurses(Timer, arrowTravelTime);
+        bottomTextHandler.HandleDialogue();
+
         if (!NoTimeout)
-            RTime += - Time.deltaTime;
-        Bar.localScale = new Vector3(MaxBarScale * (RTime / RMaxTime), Bar.localScale.y, Bar.localScale.z);
+            timeRemaining += - Time.deltaTime;
+        Bar.localScale = new Vector3(MaxBarScale * (timeRemaining / RMaxTime), Bar.localScale.y, Bar.localScale.z);
         BarMat.SetFloat("MyValueYe", (Mathf.Clamp(Joy, 0, curretMaxJoy) / curretMaxJoy));
-        if (RTime <= 1f && monsterSpawnedAttraction)
+        if (timeRemaining <= 1f && animateAttractionBlink)
         {
-            monsterSpawnedAttraction = false;
-            if(!OverAttractive && !(Attraction <= maxBaseAttraction / 2f))
-            {
-                //Debug.Log("ShowingAttraction");
-                attractionAnimator.SetTrigger("BeforeBlink");
-            }
+            animateAttractionBlink = false;
+            playerStats.BlinkAttraction();
         }
-        if (RTime <= 0f && !NoTimeout)
+        if (timeRemaining <= 0f && !NoTimeout)
             TimeOut();
     }
-    void HandleCurses()
-    {
-        if (CurseCounter < Curses.Length)
-        {
-            if (!Cursed)
-            {
-                if (Timer + TimeToGo > Curses[CurseCounter].StartTime)
-                {
-                    Cursed = true;
-                    //Debug.Log("CUSE TO TRUE!");
-                    CurseID = Curses[CurseCounter].CurseId;
-                }
-            }
-            else
-            {
-                if (Timer + TimeToGo > Curses[CurseCounter].EndTime)
-                {
-                    Cursed = false;
-                    //Debug.Log("CUSE TO FALSE!");
-                    CurseCounter++;
-                }
-            }
-        }
-        if (FullCurseCounter < Curses.Length)
-        {
-            if (!FullCursed)
-            {
-                if (Timer > Curses[FullCurseCounter].StartTime)
-                {
-                    FullCursed = true;
-                    CastCurse(true);
-                }
-            }
-            else
-            {
-                if (Timer > Curses[FullCurseCounter].EndTime)
-                {
-                    FullCursed = false;
-                    CastCurse(false);
-                    FullCurseCounter++;
-                }
-            }
-        }
-    }
-    void DisableCurseEffects()
-    {
-        CastRageCurse(false);
-        CastShadowCurse(false);
-    }
-    void CastCurse(bool CastDecast)
-    {
-        switch (CurseID)
-        {
-            case 0:
-                CastShadowCurse(CastDecast);
-                break;
-            case 1:
-                CastRageCurse(CastDecast);
-                break;
-            default:
-                Debug.Log("Wrong curse ID");
-                break;
-        }
-        //Creating prefab for the curse
-        if (CastDecast)
-        {
-            currentCurseVisual = Instantiate(curseVisualPrefabs[CurseID], Vector3.zero, Quaternion.identity).GetComponent<CurseVisual>();
-            currentCurseVisual.StartCurse();
-        }
-        else
-        {
-            currentCurseVisual.EndCurse(); //IT SHOULD DESTROY ITSELF HERE!!!
-        }
-    }
     //Curses castng
-    void CastShadowCurse(bool CastDecast)
-    {
-        curseWarningUI.UpdateCurse(0, CastDecast, "curse_warning_id0");
-        if (CastDecast)
-        {
-            followMonsterToJoyMultiplier -= 0.9f;
-            followMonsterToScoreMultiplier -= 0.9f;
-            soundSource.PlayCurseSound(0);
-            StartCoroutine(ShadowCurse(1f));
-            if (MonsterComp != null)
-                MonsterComp.AddCurse(0, true);
-        }
-        else
-        {
-            followMonsterToJoyMultiplier += 0.9f;
-            followMonsterToScoreMultiplier += 0.9f;
-            StartCoroutine(ShadowCurse(0f));
-            if (MonsterComp != null)
-                MonsterComp.AddCurse(0, false);
-        }
-    }
-    void CastRageCurse(bool CastDecast)
-    {
-        curseWarningUI.UpdateCurse(1, CastDecast, "curse_warning_id1");
-        if (CastDecast)
-        {
-            joyAllHitMultiplier += 0.15f;
-            joyHitType0Multiplier += 0.5f;
-            scoreAllHitMultiplier += 0.15f;
-            scoreHitType0Multiplier += 0.5f;
-
-            soundSource.PlayCurseSound(1);
-            StartCoroutine(RageCurse(1f));
-            if (MonsterComp != null)
-                MonsterComp.AddCurse(1, true);
-        }
-        else
-        {
-            joyAllHitMultiplier -= 0.15f;
-            joyHitType0Multiplier -= 0.5f;
-            scoreAllHitMultiplier -= 0.15f;
-            scoreHitType0Multiplier -= 0.5f;
-
-            StartCoroutine(RageCurse(0f));
-            if (MonsterComp != null)
-                MonsterComp.AddCurse(1, false);
-        }
-    }
     void Beat()
     {
-        SpawnArrow();
+        arrowHandler.SpawnArrow();
         //Debug.Log("Beat!");
     }
     void TimeOut()
     {
         //Debug.Log(MonsterHordeCounter);
         if (ItemSpawned)
-            EndItem();
+            locationItemHandler.EndItem();
         else
             EndMonster();
-        if (HordesOn)
+        if (!ItemSpawned)
         {
-            if (!ItemSpawned)
+            if (MonsterHordeCounter >= MonstersInHorde)
             {
-                if (MonsterHordeCounter >= MonstersInHorde)
+                hordeCounter += 1;
+                /*
+                MonstersInHorde = Hordes[HordeCounter].MonsterTypes.Length - 1;
+                if (Hordes[HordeCounter].hordeLenght != 0)
                 {
-                    HordeCounter += 1;
-                    /*
-                    MonstersInHorde = Hordes[HordeCounter].MonsterTypes.Length - 1;
-                    if (Hordes[HordeCounter].hordeLenght != 0)
-                    {
-                        RMaxTime = Hordes[HordeCounter].hordeLenght; //USELESS POS
-                        RTime = RMaxTime;
-                        Debug.Log(RTime);
-                    }
-                    */
-                    MoveLocation();
+                    RMaxTime = Hordes[HordeCounter].hordeLenght; //USELESS POS
+                    RTime = RMaxTime;
+                    Debug.Log(RTime);
                 }
-                else
-                {
-                    MonsterHordeCounter += 1;
-                    /*
-                    MonstersInHorde = Hordes[HordeCounter].MonsterTypes.Length - 1;
-                    if (Hordes[HordeCounter].hordeLenght != 0)
-                    {
-                        RMaxTime = Hordes[HordeCounter].hordeLenght; //SAME USELESS POSH
-                        RTime = RMaxTime;
-                    }
-                    */
-                    //Debug.Log("MHC: " + MonsterHordeCounter.ToString());
-                    if (CustomHordesOn)
-                    {
-                        SpawnCustomHordeMonster();
-                    }
-                    else
-                    {
-                        SpawnMonster();
-                    }
-                }
-                UpdateMonsterCounter();
+                */
+                MoveLocation();
             }
+            else
+            {
+                MonsterHordeCounter += 1;
+                SpawnCustomHordeMonster();
+            }
+            UpdateMonsterCounter();
         }
-        else
-            SpawnMonster();
-        //Debug.Log(HordeCounter);
     }
     void EndMonster()
     {
         if(MonsterComp != null)
             MonsterComp.End4Y(Joy);
         Joy = 0;
-        //monsterGaugeSR.sprite = monsterGaugeSprites[2]; // <-  Testing purpuses?..
         Destroy(Monster);
-        //RTime = RMaxTime; //les test dis, | Nope, that changes first fiew arrows
     }
     void MoveLocation()
     {
-        NotSpawnArrows = true;
+        arrowHandler.notSpawnArrows = true;
         NoTimeout = true;
         disableMoving = true;
-        if (!(Hordes[HordeCounter].notAnimatemovingToTime > 0))
+        if (!(hordes[hordeCounter].notAnimatemovingToTime > 0))
             CharacComp.MoveLocation(true);
         MonsterHordeCounter = 0;
-        if (!(Hordes[HordeCounter].notAnimatemovingToTime > 0))
+        if (!(hordes[hordeCounter].notAnimatemovingToTime > 0))
             Location.Move();
-        if (CustomHordesOn && Hordes[HordeCounter].HordeType == "End")
+        if (hordes[hordeCounter].HordeType == "End")
         {
             DisableSpawn = true;
         }
-        if (CustomHordesOn && Hordes[HordeCounter].HordeType != "")
+        if (hordes[hordeCounter].HordeType != "")
         {
-            monsterGaugeAnimator.SetBool("Shown", false);
+            mainUiHandler.SetMonsterGaugeShown(false);
         }
         UpdateMonsterCounter();
         if(!NoAfterLocationChange)
-            StartCoroutine(AfterMoveLocation(Hordes[HordeCounter].notAnimatemovingToTime));
+            StartCoroutine(AfterMoveLocation(hordes[hordeCounter].notAnimatemovingToTime));
     }
     void CalculateNextMonster()
     {
-        if (!CustomHordesOn)
+        if (MonsterHordeCounter + 1 < hordes[hordeCounter].MonsterTypes.Length)
         {
-            NextMonster = MoansterPrefabs[Random.Range(0, MoansterPrefabs.Length)];
-            NextMonsterComp = NextMonster.GetComponent<Monster>();
+            NextMonster = MonsterFromType(hordes[hordeCounter].MonsterTypes[MonsterHordeCounter + 1]);
         }
         else
         {
-            if (MonsterHordeCounter + 1 < Hordes[HordeCounter].MonsterTypes.Length)
+            if(hordes[hordeCounter + 1].HordeType == "")
             {
-                NextMonster = MonsterFromType(Hordes[HordeCounter].MonsterTypes[MonsterHordeCounter + 1]);
+                NextMonster = MonsterFromType(hordes[hordeCounter + 1].MonsterTypes[0]);
             }
-            else
-            {
-                if(Hordes[HordeCounter + 1].HordeType == "")
-                {
-
-                    NextMonster = MonsterFromType(Hordes[HordeCounter + 1].MonsterTypes[0]);
-                }
-                else
-                {
-                    //SomeFunctions will go in here
-                }
-            }
-            if (NextMonster != null)
-                NextMonsterComp = NextMonster.GetComponent<Monster>();
-            else
-                Debug.Log("NextMonsterIsNull here!");
         }
+        if (NextMonster != null)
+            arrowHandler.SetNextMonsterComp(NextMonster.GetComponent<Monster>());
+        else
+            Debug.Log("NextMonsterIsNull here!");
+    }
+    public Horde GetCurrentHorde()
+    {
+        return hordes[hordeCounter];
     }
     GameObject MonsterFromType(string Type)
     {
@@ -629,222 +335,79 @@ public class MainManager : MonoBehaviour
                 return null;
         }
     }
-    void SpawnMonster()
-    {
-        if (!DisableSpawn)
-        {
-            //Debug.Log(MonsterHordeCounter);
-            RTime = RMaxTime;
-            monsterSpawnedAttraction = true;
-            Monster = Instantiate(NextMonster, EnimyHolder.position, EnimyHolder.rotation, EnimyHolder);
-            MonsterComp = Monster.GetComponent<Monster>();
-            CalculateNextMonster();
-            //Monster.SendMessage("Init", TimeBetweenBeats);
-            //Monster.SendMessage("Init", this.gameObject);
-            MonsterComp.Init(gameObject, TimeBetweenBeats);
-            monsterGaugeSR.sprite = monsterGaugeSprites[MonsterComp.GetRelationLevel(Joy)];
-            if (FullCursed)
-                MonsterComp.AddCurse(CurseID, true);
-        }
-    }
     void OnNewLocation()
     {
         disableMoving = false;
         CharacComp.MoveLocation(false);
-        if (CustomHordesOn)
+        MonstersInHorde = hordes[hordeCounter].MonsterTypes.Length - 1;
+        if (hordes[hordeCounter].hordeLenght != 0)                         //Moved This part to the start of location move cus of double arrow bug
+            RMaxTime = hordes[hordeCounter].hordeLenght;
+        if (hordes[hordeCounter].HordeType == "Treasure")
         {
-            MonstersInHorde = Hordes[HordeCounter].MonsterTypes.Length - 1;
-            if (Hordes[HordeCounter].hordeLenght != 0)                         //Moved This part to the start of location move cus of double arrow bug
-                RMaxTime = Hordes[HordeCounter].hordeLenght;
-            if (Hordes[HordeCounter].HordeType == "Treasure")
-            {
-                SpawnTreasure();
-            }
-            else if(Hordes[HordeCounter].HordeType == "NPC")
-            {
-                SpawnNPC();
-            }
-            else if (Hordes[HordeCounter].HordeType == "End")
-            {
-                //RTime = RMaxTime;
-                //NoTimeout = true;
-                CompleteLevel();
-            }
-            else
-            {
-                monsterGaugeAnimator.SetBool("Shown", true);
-                SpawnCustomHordeMonster();
-            }
+            LocationItemPreporation();
+            locationItemHandler.SpawnTreasure();
+        }
+        else if(hordes[hordeCounter].HordeType == "NPC")
+        {
+            LocationItemPreporation();
+            locationItemHandler.SpawnNPC();
+        }
+        else if (hordes[hordeCounter].HordeType == "End")
+        {
+            //RTime = RMaxTime;
+            //NoTimeout = true;
+            CompleteLevel();
         }
         else
-            SpawnMonster();
+        {
+            mainUiHandler.SetMonsterGaugeShown(true);
+            SpawnCustomHordeMonster();
+        }
+    }
+    void LocationItemPreporation()
+    {
+        timeRemaining = RMaxTime;
+        ItemSpawned = true;
+        MonsterHordeCounter = MonstersInHorde;
+        CalculateNextMonster();
     }
     void SpawnCustomHordeMonster()
     {
         if (!DisableSpawn)
         {
             Monster = Instantiate(NextMonster, EnimyHolder.position, EnimyHolder.rotation, EnimyHolder);
-            //MonsterComp = NextMonsterComp; <---- This one mistake cost me 4 hours to find
+            //Dunge Dance <---- This one mistake cost me 400 hours to make
             MonsterComp = Monster.GetComponent<Monster>();
             CalculateNextMonster();
-            MonsterComp.Init(gameObject, TimeBetweenBeats);
+            MonsterComp.Init(this, playerStats, timeBetweenBeats);
             monsterGaugeSR.sprite = monsterGaugeSprites[MonsterComp.GetRelationLevel(Joy)];
             //Debug.Log("TBB: " + TimeBetweenBeats);
-            if (FullCursed)
-                MonsterComp.AddCurse(CurseID, true);
+            if (curseHandler.fullCursed)
+                MonsterComp.AddCurse(curseHandler.currentCurseId, true);
         }
-        RTime = RMaxTime;
-        monsterSpawnedAttraction = true;
+        timeRemaining = RMaxTime;
+        animateAttractionBlink = true;
         UpdateMonsterCounter();
     }
-    void EndItem()
-    {
-        //Debug.Log("Here i go!");
-        ItemSpawned = false;
-        Monster.GetComponent<ItemAway>().GoAway();
-        Destroy(Monster);
-    }
-    void SpawnTreasure()
-    {
-        RTime = RMaxTime;
-        ItemSpawned = true;
-        Monster = Instantiate(TreasurePrefab, EnimyHolder.position, EnimyHolder.rotation, EnimyHolder);
-        Monster.GetComponent<Chest>().InitializeChestParameters(this, Hordes[HordeCounter].treasureKind);
-        MonsterHordeCounter = MonstersInHorde;
-        CalculateNextMonster();
-    }
 
-    void SpawnNPC()
+    public void ActivateItem(int itemId)
     {
-        RTime = RMaxTime;
-        ItemSpawned = true;
-        Monster = Instantiate(npcPrefab, EnimyHolder.position, EnimyHolder.rotation, EnimyHolder);
-        Monster.GetComponent<NPC>().InitializeNPCParameters(this, Hordes[HordeCounter].npcKind);
-        dialogueLineLength = RMaxTime / Hordes[HordeCounter].npcLines.Length;
-        //Debug.Log("DIAL LENGTH IS: " + dialogueLineLength.ToString());
-        MonsterHordeCounter = MonstersInHorde;
-        CalculateNextMonster();
-        DisplayText(GetNPCNameById(Hordes[HordeCounter].npcKind), LocalisationSystem.GetLocalizedValue(Hordes[HordeCounter].npcLines[0]));
-        dialogueCounter = 0;
-        dialogueMode = true;
-    }
-
-    string GetNPCNameById(int npcId)
-    {
-        //Debug.Log(npcId);
-        return LocalisationSystem.GetLocalizedValue("npc_name_id"+npcId.ToString());
-    }
-    void Yeeemput()
-    {
-        if (!disableMoving)
-        {
-            if (Input.GetButtonDown("R"))
-            {
-                PressThis("R");
-                MonsterFollow.Animate("Right");
-            }
-            if (Input.GetButtonDown("L"))
-            {
-                PressThis("L");
-                MonsterFollow.Animate("Left");
-            }
-            if (Input.GetButtonDown("U"))
-            {
-                PressThis("U");
-                MonsterFollow.Animate("Up");
-            }
-            if (Input.GetButtonDown("D"))
-            {
-                PressThis("D");
-                MonsterFollow.Animate("Down");
-            }
-        }
-        if (!disableItemUse) 
-        {
-            if (Input.GetButtonDown("1"))
-            {
-                if (!Input.GetButton("AltAction"))
-                    itemHolder.UseItem(1);
-                else
-                    itemHolder.DropItem(1);
-            }
-            if (Input.GetButtonDown("2"))
-            {
-                if (!Input.GetButton("AltAction"))
-                    itemHolder.UseItem(2);
-                else
-                    itemHolder.DropItem(2);
-            }
-            if (Input.GetButtonDown("3"))
-            {
-                if (!Input.GetButton("AltAction"))
-                    itemHolder.UseItem(3);
-                else
-                    itemHolder.DropItem(3);
-            }
-        }
-    }
-    private void MobileYeeemput()
-    {
-        Touch lastTouch;
-        if (Input.touches.Length > 0)
-        {
-            lastTouch = Input.touches[Input.touches.Length - 1];
-            if(lastTouch.phase == TouchPhase.Began)
-            {
-                if(lastTouch.position.y < touchZone)
-                {
-                    if(lastTouch.position.x < touchZone)
-                    {
-                        MobileYeeemput2(lastTouch.position.y / touchZone, lastTouch.position.x / touchZone);
-                    }
-                    else if(lastTouch.position.x > (screenW - touchZone))
-                    {
-                        MobileYeeemput2(lastTouch.position.y / touchZone, (lastTouch.position.x - (screenW - touchZone)) / touchZone);
-                    }
-                }
-            }
-        }
-    }
-    private void MobileYeeemput2(float touchX, float TouchY)
-    {
-        if(TouchY > (1f - touchX))
-        {
-            if(TouchY > touchX)
-            {
-                PressThis("R");
-                MonsterFollow.Animate("Right");
-            }
-            else
-            {
-                PressThis("U");
-                MonsterFollow.Animate("Up");
-            }
-        }
+        if (!Input.GetButton("AltAction"))
+            itemHolder.UseItem(itemId);
         else
-        {
-            if (TouchY > touchX)
-            {
-                PressThis("D");
-                MonsterFollow.Animate("Down");
-                MonsterFollow.Animate("Down");
-            }
-            else
-            {
-                PressThis("L");
-                MonsterFollow.Animate("Left");
-            }
-        }
+            itemHolder.DropItem(itemId);
     }
-    public void PressThis(string WhatToPress)
+    public Arrow PressThis(string WhatToPress, string monsterFollowString = "")
     {
-        GameObject NextArrow = CalculateNextArrow();
-        if(NextArrow != null)
-            NextArrow.GetComponent<Arrow>().Yes(WhatToPress);
+        if(monsterFollowString != "")
+            monsterFollow.Animate(monsterFollowString);
+        Arrow nextArrowComponent = CalculateNextArrow()?.GetComponent<Arrow>();
+        if(nextArrowComponent != null)
+            nextArrowComponent.ArrowHit(WhatToPress);
         CharacComp.Press(WhatToPress);
+        return nextArrowComponent;
     }
-    
-    GameObject CalculateNextArrow()
+    public static GameObject CalculateNextArrow(float additionalDist = 0f)
     {
         if (Arrows == null)
             return null;
@@ -859,7 +422,7 @@ public class MainManager : MonoBehaviour
                 if (Mathf.Abs(Arrow.transform.localPosition.x) < Mathf.Abs(Wanana.transform.localPosition.x) && !Arrow.GetComponent<Arrow>().disabled)
                     Wanana = Arrow;
             }
-            if (Wanana != null && Mathf.Abs(Wanana.transform.localPosition.x) < 3)
+            if (Wanana != null && Mathf.Abs(Wanana.transform.localPosition.x) < (3 + additionalDist))
                 return Wanana;
             else
                 return null;
@@ -881,7 +444,7 @@ public class MainManager : MonoBehaviour
     
     void UpdateMonsterCounter()
     {
-        if(!CustomHordesOn || Hordes[HordeCounter].HordeType == "")
+        if(hordes[hordeCounter].HordeType == "")
         {
             string[] CircleTypes = new string[MonstersInHorde + 1];
             for (int i = 0; i < CircleTypes.Length; i++)
@@ -906,88 +469,16 @@ public class MainManager : MonoBehaviour
             MonsterCounter.HideCounter();
         }
     }
-    
-    void SpawnArrow()
-    {
-        if (!NotSpawnArrows)
-        {
-            GameObject Arrow;
-            //GameObject Arrow = Instantiate(ArrowPrefabs[Random.Range(0, ArrowPrefabs.Length)], Spawner.position, Quaternion.identity);
-            if (RTime > TimeToGo)
-                if (!CustomHordesOn)
-                {
-                    Arrow = Instantiate(MonsterComp.ArrowPrefabs[Random.Range(0, MonsterComp.ArrowPrefabs.Length)],Spawner.position, Spawner.rotation, allUiHolder);
-                }
-                else
-                {
-                    if(Hordes[HordeCounter].HordeType == "")
-                    {
-                        Arrow = Instantiate(MonsterComp.ArrowPrefabs[Random.Range(0, MonsterComp.ArrowPrefabs.Length)],Spawner.position, Spawner.rotation, allUiHolder);
-                    }
-                    else
-                    {
-                        Arrow = null;
-                    }
-                }
-            else
-                if (!CustomHordesOn)
-                {
-                    if (MonsterHordeCounter < MonstersInHorde)
-                        Arrow = Instantiate(NextMonsterComp.ArrowPrefabs[Random.Range(0, NextMonsterComp.ArrowPrefabs.Length)], Spawner.position, Spawner.rotation, allUiHolder);
-                    else
-                        Arrow = null;
-                }
-                else //OH SHIT, ITS LINE 666 (he is somwere around here O_O)
-                {
-                    if (MonsterHordeCounter + 1 < Hordes[HordeCounter].MonsterTypes.Length)
-                        Arrow = Instantiate(NextMonsterComp.ArrowPrefabs[Random.Range(0, NextMonsterComp.ArrowPrefabs.Length)], Spawner.position, Spawner.rotation, allUiHolder);
-                    else
-                        Arrow = null;
-                }
-            if (Arrow != null)
-            {
-                Arrow NewArComp = Arrow.GetComponent<Arrow>();
-                NewArComp.Speed = AroowSpeed;
-                NewArComp.Auto = AutoMod;
-                NewArComp.Manager = this;
-                if (!CustomHordesOn)
-                {
-                    if ((RTime < (SpawnerOffset + (TimeBetweenBeats * AroowSpeed)) / AroowSpeed) && RTime > 0)
-                    {
-                        NewArComp.lastArrow = true;
-                        Debug.Log("LastMArrow");
-                    }
-                    else
-                    {
-                        NewArComp.lastArrow = false;
-                    }
-                }
-                else
-                {
-                    if (MonsterHordeCounter + 1 < Hordes[HordeCounter].MonsterTypes.Length)
-                    {
-                        NewArComp.lastArrow = false;
-                    }
-                    else
-                    {
-                        NewArComp.lastArrow = (RTime < (SpawnerOffset + (TimeBetweenBeats * AroowSpeed)) / AroowSpeed) && RTime > 0;  // WELP, -3 hours of my life, and i have a fix that looks like SHIT and works like SHIT
-                    }
-
-                }
-                //NewArComp.Manager.Monster = Monster;
-                NewArComp.starto();
-                if (Cursed)
-                    NewArComp.arrowVisual.AddCurse(CurseID);
-                //Monster.SendMessage("ArrowSpawned", NewArComp);
-            }
-        }
-    }
 
     public void ArrowHit(float offset, float arrowSpeed, bool rightdir, Transform arrowTrans)
     {
-        ArrowHit(offset, arrowSpeed, rightdir, arrowTrans, false);
+        ArrowHit(offset, arrowSpeed, rightdir, arrowTrans.position, false);
     }
     public void ArrowHit(float offset, float arrowSpeed, bool rightdir, Transform arrowTrans, bool miniArrow)
+    {
+        ArrowHit(offset, arrowSpeed, rightdir, arrowTrans.position, miniArrow);
+    }
+    public void ArrowHit(float offset, float arrowSpeed, bool rightdir, Vector3 hitArrowPos, bool miniArrow)
     {
         float timeOffset = offset / arrowSpeed;
         //Debug.Log(timeOffset.ToString() + " DIR: " + rightdir.ToString());
@@ -997,11 +488,11 @@ public class MainManager : MonoBehaviour
                 ScreenHit();
             if (effectPower >= 1 && timeOffset < 0.05f)
             {
-                if(effectPower >= 2 && timeOffset < 0.02f)
+                if(effectPower >= 2 && timeOffset < 0.03f)
                 {
                     hitCounts[3]++;
                     soundSource.PlayHitSound(3);
-                    Instantiate(ratePrefabs[3], arrowTrans.position, Quaternion.identity);
+                    Instantiate(ratePrefabs[3], hitArrowPos, Quaternion.identity);
                     CalculateHitScore(3, miniArrow);
                     AddCombo(true);
                     //LEGENDARY
@@ -1010,7 +501,7 @@ public class MainManager : MonoBehaviour
                 {
                     hitCounts[2]++;
                     soundSource.PlayHitSound(2);
-                    Instantiate(ratePrefabs[2], arrowTrans.position, Quaternion.identity);
+                    Instantiate(ratePrefabs[2], hitArrowPos, Quaternion.identity);
                     CalculateHitScore(2, miniArrow);
                     AddCombo(true);
                     //GREAT
@@ -1020,7 +511,7 @@ public class MainManager : MonoBehaviour
             {
                 hitCounts[1]++;
                 soundSource.PlayHitSound(1);
-                Instantiate(ratePrefabs[0], arrowTrans.position, Quaternion.identity);
+                Instantiate(ratePrefabs[0], hitArrowPos, Quaternion.identity);
                 CalculateHitScore(1, miniArrow);
                 AddCombo(false);
                 //NORMAL
@@ -1033,7 +524,7 @@ public class MainManager : MonoBehaviour
                 soundSource.PlayHitSound(0);
             else
                 soundSource.PlayHitSound(0, 0.5f);
-            Instantiate(ratePrefabs[1], arrowTrans.position, Quaternion.identity);
+            Instantiate(ratePrefabs[1], hitArrowPos, Quaternion.identity);
             CalculateHitScore(0, miniArrow);
             if(!miniArrow)
                 LooseCombo();
@@ -1048,50 +539,22 @@ public class MainManager : MonoBehaviour
     {
         float joyToAdd = 0;
         float scoreToAdd = 0;
-        switch (danceStyle)
+        int joyScoreCount = 0;
+        (float, float) joyScore;
+        foreach(DanceStyle danceStyle in selectedDanceStyles)
         {
-            case 0:
-
-                switch (hitType)
-                {
-                    case 0:
-                        joyToAdd = -5; //Hardcoded for dance styles?? Seems so..
-                        scoreToAdd = 0;
-                        break;
-                    case 1:
-                        joyToAdd = 2;
-                        scoreToAdd = 5;
-                        break;
-                    case 2:
-                        joyToAdd = 3;
-                        scoreToAdd = 8;
-                        break;
-                    case 3:
-                        joyToAdd = 5;
-                        scoreToAdd = 10;
-                        break;
-                    default:
-                        Debug.Log("Erorerorerorerorerorero");
-                        break;
-                }
-                //Debug.Log($"Pre add: MtJ: {followMonsterToJoyMultiplier} | MtS: {followMonsterToScoreMultiplier} | JtA: {joyToAdd} | StA: {scoreToAdd}");
-                joyToAdd += (followMonsterToJoyMultiplier * followMonstersCount) / 2f; //Сюды вписывать :)
-                joyToAdd += (attractionToJoyMultiplier * Attraction) / 100f ;
-                scoreToAdd += (followMonsterToScoreMultiplier * followMonstersCount) / 3f; //Also style dependant + hardcoded
-                scoreToAdd += (attractionToScoreMultiplier * Attraction) / 150f;
-                //Debug.Log($"After add: JtA: {joyToAdd} | StA: {scoreToAdd}");
-
-                if (miniArrow && joyToAdd < 0) //I'll make this thing style dependant as well then lol
-                    joyToAdd = (joyToAdd / 2);
-
-                break;
-            default:
-                Debug.LogError("Watafaka mazafaka");
-                break;
+            if (danceStyle is AffectsHitScore hitScoreAffection)
+            {
+                joyScoreCount++;
+                joyScore = hitScoreAffection.CalculateHitScore(hitType, miniArrow, thisMainManager);
+                joyToAdd += joyScore.Item1;
+                scoreToAdd += joyScore.Item2;
+            }
         }
+        joyToAdd /= joyScoreCount;
+        scoreToAdd /= joyScoreCount;
         AddJoy(joyToAdd, hitType);
         AddScore(scoreToAdd, hitType);
-        //Debug.Log("Added: " + joyToAdd.ToString() + " | " + scoreToAdd.ToString());
     }
 
     public void AddJoy(float joyToAdd, int hitType)
@@ -1100,32 +563,32 @@ public class MainManager : MonoBehaviour
         switch (hitType)
         {
             case 0:
-                firstAmmount += joyHitType0Bonus;
+                firstAmmount += bonusesAndMultiplers.joyHitType0Bonus;
                 break;
             case 1:
-                firstAmmount += joyHitType1Bonus;
+                firstAmmount += bonusesAndMultiplers.joyHitType1Bonus;
                 break;
             case 2:
-                firstAmmount += joyHitType2Bonus;
+                firstAmmount += bonusesAndMultiplers.joyHitType2Bonus;
                 break;
             case 3:
-                firstAmmount += joyHitType3Bonus;
+                firstAmmount += bonusesAndMultiplers.joyHitType3Bonus;
                 break;
         }
-        firstAmmount += joyAllHitBonus;
+        firstAmmount += bonusesAndMultiplers.joyAllHitBonus;
         switch (hitType)
         {
             case 0:
-                firstAmmount *= joyHitType0Multiplier + joyAllHitMultiplier -1f + ((firstAmmount > 0f )? (joyDynamicHitMultiplier -1f):0f);
+                firstAmmount *= bonusesAndMultiplers.joyHitType0Multiplier + bonusesAndMultiplers.joyAllHitMultiplier -1f + ((firstAmmount > 0f )? (bonusesAndMultiplers.joyDynamicHitMultiplier -1f):0f);
                 break;
             case 1:
-                firstAmmount *= joyHitType1Multiplier + joyAllHitMultiplier - 1f + ((firstAmmount > 0f )? (joyDynamicHitMultiplier - 1f) : 0f);
+                firstAmmount *= bonusesAndMultiplers.joyHitType1Multiplier + bonusesAndMultiplers.joyAllHitMultiplier - 1f + ((firstAmmount > 0f )? (bonusesAndMultiplers.joyDynamicHitMultiplier - 1f) : 0f);
                 break;
             case 2:
-                firstAmmount *= joyHitType2Multiplier + joyAllHitMultiplier - 1f + ((firstAmmount > 0f )? (joyDynamicHitMultiplier - 1f) : 0f);
+                firstAmmount *= bonusesAndMultiplers.joyHitType2Multiplier + bonusesAndMultiplers.joyAllHitMultiplier - 1f + ((firstAmmount > 0f )? (bonusesAndMultiplers.joyDynamicHitMultiplier - 1f) : 0f);
                 break;
             case 3:
-                firstAmmount *= joyHitType3Multiplier + joyAllHitMultiplier - 1f + ((firstAmmount > 0f )? (joyDynamicHitMultiplier - 1f) : 0f);
+                firstAmmount *= bonusesAndMultiplers.joyHitType3Multiplier + bonusesAndMultiplers.joyAllHitMultiplier - 1f + ((firstAmmount > 0f )? (bonusesAndMultiplers.joyDynamicHitMultiplier - 1f) : 0f);
                 break;
         }
         int roundedJoy = Mathf.RoundToInt(firstAmmount);
@@ -1140,22 +603,22 @@ public class MainManager : MonoBehaviour
         float firstAmmount = amount;
         switch (hitType) {
             case -2:
-                firstAmmount += scoreMonsterBonus;
+                firstAmmount += bonusesAndMultiplers.scoreMonsterBonus;
                 break;
             case 0:
-                firstAmmount += scoreHitType0Bonus;
+                firstAmmount += bonusesAndMultiplers.scoreHitType0Bonus;
                 break;
             case 1:
-                firstAmmount += scoreHitType1Bonus;
+                firstAmmount += bonusesAndMultiplers.scoreHitType1Bonus;
                 break;
             case 2:
-                firstAmmount += scoreHitType2Bonus;
+                firstAmmount += bonusesAndMultiplers.scoreHitType2Bonus;
                 break;
             case 3:
-                firstAmmount += scoreHitType3Bonus;
+                firstAmmount += bonusesAndMultiplers.scoreHitType3Bonus;
                 break;
         }
-        firstAmmount += scoreAllHitBonus;
+        firstAmmount += bonusesAndMultiplers.scoreAllHitBonus;
 
         firstAmmount = Mathf.Clamp(firstAmmount, 0, float.MaxValue); //Why TF did I add that here? Does it even.. do anything?
         float unroundedScore = multiplier * firstAmmount;
@@ -1163,23 +626,23 @@ public class MainManager : MonoBehaviour
         switch (hitType)
         {
             case -2:
-                unroundedScore *= scoreMonsterMultiplier + scoreAllHitMultiplier - 1f;
+                unroundedScore *= bonusesAndMultiplers.scoreMonsterMultiplier + bonusesAndMultiplers.scoreAllHitMultiplier - 1f;
                 break;
             case 0:
-                unroundedScore *= scoreHitType0Multiplier + scoreAllHitMultiplier - 1f;
+                unroundedScore *= bonusesAndMultiplers.scoreHitType0Multiplier + bonusesAndMultiplers.scoreAllHitMultiplier - 1f;
                 break;
             case 1:
-                unroundedScore *= scoreHitType1Multiplier + scoreAllHitMultiplier - 1f;
+                unroundedScore *= bonusesAndMultiplers.scoreHitType1Multiplier + bonusesAndMultiplers.scoreAllHitMultiplier - 1f;
                 break;
             case 2:
-                unroundedScore *= scoreHitType2Multiplier + scoreAllHitMultiplier - 1f;
+                unroundedScore *= bonusesAndMultiplers.scoreHitType2Multiplier + bonusesAndMultiplers.scoreAllHitMultiplier - 1f;
                 break;
             case 3:
-                unroundedScore *= scoreHitType3Multiplier + scoreAllHitMultiplier - 1f;
+                unroundedScore *= bonusesAndMultiplers.scoreHitType3Multiplier + bonusesAndMultiplers.scoreAllHitMultiplier - 1f;
                 break;
         }
         score += Mathf.RoundToInt(unroundedScore);
-        scoreText.text = score.ToString();
+        mainUiHandler.SetScoreText(score.ToString());
     }
     public void AddCombo(bool greatOrHigher)
     {
@@ -1213,189 +676,55 @@ public class MainManager : MonoBehaviour
     }
     public void ChangeAttr(int bywhat, int mode) //mode - 0) hit (first remove bonus then monster then base); 1) monster (added to monster bonus if attraction is over maximum); 2) monster loose (remove monster bonus attraction); 3) bonus (added to bonus if attraction is over maximum); 4) blink (thats it); 5) bonus loose (for whenewer the bonus ends, removes bonus attraction, just like monster loose does)
     {
-        switch (mode)
-        {
-            case 0:
-                if(bywhat > bonusAttraction)
-                {
-                    bywhat -= bonusAttraction;
-                    bonusAttraction = 0;
-                    if(bywhat > monsterBonusAttraction)
-                    {
-                        bywhat -= monsterBonusAttraction;
-                        monsterBonusAttraction = 0;
-                        baseAttraction = Mathf.Clamp(baseAttraction - bywhat, 0, maxBaseAttraction);
-                    }
-                    else
-                    {
-                        //Debug.Log("Should Go here");
-                        monsterBonusAttraction -= bywhat;
-                    }
-                }
-                else
-                {
-                    bonusAttraction -= bywhat;
-                }
-                break;
-            case 1:
-                if (baseAttraction + bywhat > maxBaseAttraction)
-                {
-                    bywhat -= (maxBaseAttraction - baseAttraction);
-                    baseAttraction = maxBaseAttraction;
-                    //Debug.Log(bywhat);
-                    monsterBonusAttraction = Mathf.Clamp(monsterBonusAttraction + bywhat, 0, maxMonsterBonusAttraction);
-                    //Debug.Log((baseAttraction + monsterBonusAttraction).ToString());
-                }
-                else
-                    baseAttraction += bywhat;
-                break;
-            case 2:
-                if(monsterBonusAttraction - bywhat > 0)
-                {
-                    monsterBonusAttraction -= bywhat;
-                }
-                else
-                {
-                    monsterBonusAttraction = 0;
-                }
-                break;
-            case 3:
-                if (baseAttraction + bywhat > maxBaseAttraction)
-                {
-                    bywhat -= (maxBaseAttraction - baseAttraction);
-                    baseAttraction = maxBaseAttraction;
-                    bonusAttraction = bonusAttraction + bywhat;
-                   
-                }
-                else
-                    baseAttraction += bywhat;
-                break;
-            case 4:
-                Debug.Log("Blinkin"); //okay, now what?
-                break;
-            case 5:
-                if(bonusAttraction - bywhat > 0)
-                {
-                    bonusAttraction -= bywhat;
-                }
-                else
-                {
-                    bonusAttraction = 0;
-                }
-                break;
-            default:
-                Debug.LogError("ERROR Mode ERROR selected ERROR the ERROR humanity ERROR is ERROR fucERRORked");
-                break;
-        }
-        Attraction = baseAttraction + monsterBonusAttraction + bonusAttraction;
-        attractionText.text = Attraction.ToString();
-        if (Attraction > maxBaseAttraction)
-            OverAttractive = true;
-        else
-            OverAttractive = false;
-        if (bonusAttraction > 0)
-            itemBonusAttr = true;
-        else
-            itemBonusAttr = false;
-        if (Attraction <= maxBaseAttraction / 2f)
-        {
-            attractionAnimator.SetBool("LowAttraction", true);
-            attractionAnimator.SetBool("OverAttraction", false);
-            attractionAnimator.SetBool("BonusAttraction", false);
-            attractionAnimator.SetBool("KeepShown", true);
-            //attractionText.material = attractionTextPink;
-            attractionText.fontMaterial = attractionTextPink;
-            //attractionText.fontSharedMaterial = attractionTextPink;
-        }
-        else if (itemBonusAttr) //CHANGE THAT!!!!
-        {
-            attractionAnimator.SetBool("LowAttraction", false);
-            attractionAnimator.SetBool("OverAttraction", false);
-            attractionAnimator.SetBool("BonusAttraction", true);
-            attractionAnimator.SetBool("KeepShown", true);
-            attractionText.fontMaterial = attractionTextBlue;
-        }
-        else if(OverAttractive)
-        {
-            attractionAnimator.SetBool("LowAttraction", false);
-            attractionAnimator.SetBool("OverAttraction", true);
-            attractionAnimator.SetBool("BonusAttraction", false);
-            attractionAnimator.SetBool("KeepShown", true);
-            attractionText.fontMaterial = attractionTextGreen;
-        }
-        else
-        {
-            attractionAnimator.SetBool("LowAttraction", false);
-            attractionAnimator.SetBool("OverAttraction", false);
-            attractionAnimator.SetBool("BonusAttraction", false);
-            attractionAnimator.SetBool("KeepShown", false);
-            attractionText.fontMaterial = attractionTextPink;
-        }
-        //attractionText.UpdateFontAsset();
-        attractionAnimator.SetTrigger("Blink");
+        playerStats.ChangeAttraction(bywhat, mode);
     }
     public void DisplayCombo(bool displayHide)
     {
-        comboText.text = (greatCombo?combo.ToString()+ "•": combo.ToString());
+        mainUiHandler.SetComboText(greatCombo?combo.ToString()+ "•": combo.ToString());
         if (displayHide)
-            comboUI.SetTrigger("Show");
+            mainUiHandler.SetComboUITrigger("Show");
         else
-            comboUI.SetTrigger("Hide");
+            mainUiHandler.SetComboUITrigger("Hide");
+    }
+
+    public void ChangeUIType(bool uiType)
+    {
+        bottomTextHandler.ChangeUIType(uiType);
     }
     public void DisplayMultiplier()
     {
-        multiplyerText.text = "x" + Mathf.RoundToInt(multiplier * scoreAllHitMultiplier).ToString(); // Kind of a poor way of adding scoreBonusMultiplier, but it's fii~~~~~iine Upd: Idk i'll need to do something with all that Upd2: Idk added allHitMult. or smth...
+        mainUiHandler.SetMultiplierText("x" + Mathf.RoundToInt(multiplier * bonusesAndMultiplers.scoreAllHitMultiplier).ToString()); // Kind of a poor way of adding scoreBonusMultiplier, but it's fii~~~~~iine Upd: Idk i'll need to do something with all that Upd2: Idk added allHitMult. or smth...
         if (lastMultiplier < Mathf.RoundToInt(multiplier))
         {
-            comboUI.SetTrigger("ShowM");
+            mainUiHandler.SetComboUITrigger("ShowM");
             if (lastMultiplier == 3)
                 soundSource.PlayOtherSound(1);
         }
         if (lastMultiplier > Mathf.RoundToInt(multiplier))
-            comboUI.SetTrigger("HideM");
+            mainUiHandler.SetComboUITrigger("HideM");
     }
     public void KillPlayer()
     {
         Debug.Log("KILLING1");
-        NoTimeout = true;
-        NotSpawnArrows = true;
-        DisableSpawn = true;
-        disableMoving = true;
-        disableItemUse = true;
-        EnableCurses = false;
-        NoAfterLocationChange = true;
-        if (maxCombo < combo)
-            maxCombo = combo;
-        CharacComp.Die();
-        HideAllUiForever();
-        ApplyXP();
-        if (!useDebugPlayerData)
-        {
-            MenuDataManager.saveData.item1Id = itemHolder.item1Id;
-            MenuDataManager.saveData.item2Id = itemHolder.item2Id;
-            MenuDataManager.saveData.item3Id = itemHolder.item3Id;
-            if(MenuDataManager.saveData.playerXp - playerStartXp > MenuDataManager.saveData.levelDatas[levelId].maxScore)
-                MenuDataManager.saveData.levelDatas[levelId].maxScore = MenuDataManager.saveData.playerXp - playerStartXp;
-            SaveSystem.Save(MenuDataManager.saveData);
-            Instantiate(endScreenPrefab, Vector3.zero, Quaternion.identity, allUiHolder).GetComponent<EndWindow>().EndWindowStats(true, false, MenuDataManager.saveData);
-        }
-        else
-        {
-            Instantiate(endScreenPrefab, Vector3.zero, Quaternion.identity, allUiHolder).GetComponent<EndWindow>().EndWindowStats(true, true, debugPlayerData);
-        }
-        StartCoroutine(LowerEndStageVolume());
+        GameEnded(false);
     }
     public void CompleteLevel()
     {
+        GameEnded(true);
+    }
+    private void GameEnded(bool levelCompleted)
+    {
         NoTimeout = true;
-        NotSpawnArrows = true;
+        arrowHandler.notSpawnArrows = true;
         DisableSpawn = true;
         disableMoving = true;
         disableItemUse = true;
-        EnableCurses = false;
+        curseHandler.ToggleCurse(false);
         NoAfterLocationChange = true;
         if (maxCombo < combo)
             maxCombo = combo;
+        if (!levelCompleted)
+            CharacComp.Die();
         HideAllUiForever();
         ApplyXP();
         if (!useDebugPlayerData)
@@ -1405,13 +734,14 @@ public class MainManager : MonoBehaviour
             MenuDataManager.saveData.item3Id = itemHolder.item3Id;
             if (MenuDataManager.saveData.playerXp - playerStartXp > MenuDataManager.saveData.levelDatas[levelId].maxScore)
                 MenuDataManager.saveData.levelDatas[levelId].maxScore = MenuDataManager.saveData.playerXp - playerStartXp;
-            MenuDataManager.saveData.levelDatas[levelId].completed = true;
+            if(levelCompleted)
+                MenuDataManager.saveData.levelDatas[levelId].completed = true;
             SaveSystem.Save(MenuDataManager.saveData);
-            Instantiate(endScreenPrefab, Vector3.zero, Quaternion.identity, allUiHolder).GetComponent<EndWindow>().EndWindowStats(false, false, MenuDataManager.saveData);
+            Instantiate(endScreenPrefab, Vector3.zero, Quaternion.identity, allUiHolder).GetComponent<EndWindow>().EndWindowStats(!levelCompleted, false, MenuDataManager.saveData);
         }
         else
         {
-            Instantiate(endScreenPrefab, Vector3.zero, Quaternion.identity, allUiHolder).GetComponent<EndWindow>().EndWindowStats(false, true, debugPlayerData);
+            Instantiate(endScreenPrefab, Vector3.zero, Quaternion.identity, allUiHolder).GetComponent<EndWindow>().EndWindowStats(!levelCompleted, true, debugPlayerData);
         }
         StartCoroutine(LowerEndStageVolume());
     }
@@ -1445,72 +775,28 @@ public class MainManager : MonoBehaviour
     //Just came up with meme no one will understand, here it is: 16B2 16BA 16D6 16DA 0020 16CF 16C1
     public void HideAllUiForever()
     {
-        downUI.SetTrigger("HideForewer");
-        barHolderAnimator.SetTrigger("HideForewer");
-        monsterCounterHolderAnimator.SetTrigger("HideForewer");
-        comboScoreAnimator.SetTrigger("HideForewer");
-        UUHAIHAnimator.SetTrigger("HideForewer");
-        DisableCurseEffects();
+        mainUiHandler.HideAllUI();
+        bottomTextHandler.HideBottomUI();
+        curseHandler.DisableCurseEffects();
         DestroyAllArrows();
     }
     public void AddMoney(int amount)
     {
-        coinCountAnimator.SetTrigger("Jump");
         if (!useDebugPlayerData)
         {
             MenuDataManager.saveData.moneyAmount += amount;
-            coinCountText.text = MenuDataManager.saveData.moneyAmount.ToString();
+            mainUiHandler.UpdateCoinUI(MenuDataManager.saveData.moneyAmount.ToString());
         }
         else
         {
             debugPlayerData.moneyAmount += amount;
-            coinCountText.text = debugPlayerData.moneyAmount.ToString();
+            mainUiHandler.UpdateCoinUI(debugPlayerData.moneyAmount.ToString());
         }
     }
     public void ScreenHit()
     {
         Camera.GetComponent<Animator>().SetTrigger("Hit");
         bigPP.GetComponent<Animator>().SetTrigger("Hit");
-    }
-
-    void HandleDialogue()
-    {
-        int dialLen = Hordes[HordeCounter].npcLines.Length;
-        bool dialRand = Hordes[HordeCounter].npcLines.Length == Hordes[HordeCounter].npcLinesRandomizer.Length;
-        if (dialogueCounter < dialLen)
-        {
-            if((dialogueCounter + 1) * dialogueLineLength < RMaxTime - RTime)
-            {
-                dialogueCounter++;
-                if(!dialRand || Hordes[HordeCounter].npcLinesRandomizer[dialogueCounter] < 2)
-                    DisplayText(GetNPCNameById(Hordes[HordeCounter].npcKind), LocalisationSystem.GetLocalizedValue(Hordes[HordeCounter].npcLines[dialogueCounter]));
-                else
-                    DisplayText(GetNPCNameById(Hordes[HordeCounter].npcKind), LocalisationSystem.GetLocalizedValue(Hordes[HordeCounter].npcLines[dialogueCounter] + "_r" + Random.Range(1, Hordes[HordeCounter].npcLinesRandomizer[dialogueCounter] + 1).ToString()));
-            }
-        }
-        else
-        {
-            ChangeUIType(false);
-            dialogueMode = false;
-        }
-    }
-
-    public void DisplayItemText(int itemId)
-    {
-        DisplayText(LocalisationSystem.GetLocalizedValue("item_name_id" + itemId.ToString()), LocalisationSystem.GetLocalizedValue("item_desc_id" + itemId.ToString()));
-    }
-    public  void DisplayText(string title, string text)
-    {
-        textGuiTitle.text = title;
-        //textGuiText.text = text;
-        textGuiText.text = "";
-        StartCoroutine(SmoothShowText(text));
-        ChangeUIType(true);
-    }
-
-    public void ChangeUIType(bool TextUI)
-    {
-        downUI.SetBool("TextUI", TextUI);
     }
     public void ChangeStageVolume(float soundVolume, float musicVolume)
     {
@@ -1529,22 +815,6 @@ public class MainManager : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
     }
-
-    public IEnumerator SmoothShowText(string text)
-    {
-        bool skipArgument = false;
-        foreach (char ch in text)
-        {
-            textGuiText.text += ch;
-            if (ch == '<')
-                skipArgument = true;
-            if (ch == '>')
-                skipArgument = false;
-            if(!skipArgument)
-                yield return new WaitForSeconds(0.025f);
-        }
-        yield return null;
-    }
     public IEnumerator CountDown()
     {
         yield return new WaitForSeconds(3f);
@@ -1560,65 +830,36 @@ public class MainManager : MonoBehaviour
         yield return new WaitForSeconds(retime);
         ChangeAttr(boost, 5);
     }
-    public IEnumerator ShadowCurse(float final)
-    {
-        float LocalTimer = 0f;
-        if(final == 1f)
-            curseVolumeObj.profile = shadowCurseVolumeProfile;
-        while(LocalTimer < 1f)
-        {
-            curseVolumeObj.weight = Mathf.Lerp(curseVolumeObj.weight, final, 2f * Time.deltaTime);
-            LocalTimer += Time.deltaTime;
-            yield return new WaitForEndOfFrame();
-        }
-    }
-    public IEnumerator RageCurse(float final)
-    {
-        float LocalTimer = 0f;;
-        if(final == 1f)
-            curseVolumeObj.profile = rageCurseVolumeProfile;
-        if(final == 1f)
-            StartCoroutine(ChangeArrowSpeed(0.2f,6f));
-        else
-            StartCoroutine(ChangeArrowSpeed(0.2f,-6f));
-        while (LocalTimer < 1f)
-        {
-            curseVolumeObj.weight = Mathf.Lerp(curseVolumeObj.weight, final, 2f * Time.deltaTime);
-            LocalTimer += Time.deltaTime;
-            yield return new WaitForEndOfFrame();
-        }
-    }
     public IEnumerator ChangeArrowSpeed(float sleepFor, float speedChange)
     {
         bool startNSA;
-        startNSA = NotSpawnArrows;
-        //Debug.Log(startNSA);
-        NotSpawnArrows = true;
-        AroowSpeed += speedChange;
+        startNSA = arrowHandler.notSpawnArrows;
+        arrowHandler.notSpawnArrows = true;
+        arrowHandler.arrowSpeed += speedChange;
         speedChangeVisual.Popup();
-        yield return new WaitForSeconds(NextBeatTime - Timer + TimeBetweenBeats);
+        yield return new WaitForSeconds(nextBeatTime - Timer + timeBetweenBeats);
         foreach (GameObject arow in Arrows)
         {
             Destroy(arow);
         }
         Arrows.Clear();
         yield return new WaitForSeconds(sleepFor);
-        NotSpawnArrows = startNSA;
+        arrowHandler.notSpawnArrows = startNSA;
     }
     public IEnumerator AfterMoveLocation(float standingTime)
     {
         if(standingTime > 0f)
         {
             Debug.Log("StandingForSeconds: " + standingTime.ToString());
-            yield return new WaitForSeconds(( standingTime + 0.1f) - TimeToGo);
-            NotSpawnArrows = false;
-            yield return new WaitForSeconds(TimeToGo - 0.1f);
+            yield return new WaitForSeconds(( standingTime + 0.1f) - arrowTravelTime);
+            arrowHandler.notSpawnArrows = false;
+            yield return new WaitForSeconds(arrowTravelTime - 0.1f);
         }
         else
         {
-            yield return new WaitForSeconds(2.1f - TimeToGo);
-            NotSpawnArrows = false;
-            yield return new WaitForSeconds(TimeToGo - 0.1f);
+            yield return new WaitForSeconds(2.1f - arrowTravelTime);
+            arrowHandler.notSpawnArrows = false;
+            yield return new WaitForSeconds(arrowTravelTime - 0.1f);
         }
         NoTimeout = false;
         OnNewLocation();

@@ -25,7 +25,7 @@ public class ItemDrop : MonoBehaviour
         itemId = itemIds[Random.Range(0, itemIds.Length)];
         //!!itemSprite.sprite = MainManager.itemSprites[itemId];
         itemSprite.sprite = ItemSpriteDictionary.itemSprites[itemId];
-        manager.DisplayItemText(itemId);
+        manager.bottomTextHandler.DisplayItemText(itemId);
         freeSpace = manager.itemHolder.CheckForSpace();
         if (!freeSpace)
             manager.itemHolder.SpawnInventoryWarning();
@@ -34,12 +34,12 @@ public class ItemDrop : MonoBehaviour
 
     private void Update()
     {
-        if ((Input.GetButtonDown("R") || (manager.mobileInput && Input.GetMouseButton(0))) && canPickup)
+        if ((Input.GetButtonDown("R") || (InputHandler.mobileInput && Input.GetMouseButton(0))) && canPickup)
         {
             if(freeSpace)
             {
                 Pickup();
-                if (manager.mobileInput)
+                if (InputHandler.mobileInput)
                     manager.PressThis("R");
             }
             else
@@ -50,7 +50,7 @@ public class ItemDrop : MonoBehaviour
                 }
             }
         }
-        if(canPickup && manager.RTime <= 0f)
+        if(canPickup && manager.timeRemaining <= 0f)
         {
             if(!manager.itemHolder.CheckForSpace())
                 manager.itemHolder.ClearInventoryWarning();

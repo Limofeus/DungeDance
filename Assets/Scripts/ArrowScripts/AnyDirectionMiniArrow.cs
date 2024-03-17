@@ -6,10 +6,10 @@ public class AnyDirectionMiniArrow : Arrow
 {
     public override void UpdateStuff()
     {
-        transform.localPosition = transform.localPosition + Vector3.left * Speed * Time.deltaTime;
+        transform.localPosition = transform.localPosition + Vector3.left * arrowSpeed * Time.deltaTime;
         if (transform.localPosition.x < -3 && !disabled)
         {
-            Yes("POH");
+            ArrowHit("POH");
         }
         if (transform.localPosition.x < -15)
             Despawn();
@@ -26,25 +26,25 @@ public class AnyDirectionMiniArrow : Arrow
         */
         if (Auto && transform.localPosition.x < 0 && !disabled)
         {
-            Manager.PressThis(direction);
+            mainManager.PressThis(direction);
         }
     }
-    public override void Yes(string Direction)
+    public override void ArrowHit(string Direction)
     {
-        if (Manager.Monster != null)
+        if (mainManager.Monster != null)
         {
             if (!disabled)
             {
                 if (Direction != "POH")
                 {
                     float offset = Mathf.Abs(transform.localPosition.x);
-                    Manager.ArrowHit(offset, Speed, true, transform);
-                    arrowVisual.Effect(offset / Speed, true);
+                    mainManager.ArrowHit(offset, arrowSpeed, true, transform);
+                    arrowVisual.Effect(offset / arrowSpeed, true);
                 }
                 else
                 {
-                    Manager.ArrowHit(0f, Speed, false, transform, true);
-                    arrowVisual.Effect(0f / Speed, false);
+                    mainManager.ArrowHit(0f, arrowSpeed, false, transform, true);
+                    arrowVisual.Effect(0f / arrowSpeed, false);
                 }
                 disabled = true;
             }

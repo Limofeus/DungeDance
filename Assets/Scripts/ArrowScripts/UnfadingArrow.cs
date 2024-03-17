@@ -13,7 +13,7 @@ public class UnfadingArrow : Arrow
     }
     public override void UpdateStuff()
     {
-        if (transform.localPosition.x/Speed < 0.4f && !disabled)
+        if (transform.localPosition.x/arrowSpeed < 0.4f && !disabled)
         {
             visualArrowSR.color = new Color(1f, 1f, 1f, Mathf.Lerp(visualArrowSR.color.a, 1f, 8f * Time.deltaTime));
         }

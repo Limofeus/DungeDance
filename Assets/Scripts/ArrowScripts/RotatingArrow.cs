@@ -13,7 +13,7 @@ public class RotatingArrow : Arrow
     }
     public override void UpdateStuff()
     {
-        if (transform.localPosition.x / Speed < 0.4f)
+        if (transform.localPosition.x / arrowSpeed < 0.4f)
         {
             visualArrowTrans.localRotation = Quaternion.Euler(0f, 0f, Mathf.Lerp(visualArrowTrans.localRotation.eulerAngles.z, 0f, Time.deltaTime * 18f));
         }
