@@ -78,7 +78,7 @@ public class LevelSelector : MonoBehaviour
             itemUnlockDataNeedsUpdate = false;
             for (int i = 0; i < itemUnlocks.Length; i++)
             {
-                Debug.Log("questionMark case" + itemUnlockDataTemp[itemUnlocksIds[i]].ToString() + "  " + gameObject.name);
+                //Debug.Log("questionMark case" + itemUnlockDataTemp[itemUnlocksIds[i]].ToString() + "  " + gameObject.name);
                 itemUnlocks[i].SetUnlockment(itemUnlockDataTemp[itemUnlocksIds[i]]);
             }
         }

@@ -16,7 +16,7 @@ public class LocalisationSystem
 
     public static void Init()
     {
-        //Debug.Log("LocalizationInitialized:");
+        Debug.Log("LocalizationInitialized");
         CSVLoader csvLoader = new CSVLoader();
         csvLoader.LoadCSV();
         switch (language)
@@ -32,6 +32,7 @@ public class LocalisationSystem
                 localizedDictionary = csvLoader.GetDictionaryValues("jp");
                 break;
         }
+        isInit = true;
     }
 
     public static string GetLocalizedValue(string key)
