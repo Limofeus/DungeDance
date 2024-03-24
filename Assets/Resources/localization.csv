@@ -14,7 +14,7 @@
 "ui_mainmenu_choose_name_character_limit", "Character limit", "Лимит по длине"
 "ui_mainmenu_choose_name_invalid_symbol", "Invalid symbol", "Недопустимый символ"
 "ui_mainmenu_choose_name_begin_game", "BEGIN THE GAME", "НАЧАТЬ ИГРУ"
-"ui_settings_button_erase_data", "ERASE	ALL DATA", "СТЕРЕТЬ СОХРОНЕНИЕ"
+"ui_settings_button_erase_data", "ERASE ALL DATA", "СТЕРЕТЬ СОХРОНЕНИЕ"
 "ui_settings_label_settings", "SETTINGS", "НАСТРОЙКИ"
 "ui_settings_label_music_volume", "Music volume", "Громкость музыки"
 "ui_settings_label_sound_volume", "Sound volume", "Громкость звука"
