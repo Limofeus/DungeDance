@@ -30,7 +30,7 @@ public class UltraLiteDBTest : MonoBehaviour
     [SerializeField] private bool testLoadCB = false;
     void Start()
     {
-        UpsertTest();
+        //UpsertTest();
     }
 
     private void Update()

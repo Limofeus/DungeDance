@@ -10,21 +10,32 @@ public class SaveDataFirstLoad : MonoBehaviour
     public MainMenuScene mainMenuScene;
     private void Awake()
     {
-        string dataPath = Application.persistentDataPath + "/DungeDanceData.aboba"; //<- TMP - TEMPERORY!!! (change later) (ALREADY DID) IN TWO SCRIPTS!!! (3/3)
+        //string dataPath = Application.persistentDataPath + "/DungeDanceData.aboba"; //<- TMP - TEMPERORY!!! (change later) (ALREADY DID) IN TWO SCRIPTS!!! (3/3)
+        string dataPath = SaveSystem.dataPath;
         if (!File.Exists(dataPath))
         {
-            BinaryFormatter binaryFormatter = new BinaryFormatter();
-            FileStream fileStream = new FileStream(dataPath, FileMode.Create);
-            SaveData data = startingData;
-            binaryFormatter.Serialize(fileStream, data);
-            fileStream.Close();
-            textMeshPro.text = LocalisationSystem.GetLocalizedValue("ui_mainmenu_button_newgame");
-            mainMenuScene.firstTimeOpen = true;
+            if (!SaveSystem.useUltraLiteDB)
+            {
+                BinaryFormatter binaryFormatter = new BinaryFormatter();
+                FileStream fileStream = new FileStream(dataPath, FileMode.Create);
+                SaveData data = startingData;
+                binaryFormatter.Serialize(fileStream, data);
+                fileStream.Close();
+                textMeshPro.text = LocalisationSystem.GetLocalizedValue("ui_mainmenu_button_newgame");
+                mainMenuScene.firstTimeOpen = true;
+            }
+            else
+            {
+                SaveSystem.Save(startingData);
+                textMeshPro.text = LocalisationSystem.GetLocalizedValue("ui_mainmenu_button_newgame");
+                mainMenuScene.firstTimeOpen = true;
+            }
         }
         else
         {
             SaveData saveData = SaveSystem.Load();
-            if(saveData.playerName == "")
+            Debug.Log(saveData.playerName);
+            if(saveData.playerName == "" || saveData.playerName == "ULDBSTARTNAME###")
             {
                 textMeshPro.text = LocalisationSystem.GetLocalizedValue("ui_mainmenu_button_newgame");
                 mainMenuScene.firstTimeOpen = true;
