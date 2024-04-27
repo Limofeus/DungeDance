@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,15 +13,18 @@ namespace Shop
         private SaveData _saveData;
         private int _updatePrice = 1000;
         private bool _isDiscount = true;
+        public event Action ItemBought;
 
         private void OnEnable()
         {
             UpdateSaveData();
             _updateButton.OnClick += TryUpdateItemList;
+            _updateButton.OnSelect += UpdateButtonSelected;
+
             foreach (var item in _itemCells)
             {
-                item.OnSelect += ChangeDescription;
-                item.OnClick += BuyItem;
+                item.OnSelect += ItemSelected;
+                item.OnClick += TryBuyItem;
             }
         }
 
@@ -29,23 +33,42 @@ namespace Shop
             _updateButton.OnClick -= TryUpdateItemList;
             foreach (var item in _itemCells)
             {
-                item.OnSelect -= ChangeDescription;
-                item.OnClick -= BuyItem;
+                item.OnSelect -= ItemSelected;
+                item.OnClick -= TryBuyItem;
             }
             Save();
         }
-        private void ChangeDescription(int id)
+
+        private void ItemSelected(int cellId)
         {
+            ChangeDescription(cellId);
+        }        
+        
+        private void UpdateButtonSelected()
+        {
+            ChangeDescription();
+        }
+
+        private void ChangeDescription(int cellId)
+        {
+            var id = _itemCells[cellId].ItemID;
             _itemDescription.Init(id);
         }
 
-        private void BuyItem(int cellId)
+        private void ChangeDescription()
+        {
+            _itemDescription.Init("reroll_name", "reroll_desk");
+        }
+
+
+        private void TryBuyItem(int cellId)
         {
             var price = _itemCells[cellId].Price;
             if (_saveData.moneyAmount >= price)
             {
                 _saveData.moneyAmount -= price;
                 _itemCells[cellId].IsSold();
+                ItemBought?.Invoke();
             }
         }
 
@@ -122,7 +145,7 @@ namespace Shop
 
         private T GetRandomItemFrom<T>(List<T> list)
         {
-            var id = Random.Range(0, list.Count);
+            var id = UnityEngine.Random.Range(0, list.Count);
             return list[id];
         }
     }

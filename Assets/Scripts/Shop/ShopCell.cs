@@ -17,11 +17,12 @@ namespace Shop
         private Animator _animator;
         private const string _isSelect = "IsSelect";
         private const string _isBuy = "IsBuy";
+        private const string _isStart = "IsStart";
         private Collider2D _collider;
-        private int _itemID;
         private bool _mouseOnButton;
         public event Action<int> OnSelect;
         public event Action<int> OnClick;
+        public int ItemID { get; private set; }
 
         private Sprite[] _itemSprites => ItemSpriteDictionary.itemSprites;
         private int[] _itemRarity => ItemSpriteDictionary.itemRarity;
@@ -35,7 +36,7 @@ namespace Shop
 
         public void Init(int id, bool isDiscount = false)
         {
-            _itemID = id;
+            ItemID = id;
             _mainSprite.sprite = _itemSprites[id];
             _raritySprite.sprite = _itemSprites[id];
             _raritySprite.color = _rarityColor[_itemRarity[id]];
@@ -45,6 +46,8 @@ namespace Shop
             _discountSprite.gameObject.SetActive(isDiscount);
             _priceText.text = Price.ToString();
             _collider.enabled = true;
+
+            _animator.SetTrigger(_isStart);
         }
 
         public void IsClosed()
@@ -58,11 +61,11 @@ namespace Shop
         public void IsSold()
         {
             _animator.SetTrigger(_isBuy);
-            _itemID = default;
+            ItemID = default;
             _raritySprite.sprite = default;
             _priceText.text = "SOLD";
             _collider.enabled = false;
-            _discountSprite.enabled = false;
+            _discountSprite.gameObject.SetActive(false);
         }
 
         private void Update()
@@ -75,7 +78,7 @@ namespace Shop
         {
             _animator.SetBool(_isSelect, true);
             _mouseOnButton = true;
-            OnSelect?.Invoke(_itemID);
+            OnSelect?.Invoke(_cellID);
         }
 
         private void OnMouseExit()

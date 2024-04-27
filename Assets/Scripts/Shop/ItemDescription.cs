@@ -16,6 +16,12 @@ namespace Shop
             _name.text = LocalisationSystem.GetLocalizedValue("item_name_id" + id.ToString());
             _description.text = LocalisationSystem.GetLocalizedValue("item_desc_id" + id.ToString());
         }
+
+        public void Init(string nameKey, string descriptionKey)
+        {
+            _name.text = LocalisationSystem.GetLocalizedValue(nameKey);
+            _description.text = LocalisationSystem.GetLocalizedValue(descriptionKey);
+        }
     }
 
 }
