@@ -39,7 +39,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - MyValueYe: 0
+    - MyValueYe: 0.16285715
     m_Colors:
     - Color_CBD21BFF: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
