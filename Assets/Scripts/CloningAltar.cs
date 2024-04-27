@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class CloningAltar : MonoBehaviour
 {
     [SerializeField] private GeneralizedItemIcon[] playerItemIcons;
+    [SerializeField] private CloneAltarButton cloneAltarButton;
     private int selectedItemId;
     public SaveData saveData;
     void Start()
@@ -20,6 +22,8 @@ public class CloningAltar : MonoBehaviour
     {
         Debug.Log("Recieved event");
         playerItemIcons[id].HideShowItem(!playerItemIcons[id].isShown);
+        cloneAltarButton.UpdateCloneButton(saveData.item1Id, "222");
+        cloneAltarButton.ChangeMode(CloneAltarButton.InteractMode.Normal);
     }
 
     void Update()
