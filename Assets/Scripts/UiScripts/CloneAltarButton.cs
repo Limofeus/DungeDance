@@ -8,6 +8,8 @@ public class CloneAltarButton : MonoBehaviour
 {
     public enum InteractMode {Hidden, Locked, Normal}
 
+    [SerializeField] private CloningAltar cloningAltar;
+
     [SerializeField] private Transform scalingTransform;
     [SerializeField] private Transform priceHolderTransform;
     [SerializeField] private float lerpPower;
@@ -46,6 +48,10 @@ public class CloneAltarButton : MonoBehaviour
             if(mouseOver && interactMode == InteractMode.Normal)
             {
                 LerpScaleAndColor(Vector3.one * unselectedSelectedScale.y, selectedColor, 1f);
+                if (Input.GetMouseButtonDown(0))
+                {
+                    cloningAltar.TryCloneItem();
+                }
             }
             else
             {

@@ -1375,6 +1375,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: edacc088cab76b94d8c206681f22bd9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cloningAltar: {fileID: 1900815559}
   scalingTransform: {fileID: 851045648}
   priceHolderTransform: {fileID: 563839169}
   lerpPower: 10

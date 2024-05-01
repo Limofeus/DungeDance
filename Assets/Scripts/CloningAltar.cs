@@ -80,9 +80,7 @@ public class CloningAltar : MonoBehaviour
     {
         if(selectedItemId >= 0)
         {
-            //CHANGE PRICE FUNTION
-            int clonePrice = 200 *
-            (ItemSpriteDictionary.itemRarity[selectedItemId] + 1);
+            int clonePrice = CalcClonePrice(ItemSpriteDictionary.itemRarity[selectedItemId]);
 
             cloneAltarButton.UpdateCloneButton(selectedItemId, clonePrice.ToString());
 
@@ -117,6 +115,26 @@ public class CloningAltar : MonoBehaviour
             cloneHintText.text = "";
         }
         UpdateCloneButton();
+    }
+
+    public void TryCloneItem()
+    {
+        int clonePrice = CalcClonePrice(ItemSpriteDictionary.itemRarity[selectedItemId]);
+
+        if (clonePrice <= saveData.moneyAmount && CheckForStorage() >= 0)
+        {
+            saveData.moneyAmount -= clonePrice;
+            saveData.storageChestData.storageItemIds[CheckForStorage()] = selectedItemId;
+            Debug.Log("Item cloned");
+            UpdateCloneButton();
+            UpdatePlayerMoneyLabel();
+            ApplySaveData();
+        }
+    }
+    private int CalcClonePrice(int itemRarity)
+    {
+        //CHANGE PRICE FUNTION
+        return 200 * (itemRarity + 1);
     }
     private int CheckForStorage()
     {
