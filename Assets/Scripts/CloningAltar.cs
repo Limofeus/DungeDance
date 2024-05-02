@@ -11,6 +11,11 @@ public class CloningAltar : MonoBehaviour
     [SerializeField] private CloneAltarButton cloneAltarButton;
     [SerializeField] private TextMeshPro playerMoneyLabel;
     [SerializeField] private TextMeshPro cloneHintText;
+
+    [SerializeField] private Transform animStartTransform;
+    [SerializeField] private Transform animEndTransform;
+    [SerializeField] private GameObject cloneEffectTransform;
+
     private int selectedItemSlot = 0; // (STARTS FROM 1!!) 0 - none, 1 - 1, 2 - 2, etc.
     private int selectedItemId = -1;
     public SaveData saveData;
@@ -123,6 +128,9 @@ public class CloningAltar : MonoBehaviour
 
         if (clonePrice <= saveData.moneyAmount && CheckForStorage() >= 0)
         {
+            //Visual
+            Instantiate(cloneEffectTransform).GetComponent<OnItemClonedEffect>().InitAndAnim(selectedItemId, animStartTransform, animEndTransform);
+            //Logic
             saveData.moneyAmount -= clonePrice;
             saveData.storageChestData.storageItemIds[CheckForStorage()] = selectedItemId;
             Debug.Log("Item cloned");

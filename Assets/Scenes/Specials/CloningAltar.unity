@@ -1954,6 +1954,9 @@ MonoBehaviour:
   cloneAltarButton: {fileID: 1162874853}
   playerMoneyLabel: {fileID: 1420089468}
   cloneHintText: {fileID: 655532485}
+  animStartTransform: {fileID: 670627278}
+  animEndTransform: {fileID: 918253128}
+  cloneEffectTransform: {fileID: 3091551915584765551, guid: 49350a3607c1af444bbfcccd236b8b96, type: 3}
   saveData:
     playerName: 
     playerLevel: 0
