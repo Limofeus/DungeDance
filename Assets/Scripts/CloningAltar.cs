@@ -10,11 +10,12 @@ public class CloningAltar : MonoBehaviour
     [SerializeField] private GeneralizedItemIcon[] playerItemIcons;
     [SerializeField] private CloneAltarButton cloneAltarButton;
     [SerializeField] private TextMeshPro playerMoneyLabel;
+    [SerializeField] private TextMeshPro playerStorageSpaceLabel;
     [SerializeField] private TextMeshPro cloneHintText;
 
     [SerializeField] private Transform animStartTransform;
     [SerializeField] private Transform animEndTransform;
-    [SerializeField] private GameObject cloneEffectTransform;
+    [SerializeField] private GameObject cloneEffectPrefab;
 
     private int selectedItemSlot = 0; // (STARTS FROM 1!!) 0 - none, 1 - 1, 2 - 2, etc.
     private int selectedItemId = -1;
@@ -28,7 +29,7 @@ public class CloningAltar : MonoBehaviour
 
         onAltarItem.HideShowItem(false);
         UpdateItemsFromSaveData();
-        UpdatePlayerMoneyLabel();
+        UpdateMoneySlotsLabels();
 
         playerItemIcons[0].UpdateItem(saveData.item1Id, 0, "ЛКМ - выбрать");
     }
@@ -129,13 +130,13 @@ public class CloningAltar : MonoBehaviour
         if (clonePrice <= saveData.moneyAmount && CheckForStorage() >= 0)
         {
             //Visual
-            Instantiate(cloneEffectTransform).GetComponent<OnItemClonedEffect>().InitAndAnim(selectedItemId, animStartTransform, animEndTransform);
+            Instantiate(cloneEffectPrefab).GetComponent<OnItemClonedEffect>().InitAndAnim(selectedItemId, animStartTransform, animEndTransform);
             //Logic
             saveData.moneyAmount -= clonePrice;
             saveData.storageChestData.storageItemIds[CheckForStorage()] = selectedItemId;
             Debug.Log("Item cloned");
             UpdateCloneButton();
-            UpdatePlayerMoneyLabel();
+            UpdateMoneySlotsLabels();
             ApplySaveData();
         }
     }
@@ -155,6 +156,19 @@ public class CloningAltar : MonoBehaviour
             }
         }
         return -1;
+    }
+    private int GetStorageFreeSlots()
+    {
+        int freeStorageSlots = 0;
+        for (int i = 0; i < (5 * (2 + saveData.storageChestData.storageChestLevel)); i++)
+        {
+            Debug.Log($"Checking slot {i}, id: {saveData.storageChestData.storageItemIds[i]}");
+            if (saveData.storageChestData.storageItemIds[i] < 0)
+            {
+                freeStorageSlots++;
+            }
+        }
+        return freeStorageSlots;
     }
     private void ApplySaveData()
     {
@@ -178,8 +192,9 @@ public class CloningAltar : MonoBehaviour
         else
             playerItemIcons[2].gameObject.SetActive(false);
     }
-    private void UpdatePlayerMoneyLabel()
+    private void UpdateMoneySlotsLabels()
     {
         playerMoneyLabel.text = saveData.moneyAmount.ToString();
+        playerStorageSpaceLabel.text = GetStorageFreeSlots().ToString();
     }
 }
