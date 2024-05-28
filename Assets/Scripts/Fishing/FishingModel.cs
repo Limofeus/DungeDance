@@ -130,6 +130,7 @@ public class FishingModel : MonoBehaviour
             {
                 looseGauge -= currentFishingDrop.GetLooseRate(fishArrowQueue.Count) * deltaTime;
                 fishView.looseValue = looseGauge;
+                fishArrowCycleTimer -= Time.deltaTime;
                 if(fishArrowCycleTimer <= 0f)
                 {
                     StartFishCycle();
@@ -224,6 +225,7 @@ public class FishingModel : MonoBehaviour
         int fishArrowsLeft = currentFishingDrop.fishArrowsInCycle;
         while(fishArrowsLeft > 0)
         {
+            fishArrowsLeft--;
             AddFishingArrow();
             yield return new WaitForSeconds(currentFishingDrop.GetTimeBetweenArrows());
         }
