@@ -4,13 +4,17 @@ using UnityEngine;
 
 public interface FourDirectionInputTarget
 {
-    public enum FourArrowDir { Up, Right, Down, Left }
+    public enum FourArrowDir { Up = 0, Right = 1, Down = 2, Left = 3}
     public void OnFourDirInput(FourArrowDir direction);
 }
 public class FourDirectionsInput : MonoBehaviour
 {
-    [SerializeField] private FourDirectionInputTarget inputTarget;
+    private FourDirectionInputTarget inputTarget;
     public bool disableInputs;
+    private void Start()
+    {
+        inputTarget = GetComponent<FourDirectionInputTarget>();
+    }
     void Update()
     {
         CheckInput();
