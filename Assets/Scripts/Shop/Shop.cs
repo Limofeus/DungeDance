@@ -14,6 +14,7 @@ namespace Shop
         private int _updatePrice = 1000;
         private bool _isDiscount = true;
         public event Action ItemBought;
+        public event Action<int> MoneyChanged;
 
         private void OnEnable()
         {
@@ -37,6 +38,11 @@ namespace Shop
                 item.OnClick -= TryBuyItem;
             }
             Save();
+        }
+        private void Start()
+        {
+            UpdateItemList();
+            MoneyChanged?.Invoke(_saveData.moneyAmount);
         }
 
         private void ItemSelected(int cellId)
@@ -64,25 +70,47 @@ namespace Shop
         private void TryBuyItem(int cellId)
         {
             var price = _itemCells[cellId].Price;
-            if (_saveData.moneyAmount >= price)
+
+            if (_saveData.moneyAmount < price)
             {
-                _saveData.moneyAmount -= price;
-                _itemCells[cellId].IsSold();
-                ItemBought?.Invoke();
+                var message = LocalisationSystem.GetLocalizedValue("shop_warning_noMoney");
+                DisplayMessage(message);
+                Debug.Log("noMoney");
+                return;
             }
+
+            if (CheckForStorage() < 0 && _saveData.item3Id >= 0 && _saveData.item2Id >= 0 && _saveData.item1Id >= 0)
+            {
+                var message = LocalisationSystem.GetLocalizedValue("shop_warning_noSpace");
+                DisplayMessage(message);
+                Debug.Log("NoSpace");
+                return;
+            }
+
+            if (_saveData.item1Id < -1)
+                _saveData.storageChestData.storageItemIds[_saveData.item1Id] = _itemCells[cellId].ItemID;
+            else if (_saveData.item2Id < -1)
+                _saveData.storageChestData.storageItemIds[_saveData.item2Id] = _itemCells[cellId].ItemID;
+            else if (_saveData.item3Id < -1)
+                _saveData.storageChestData.storageItemIds[_saveData.item3Id] = _itemCells[cellId].ItemID;
+            else
+                _saveData.storageChestData.storageItemIds[CheckForStorage()] = _itemCells[cellId].ItemID;
+
+            _saveData.moneyAmount -= price;
+            _itemCells[cellId].IsSold();
+            Save();
+            ItemBought?.Invoke();
+            MoneyChanged?.Invoke(_saveData.moneyAmount);
         }
 
         private void Save()
         {
-            //_saveData.storageChestData.storageItemIds;
-            //MenuDataManager.saveData = _saveData;
-            //SaveSystem.Save(MenuDataManager.saveData);
+            if (_saveData == null)
+                UpdateSaveData();
+            MenuDataManager.saveData = _saveData;
+            SaveSystem.Save(MenuDataManager.saveData);
         }
 
-        private void Start()
-        {
-            UpdateItemList();
-        }
 
         private void UpdateSaveData()
         {
@@ -143,10 +171,28 @@ namespace Shop
             return itemIDs;
         }
 
+        private int CheckForStorage()
+        {
+            for (int i = 0; i < (5 * (2 + _saveData.storageChestData.storageChestLevel)); i++)
+            {
+                Debug.Log($"Checking slot {i}, id: {_saveData.storageChestData.storageItemIds[i]}");
+                if (_saveData.storageChestData.storageItemIds[i] < 0)
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
         private T GetRandomItemFrom<T>(List<T> list)
         {
             var id = UnityEngine.Random.Range(0, list.Count);
             return list[id];
+        }
+
+        private void DisplayMessage(string message)
+        {
+
         }
     }
 }
