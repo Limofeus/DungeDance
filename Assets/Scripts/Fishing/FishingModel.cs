@@ -6,7 +6,7 @@ using UnityEngine;
 public class FishingDrop
 {
     public bool isItem;
-    [SerializeField] private int fishOrItemId;
+    [SerializeField] public int fishOrItemId;
 
     [SerializeField] public float fishArrowCycleTime; //Time for full arrow cycle (time it takes for fish to create fishArrowsInCycle arrows)
     [SerializeField] public int fishArrowsInCycle; //Ammount of arrows in 1 cycle
@@ -96,6 +96,7 @@ public class FishingModel : MonoBehaviour
         looseGauge = 1f;
         winGauge = 0f;
         fishAppearTime = Time.time + Random.Range(minMaxFishingTime.x, minMaxFishingTime.y);
+        fishView.SendAnimatorTrigger("Casat");
     }
     public void TryHookFish()
     {
@@ -120,6 +121,12 @@ public class FishingModel : MonoBehaviour
             fishArrowQueue.RemoveAt(0);
             fishView.ClickOnLastArrow(isCorrectClick);
             fishView.winValue = winGauge;
+
+            if(winGauge >= 1f)
+            {
+                FishCought();
+            }
+
         }
     }
     private void FishingUpdate(float deltaTime)
@@ -129,12 +136,19 @@ public class FishingModel : MonoBehaviour
             if (fishHooked)
             {
                 looseGauge -= currentFishingDrop.GetLooseRate(fishArrowQueue.Count) * deltaTime;
+
                 fishView.looseValue = looseGauge;
                 fishArrowCycleTimer -= Time.deltaTime;
+
+                if (looseGauge <= 0f)
+                {
+                    FishEscaped();
+                }
                 if(fishArrowCycleTimer <= 0f)
                 {
                     StartFishCycle();
                 }
+
             }
             else
             {
@@ -155,6 +169,7 @@ public class FishingModel : MonoBehaviour
     }
     private void HookFish()
     {
+        fishView.SendAnimatorTrigger("HookFish");
         currentFishArrowDir = (FishArrowDir)Random.Range(0, 4);
         canHookFish = false;
         fishHooked = true;
@@ -165,15 +180,38 @@ public class FishingModel : MonoBehaviour
         Debug.Log("РЫБЫ НЕТ АЛЁ!");
         FishEscaped();
     }
-    private void FishEscaped()
+    private void FishCought()
+    {
+        ResetState();
+        Debug.Log("Рыба поймана");
+        fishView.SendAnimatorTrigger("FishCaught");
+        fishView.UpdateItemCaughtSR(currentFishingDrop.isItem, currentFishingDrop.fishOrItemId);
+    }
+    private void ResetState()
     {
         isFishing = false;
         canHookFish = false;
+        fishArrowQueue = new List<FishArrowDir>();
+        if (fishCycleCoroutine != null)
+            StopCoroutine(fishCycleCoroutine);
+        looseGauge = 1f;
+        winGauge = 0f;
+        fishView.looseValue = 0f;
+        fishView.winValue = 0f;
+        fishView.ResetVisual();
+    }
+    private void FishEscaped()
+    {
+        ResetState();
+        Debug.Log(fishView.looseValue);
         Debug.Log("Рыба улетела");
+        fishView.SendAnimatorTrigger("FishLost");
+        Debug.Log(fishView.looseValue);
     }
     private void FishHookable()
     {
         canHookFish = true;
+        fishView.SendAnimatorTrigger("FishKlyn");
         Debug.Log("ПОДСЕКАЙ!!");
     }
     private FishingDrop ChooseFish()

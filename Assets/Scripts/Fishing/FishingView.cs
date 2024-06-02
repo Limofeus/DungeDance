@@ -11,6 +11,8 @@ public class FishingView : MonoBehaviour
     [SerializeField] private float distBetweenArrows;
     [SerializeField] private float posLerpPow;
     [SerializeField] private float winGaugeLerp;
+    [SerializeField] private Animator fishViewAnimator;
+    [SerializeField] private SpriteRenderer itemCaughtSR;
     private List<FishingArrowVisual> fishArrowQueue = new List<FishingArrowVisual>();
 
     public float winValue = 0f;
@@ -28,11 +30,33 @@ public class FishingView : MonoBehaviour
         newArrow.transform.localPosition = Vector3.down * distBetweenArrows * fishArrowQueue.Count;
         fishArrowQueue.Add(newArrow);
     }
-
+    public void ResetVisual()
+    {
+        int arrowsToClear = fishArrowQueue.Count;
+        for(int i = 0; i < arrowsToClear; i++)
+        {
+            ClickOnLastArrow(true);
+        }
+    }
+    public void UpdateItemCaughtSR(bool isItem, int spriteId)
+    {
+        if (isItem)
+        {
+            itemCaughtSR.sprite = ItemSpriteDictionary.itemSprites[spriteId];
+        }
+        else
+        {
+            itemCaughtSR.sprite = FishDict.fishSprites[spriteId];
+        }
+    }
     public void ClickOnLastArrow(bool isCorrectClick)
     {
         fishArrowQueue[0].DeleteArrow(isCorrectClick);
         fishArrowQueue.RemoveAt(0);
+    }
+    public void SendAnimatorTrigger(string triggerName)
+    {
+        fishViewAnimator.SetTrigger(triggerName);
     }
     private void UpdateFishArrowQueue()
     {
