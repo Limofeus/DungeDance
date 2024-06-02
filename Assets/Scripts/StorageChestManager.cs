@@ -106,7 +106,7 @@ public class StorageChestManager : MonoBehaviour
     private void InitialStorageItemUpdate()
     {
         storageStoredItems = new StorageStoredItem[(chestLevel + 2) * 5];
-        for(int  i = 0; i < (chestLevel + 2) * 5; i++)
+        for(int  i = 0; i < (chestLevel + 2) * 5; i++) // This formula will come in handy later, better remember it ha ha
         {
             GameObject storageItem = Instantiate(storageItemPrefab,storageItems.position + new Vector3( 0.75f + ((i%5) * 1.25f), - 0.75f - ((i/5) * verticalRowDist), 0f), Quaternion.identity, storageItems);
             StorageStoredItem storageItemComp = storageItem.GetComponent<StorageStoredItem>();
