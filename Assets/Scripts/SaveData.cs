@@ -27,6 +27,8 @@ public class SaveData
     public StorageChestData storageChestData;
     [SerializeField]
     public SettingsData settingsData;
+    [SerializeField]
+    public int[] shopItemIds;
 
     public SaveData(SaveData saveData)
     {
@@ -41,6 +43,7 @@ public class SaveData
         levelDatas = saveData.levelDatas;
         storageChestData = saveData.storageChestData;
         settingsData = saveData.settingsData;
+        shopItemIds = saveData.shopItemIds;
     }
 }
 
