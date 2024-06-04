@@ -9744,6 +9744,7 @@ MonoBehaviour:
       soundVolume: 0.3
       musicVolume: 0.3
     shopItemIds: ffffffffffffffffffffffffffffffffffffffff
+    shopMustBeChanged: 1
   textMeshPro: {fileID: 1868400262}
   mainMenuScene: {fileID: 1456993973}
 --- !u!1 &1463677447

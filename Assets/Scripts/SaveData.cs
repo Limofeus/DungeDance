@@ -29,6 +29,7 @@ public class SaveData
     public SettingsData settingsData;
     [SerializeField]
     public int[] shopItemIds;
+    [SerializeField] public bool shopMustBeChanged;
 
     public SaveData(SaveData saveData)
     {
@@ -44,6 +45,7 @@ public class SaveData
         storageChestData = saveData.storageChestData;
         settingsData = saveData.settingsData;
         shopItemIds = saveData.shopItemIds;
+        shopMustBeChanged = saveData.shopMustBeChanged;
     }
 }
 
