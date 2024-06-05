@@ -27,6 +27,11 @@ namespace Shop
                 item.OnSelect += ItemSelected;
                 item.OnClick += TryBuyItem;
             }
+
+            if (_saveData.shopMustBeChanged)
+            {
+                UpdateItemList();
+            }
         }
 
         private void OnDisable()
