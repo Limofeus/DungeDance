@@ -52,6 +52,7 @@ public class FishingModel : MonoBehaviour
     public enum FishArrowDir { Up = 0, Right = 1, Down = 2, Left = 3 } //Idk, I'm feeling sick rn, should do smth about this later..........
 
     [SerializeField] private FishingView fishView;
+    [SerializeField] private FishingCollectionUI fishCollectionUI;
 
     [SerializeField] private bool canDropFish;
     [SerializeField] private bool canDropItem;
@@ -71,14 +72,31 @@ public class FishingModel : MonoBehaviour
     private FishingDrop currentFishingDrop;
     private List<FishArrowDir> fishArrowQueue = new List<FishArrowDir>();
 
+    private List<int> thisLevelFishIds = new List<int>();
+
     private float fishArrowCycleTimer;
     private IEnumerator fishCycleCoroutine;
 
     private FishArrowDir currentFishArrowDir;
+    [SerializeField] private SaveData saveData;
 
     private void Start()
     {
         currentFishArrowDir = (FishArrowDir)Random.Range(0, 4);
+        LoadSaveData();
+        if (canDropFish)
+        {
+            foreach(FishingDrop fishingDrop in fishingDrops)
+            {
+                if (!fishingDrop.isItem)
+                {
+                    thisLevelFishIds.Add(fishingDrop.fishOrItemId);
+                    saveData.fishDatas[fishingDrop.fishOrItemId].UpdateUnlockment(1);
+                }
+            }
+        }
+        ApplySaveData();
+        fishCollectionUI.CreateAndUpdateFishicons(saveData.fishDatas, thisLevelFishIds);
     }
 
     private void Update()
@@ -183,6 +201,16 @@ public class FishingModel : MonoBehaviour
     private void FishCought()
     {
         ResetState();
+        if (!currentFishingDrop.isItem)
+        {
+            saveData.fishDatas[currentFishingDrop.fishOrItemId].UpdateUnlockment(2);
+            ApplySaveData();
+            fishCollectionUI.UpdateFishVisibilities(saveData.fishDatas, thisLevelFishIds);
+        }
+        else
+        {
+            //Рофлянычи с предметами нужгны (Типа чтоб новые открывалсь и выпадались при получении)
+        }
         Debug.Log("Рыба поймана");
         fishView.SendAnimatorTrigger("FishCaught");
         fishView.UpdateItemCaughtSR(currentFishingDrop.isItem, currentFishingDrop.fishOrItemId);
@@ -213,6 +241,18 @@ public class FishingModel : MonoBehaviour
         canHookFish = true;
         fishView.SendAnimatorTrigger("FishKlyn");
         Debug.Log("ПОДСЕКАЙ!!");
+    }
+    private void LoadSaveData()
+    {
+        if (MenuDataManager.saveData != null)
+            saveData = new SaveData(MenuDataManager.saveData);
+        else
+            saveData = SaveSystem.Load();
+    }
+    private void ApplySaveData()
+    {
+        MenuDataManager.saveData = saveData;
+        SaveSystem.Save(MenuDataManager.saveData);
     }
     private FishingDrop ChooseFish()
     {
@@ -257,7 +297,6 @@ public class FishingModel : MonoBehaviour
         fishCycleCoroutine = FishCycleCoroutine();
         StartCoroutine(fishCycleCoroutine);
     }
-
     private IEnumerator FishCycleCoroutine()
     {
         int fishArrowsLeft = currentFishingDrop.fishArrowsInCycle;

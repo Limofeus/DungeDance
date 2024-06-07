@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 [System.Serializable]
 public class SaveData
@@ -24,6 +25,8 @@ public class SaveData
     [SerializeField]
     public LevelData[] levelDatas;
     [SerializeField]
+    public FishData[] fishDatas;
+    [SerializeField]
     public StorageChestData storageChestData;
     [SerializeField]
     public SettingsData settingsData;
@@ -42,6 +45,7 @@ public class SaveData
         itemUnlockDatas = saveData.itemUnlockDatas;
         moneyAmount = saveData.moneyAmount;
         levelDatas = saveData.levelDatas;
+        fishDatas = saveData.fishDatas;
         storageChestData = saveData.storageChestData;
         settingsData = saveData.settingsData;
         shopItemIds = saveData.shopItemIds;
@@ -75,6 +79,24 @@ public class StorageChestData
     {
         storageChestLevel = storageChestData.storageChestLevel;
         storageItemIds = storageChestData.storageItemIds;
+    }
+}
+[System.Serializable]
+public class FishData
+{
+    [SerializeField]
+    public int fishUnlockment;
+    [SerializeField]
+    public float maxWeightCaught;
+
+    public void UpdateUnlockment(int newUnlockment)
+    {
+        fishUnlockment = Math.Max(fishUnlockment, newUnlockment);
+    }
+    public FishData(FishData fishData)
+    {
+        fishUnlockment = fishData.fishUnlockment;
+        maxWeightCaught = fishData.maxWeightCaught;
     }
 }
 

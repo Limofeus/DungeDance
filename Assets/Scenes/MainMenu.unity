@@ -3087,7 +3087,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18cbaf15dc23bd74a8d541c8610ac5e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  works: 1
+  works: 0
 --- !u!1 &872089593
 GameObject:
   m_ObjectHideFlags: 0
@@ -9737,6 +9737,17 @@ MonoBehaviour:
       maxScore: 0
     - completed: 0
       maxScore: 0
+    fishDatas:
+    - fishUnlockment: 0
+      maxWeightCaught: 0
+    - fishUnlockment: 0
+      maxWeightCaught: 0
+    - fishUnlockment: 0
+      maxWeightCaught: 0
+    - fishUnlockment: 0
+      maxWeightCaught: 0
+    - fishUnlockment: 0
+      maxWeightCaught: 0
     storageChestData:
       storageChestLevel: 0
       storageItemIds: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
