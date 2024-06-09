@@ -16,12 +16,13 @@ public class FishColPrefab : MonoBehaviour
 
     public string upperText;
     public string lowerText;
+    public string fishSizeString;
 
     private void OnMouseEnter()
     {
         mouseOver = true;
         hoverOverHint.shown = true;
-        hoverOverHint.UpdateTextAndCoords(transform.position, upperText, lowerText);
+        hoverOverHint.UpdateTextAndCoords(transform.position, upperText, lowerText, fishSizeString);
     }
     private void OnMouseExit()
     {

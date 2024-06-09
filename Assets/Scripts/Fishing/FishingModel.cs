@@ -17,7 +17,8 @@ public class FishingDrop
     [SerializeField] private float looseRateDuringOverflow; // How fast looseGauge moves towards 0 during overflow (added to constLooseRate)
     [SerializeField] private float winAddition; //Value added to winGauge on correct click
     [SerializeField] private float winSubtraction; //Value subtracted off of winGauge on incorrect click
-
+    [SerializeField] private Vector2 minMaxFishSize;
+    [SerializeField] private AnimationCurve fishSizeRandomnessCurve;
     public float GetLooseRate(int currentArrows)
     {
         return constLooseRate + ((currentArrows >= arrowsToOverflow) ? looseRateDuringOverflow : 0f);
@@ -31,6 +32,11 @@ public class FishingDrop
     public float GetTimeBetweenArrows()
     {
         return (fishArrowCycleTime / (float)fishArrowsInCycle) * Mathf.Clamp01(perCycleDispersion);
+    }
+
+    public float GetFishSize()
+    {
+        return Mathf.Lerp(minMaxFishSize.x, minMaxFishSize.y, fishSizeRandomnessCurve.Evaluate(Random.Range(0f, 1f)));
     }
 
     public FishingModel.FishArrowDir GetNextArrowDir(FishingModel.FishArrowDir currentFisharrowDir)
@@ -78,7 +84,7 @@ public class FishingModel : MonoBehaviour
     private IEnumerator fishCycleCoroutine;
 
     private FishArrowDir currentFishArrowDir;
-    [SerializeField] private SaveData saveData;
+    [SerializeField] private SaveData saveData; //should use Singleton save data instead to prevent save data conflicts!!! (Or to MAKE SURE ITS THE SAME INSTANCE!!!)
 
     private void Start()
     {
@@ -200,10 +206,13 @@ public class FishingModel : MonoBehaviour
     }
     private void FishCought()
     {
+        float caughtFishSize = 0f;
         ResetState();
         if (!currentFishingDrop.isItem)
         {
+            caughtFishSize = currentFishingDrop.GetFishSize();
             saveData.fishDatas[currentFishingDrop.fishOrItemId].UpdateUnlockment(2);
+            saveData.fishDatas[currentFishingDrop.fishOrItemId].UpdateFishSize(caughtFishSize);
             ApplySaveData();
             fishCollectionUI.UpdateFishVisibilities(saveData.fishDatas, thisLevelFishIds);
         }
@@ -213,7 +222,7 @@ public class FishingModel : MonoBehaviour
         }
         Debug.Log("Рыба поймана");
         fishView.SendAnimatorTrigger("FishCaught");
-        fishView.UpdateItemCaughtSR(currentFishingDrop.isItem, currentFishingDrop.fishOrItemId);
+        fishView.UpdateItemCaughtSR(currentFishingDrop.isItem, currentFishingDrop.fishOrItemId, caughtFishSize);
     }
     private void ResetState()
     {
@@ -244,14 +253,15 @@ public class FishingModel : MonoBehaviour
     }
     private void LoadSaveData()
     {
-        if (MenuDataManager.saveData != null)
-            saveData = new SaveData(MenuDataManager.saveData);
-        else
-            saveData = SaveSystem.Load();
+        if(MenuDataManager.saveData == null)
+        {
+            MenuDataManager.saveData = SaveSystem.Load();
+        }
+        saveData = MenuDataManager.saveData;
     }
     private void ApplySaveData()
     {
-        MenuDataManager.saveData = saveData;
+        //MenuDataManager.saveData = saveData;
         SaveSystem.Save(MenuDataManager.saveData);
     }
     private FishingDrop ChooseFish()

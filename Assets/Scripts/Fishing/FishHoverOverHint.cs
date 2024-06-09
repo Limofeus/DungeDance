@@ -9,6 +9,7 @@ public class FishHoverOverHint : MonoBehaviour
     [SerializeField] private float moveLerpPow = 15f;
     [SerializeField] private TextMeshPro upperText;
     [SerializeField] private TextMeshPro lowerText;
+    [SerializeField] private TextMeshPro sizeText;
     public bool shown = false;
 
     private Vector3 desiredCoords;
@@ -21,10 +22,11 @@ public class FishHoverOverHint : MonoBehaviour
         transform.localScale = Vector3.Lerp(transform.localScale, shown ? Vector3.one : Vector3.zero, scaleLerpPow * Time.deltaTime);
         transform.position = Vector3.Lerp(transform.position, desiredCoords, moveLerpPow * Time.deltaTime);
     }
-    public void UpdateTextAndCoords(Vector3 newCoords, string sUpperText, string sLowerText)
+    public void UpdateTextAndCoords(Vector3 newCoords, string sUpperText, string sLowerText, string sFishSize)
     {
         desiredCoords = newCoords;
         upperText.text = sUpperText;
         lowerText.text = sLowerText;
+        sizeText.text = sFishSize;
     }
 }

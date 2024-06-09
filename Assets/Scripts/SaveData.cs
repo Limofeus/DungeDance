@@ -25,6 +25,8 @@ public class SaveData
     [SerializeField]
     public LevelData[] levelDatas;
     [SerializeField]
+    public string[] progressTags;
+    [SerializeField]
     public FishData[] fishDatas;
     [SerializeField]
     public StorageChestData storageChestData;
@@ -45,6 +47,7 @@ public class SaveData
         itemUnlockDatas = saveData.itemUnlockDatas;
         moneyAmount = saveData.moneyAmount;
         levelDatas = saveData.levelDatas;
+        progressTags = saveData.progressTags;
         fishDatas = saveData.fishDatas;
         storageChestData = saveData.storageChestData;
         settingsData = saveData.settingsData;
@@ -92,6 +95,10 @@ public class FishData
     public void UpdateUnlockment(int newUnlockment)
     {
         fishUnlockment = Math.Max(fishUnlockment, newUnlockment);
+    }
+    public void UpdateFishSize(float newSize)
+    {
+        maxWeightCaught = Mathf.Max(maxWeightCaught, newSize);
     }
     public FishData(FishData fishData)
     {

@@ -51,10 +51,12 @@ public class FishingCollectionUI : MonoBehaviour
             {
                 fishColPrefabList[i].upperText = LocalisationSystem.GetLocalizedValue($"fish_name_id{i}");
                 fishColPrefabList[i].lowerText = LocalisationSystem.GetLocalizedValue($"fish_desc_id{i}");
+                fishColPrefabList[i].fishSizeString = LocalisationSystem.GetLocalizedValue("fishing_max_caught_size") + fishDatas[i].maxWeightCaught.ToString("G3");
             }
             else
             {
                 fishColPrefabList[i].upperText = "???";
+                fishColPrefabList[i].fishSizeString = "";
                 if (thisLocationFishes.Contains(i))
                 {
                     fishColPrefabList[i].lowerText = LocalisationSystem.GetLocalizedValue("fishing_unknown_fish_this_location");

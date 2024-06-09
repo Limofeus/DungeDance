@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class FishingView : MonoBehaviour
 {
@@ -12,7 +13,9 @@ public class FishingView : MonoBehaviour
     [SerializeField] private float posLerpPow;
     [SerializeField] private float winGaugeLerp;
     [SerializeField] private Animator fishViewAnimator;
-    [SerializeField] private SpriteRenderer itemCaughtSR;
+    //[SerializeField] private SpriteRenderer itemCaughtSR;
+    //[SerializeField] private TextMeshPro sizeTextMeshPro;
+    [SerializeField] private FishingDropWindow fishingDropWindow;
     private List<FishingArrowVisual> fishArrowQueue = new List<FishingArrowVisual>();
 
     public float winValue = 0f;
@@ -38,16 +41,21 @@ public class FishingView : MonoBehaviour
             ClickOnLastArrow(true);
         }
     }
-    public void UpdateItemCaughtSR(bool isItem, int spriteId)
+    public void UpdateItemCaughtSR(bool isItem, int spriteId, float fishSize = 0f)
     {
+        fishingDropWindow.StartFishDropAnim(isItem, spriteId, fishSize);
+        /*
         if (isItem)
         {
             itemCaughtSR.sprite = ItemSpriteDictionary.itemSprites[spriteId];
+            sizeTextMeshPro.text = "";
         }
         else
         {
             itemCaughtSR.sprite = FishDict.fishSprites[spriteId];
+            sizeTextMeshPro.text = fishSize.ToString();
         }
+        */
     }
     public void ClickOnLastArrow(bool isCorrectClick)
     {
