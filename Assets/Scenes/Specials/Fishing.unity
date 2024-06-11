@@ -22254,6 +22254,78 @@ Transform:
   m_Father: {fileID: 1335071532}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1496095799
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1496095800}
+  - component: {fileID: 1496095801}
+  m_Layer: 0
+  m_Name: TagChecker
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1496095800
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1496095799}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 16
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1496095801
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1496095799}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9d6077f7ab2f724aa4f80d7175fb385, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tagName: 
+  addTag: 0
+  removeTag: 0
+  checkForTag: 0
+  checkForTagResult: 0
+  loadsData: 0
+  savesData: 0
+  saveData:
+    playerName: 
+    playerLevel: 0
+    playerXp: 0
+    item1Id: 0
+    item2Id: 0
+    item3Id: 0
+    itemUnlockDatas: 
+    moneyAmount: 0
+    levelDatas: []
+    progressTags:
+      tags: []
+    fishDatas: []
+    storageChestData:
+      storageChestLevel: 0
+      storageItemIds: 
+    settingsData:
+      soundVolume: 0
+      musicVolume: 0
+    shopItemIds: 
+    shopMustBeChanged: 0
 --- !u!1 &1500657568
 GameObject:
   m_ObjectHideFlags: 0
@@ -26067,7 +26139,8 @@ MonoBehaviour:
     itemUnlockDatas: 
     moneyAmount: 0
     levelDatas: []
-    progressTags: []
+    progressTags:
+      tags: []
     fishDatas: []
     storageChestData:
       storageChestLevel: 0

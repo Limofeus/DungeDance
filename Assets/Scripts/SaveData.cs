@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Linq;
 
 [System.Serializable]
 public class SaveData
@@ -25,7 +26,7 @@ public class SaveData
     [SerializeField]
     public LevelData[] levelDatas;
     [SerializeField]
-    public string[] progressTags;
+    public ProgressTags progressTags;
     [SerializeField]
     public FishData[] fishDatas;
     [SerializeField]
@@ -82,6 +83,38 @@ public class StorageChestData
     {
         storageChestLevel = storageChestData.storageChestLevel;
         storageItemIds = storageChestData.storageItemIds;
+    }
+}
+[System.Serializable]
+public class ProgressTags
+{
+    [SerializeField]
+    private string[] tags = new string[0];
+
+    public bool ContainsTag(string tag)
+    {
+        bool contains = false;
+        foreach(string tagToCheck in tags)
+        {
+            if(tagToCheck == tag) contains = true;
+        }
+        return contains;
+    }
+    public void AddTag(string tag)
+    {
+        List<string> tagsList = tags.ToList();
+        tagsList.Add(tag);
+        tags = tagsList.ToArray();
+    }
+    public void RemoveTag(string tag)
+    {
+        List<string> tagsList = tags.ToList();
+        tagsList.Remove(tag);
+        tags = tagsList.ToArray();
+    }
+    public ProgressTags(ProgressTags progressTags)
+    {
+        tags = progressTags.tags;
     }
 }
 [System.Serializable]
