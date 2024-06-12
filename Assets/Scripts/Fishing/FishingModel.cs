@@ -61,7 +61,7 @@ public class FishingModel : MonoBehaviour
     [SerializeField] private FishingCollectionUI fishCollectionUI;
 
     [SerializeField] private bool canDropFish;
-    [SerializeField] private bool canDropItem;
+    //[SerializeField] private bool canDropItem;
     [SerializeField] private float itemToFishRatio;
     [SerializeField] private FishingDrop[] fishingDrops;
     [SerializeField] private Vector2 minMaxFishingTime;
@@ -204,10 +204,55 @@ public class FishingModel : MonoBehaviour
         Debug.Log("РЫБЫ НЕТ АЛЁ!");
         FishEscaped();
     }
+    private int HasFreeSpace() // 0 - NO FREE SPACE; 1 - FREE SPACE IN SLOTS; 2 - FREE SPACE IN STORAGE
+    {
+        if (saveData.item1Id < 0 || saveData.item2Id < 0 || saveData.item3Id < 0) return 1;
+        /*
+        for (int i = 0; i < saveData.storageChestData.storageItemIds.Length; i++)
+        {
+            if (saveData.storageChestData.storageItemIds[i] < 0) return 2;
+        }
+        */
+        if (CheckForStorage() >= 0) return 2;
+        return 0;
+    }
+    private int CheckForStorage()
+    {
+        for (int i = 0; i < (5 * (2 + saveData.storageChestData.storageChestLevel)); i++)
+        {
+            Debug.Log($"Checking slot {i}, id: {saveData.storageChestData.storageItemIds[i]}");
+            if (saveData.storageChestData.storageItemIds[i] < 0)
+            {
+                return i;
+            }
+        }
+        return -1;
+    }
+    private void AddItemToSaveData(int itemId)
+    {
+        saveData.itemUnlockDatas[itemId] = 2;
+        if(saveData.item1Id < 0)
+        {
+            saveData.item1Id = itemId;
+        }
+        else if (saveData.item2Id < 0)
+        {
+            saveData.item2Id = itemId;
+        }
+        else if (saveData.item3Id < 0)
+        {
+            saveData.item3Id = itemId;
+        }
+        else
+        {
+            saveData.storageChestData.storageItemIds[CheckForStorage()] = itemId;
+        }
+    }
     private void FishCought()
     {
         float caughtFishSize = 0f;
         ResetState();
+        bool invSpaceCheck = HasFreeSpace() == 1;
         if (!currentFishingDrop.isItem)
         {
             caughtFishSize = currentFishingDrop.GetFishSize();
@@ -218,11 +263,13 @@ public class FishingModel : MonoBehaviour
         }
         else
         {
+            AddItemToSaveData(currentFishingDrop.fishOrItemId);
+            ApplySaveData();
             //Рофлянычи с предметами нужгны (Типа чтоб новые открывалсь и выпадались при получении)
         }
         Debug.Log("Рыба поймана");
         fishView.SendAnimatorTrigger("FishCaught");
-        fishView.UpdateItemCaughtSR(currentFishingDrop.isItem, currentFishingDrop.fishOrItemId, caughtFishSize);
+        fishView.UpdateItemCaughtSR(currentFishingDrop.isItem, currentFishingDrop.fishOrItemId, caughtFishSize, invSpaceCheck);
     }
     private void ResetState()
     {
@@ -271,12 +318,25 @@ public class FishingModel : MonoBehaviour
         foreach (FishingDrop fishingDrop in fishingDrops)
         {
             if (fishingDrop.isItem)
-                itemDrops.Add(fishingDrop);
+            {
+                switch (saveData.itemUnlockDatas[fishingDrop.fishOrItemId])
+                {
+                    case 0:
+                        break;
+                    case 1:
+                        itemDrops.Add(fishingDrop); //idk should I add bonus chance for unknown items to drop?
+                        break;
+                    case 2:
+                        itemDrops.Add(fishingDrop);
+                        break;
+                }
+
+            }
             else
                 fishDrops.Add(fishingDrop);
         }
         List<FishingDrop> possibleDrops = new List<FishingDrop>();
-        if (Random.Range(0f, 1f) < itemToFishRatio && itemDrops.Count > 0)
+        if (Random.Range(0f, 1f) < itemToFishRatio && itemDrops.Count > 0 && HasFreeSpace() > 0)
         {
             possibleDrops = itemDrops; //Update this thing later so that it accounts for item unlockment;
         }
