@@ -135,6 +135,8 @@
 "fishing_unknown_fish_other_location", "That fish can be caught elsewhere", "Эта рыба здесь не водится"
 "fishing_caught_size", "Fish size: ", "Размер рыбы: "
 "fishing_item_caught", "Item caught!", "Пойман предмет!"
+"fishing_item_caught_to_inventory", "Item added to inventory!", "Предмет добавлен в инвентарь!"
+"fishing_item_caught_to_storage", "Item added to storage!", "Предмет добавлен в хранилище!"
 "fishing_max_caught_size", "Max size caught: ", "Макс. размер пойман: "
 "fish_name_id0", "The Killer Fish", "Убийственная рыба"
 "fish_desc_id0", "Although this fish is not that deadly it still holds the title of the killer fish, for some.. unknown reason", "Несмотря на то, что эта рыба не очень опасно её всё равно почему то называют убийственной рыбой"

@@ -15,6 +15,7 @@ public class MenuDataManager : MonoBehaviour
     public ItemInfoIcon itemInfoIcon3;
     public TextMeshPro moneyCountText;
     public LevelSelector[] levelSelectors; // MAKE SURE IDS ARE SAME AS IN SAVE FILE YOU BAKA!!!!!
+    public SpecialLevelSelector[] specialLevelSelectors; //ids could be whatever here (I think..)
     public int[] assignRankXps;
     public static int[] rankXps;
     public bool debugSave;
@@ -165,6 +166,10 @@ public class MenuDataManager : MonoBehaviour
         {
             levelSelectors[i].UpdateLevelData(saveData.levelDatas[i]);
             levelSelectors[i].UpdateItemUnlockment(saveData.itemUnlockDatas);
+        }
+        for(int i = 0; i < specialLevelSelectors.Length; i++)
+        {
+            specialLevelSelectors[i].UpdateLevelSelector(saveData);
         }
     }
     public IEnumerator AnimatedItemUpdate()

@@ -13,13 +13,16 @@ public class FishingDropWindow : MonoBehaviour
     {
         animator = GetComponent<Animator>();
     }
-    public void StartFishDropAnim(bool isItem, int fishId, float fishSize)
+    public void StartFishDropAnim(bool isItem, int fishId, float fishSize, bool hasInvSpace)
     {
         if (isItem)
         {
             itemCaughtSR.sprite = ItemSpriteDictionary.itemSprites[fishId];
             fishNameText.text = LocalisationSystem.GetLocalizedValue($"item_name_id{fishId}");
-            fishSizeText.text = LocalisationSystem.GetLocalizedValue("fishing_item_caught");
+            if(hasInvSpace)
+                fishSizeText.text = LocalisationSystem.GetLocalizedValue("fishing_item_caught_to_inventory");
+            else
+                fishSizeText.text = LocalisationSystem.GetLocalizedValue("fishing_item_caught_to_storage");
         }
         else
         {

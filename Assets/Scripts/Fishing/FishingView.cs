@@ -41,9 +41,9 @@ public class FishingView : MonoBehaviour
             ClickOnLastArrow(true);
         }
     }
-    public void UpdateItemCaughtSR(bool isItem, int spriteId, float fishSize = 0f)
+    public void UpdateItemCaughtSR(bool isItem, int spriteId, float fishSize = 0f, bool hasInvSpace = false)
     {
-        fishingDropWindow.StartFishDropAnim(isItem, spriteId, fishSize);
+        fishingDropWindow.StartFishDropAnim(isItem, spriteId, fishSize, hasInvSpace);
         /*
         if (isItem)
         {
