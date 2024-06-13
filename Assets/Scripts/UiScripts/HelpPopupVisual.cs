@@ -20,9 +20,9 @@ public class HelpPopupVisual : MonoBehaviour
         {
             closing = true;
         }
-        if(closeOnAction && closing)
+        if(closeOnAction)
         {
-            transform.localScale = Vector3.Lerp(transform.localScale, Vector3.zero, Time.deltaTime * closeLerpPow);
+            transform.localScale = Vector3.Lerp(transform.localScale, closing ? Vector3.zero : Vector3.one, Time.deltaTime * closeLerpPow);
         }
     }
     public void InitializeHint(string hintPopupTag, Dictionary<string, HintPopupPerTagInfo> hintPopupDict, bool closeOnActionV = false)
@@ -36,7 +36,11 @@ public class HelpPopupVisual : MonoBehaviour
         {
             SetPopupTextLong(thisHintInfo.upperText, thisHintInfo.lowerText);
         }
-        closeOnAction = closeOnActionV;
+        if (closeOnActionV)
+        {
+            closeOnAction = closeOnActionV;
+            transform.localScale = Vector3.zero;
+        }
     }
     private void SetPopupTextLong(string upperString, string mainString)
     {
