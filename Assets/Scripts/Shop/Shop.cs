@@ -108,21 +108,18 @@ namespace Shop
             MoneyChanged?.Invoke(_saveData.moneyAmount);
         }
 
-        private void Save()
-        {
-            if (_saveData == null)
-                UpdateSaveData();
-            MenuDataManager.saveData = _saveData;
-            SaveSystem.Save(MenuDataManager.saveData);
-        }
-
-
         private void UpdateSaveData()
         {
-            if (MenuDataManager.saveData != null)
-                _saveData = new SaveData(MenuDataManager.saveData);
-            else
-                _saveData = SaveSystem.Load();
+            if (MenuDataManager.saveData == null)
+            {
+                MenuDataManager.saveData = SaveSystem.Load();
+            }
+            _saveData = MenuDataManager.saveData;
+        }
+        private void Save()
+        {
+            //MenuDataManager.saveData = saveData;
+            SaveSystem.Save(MenuDataManager.saveData);
         }
 
         private void TryUpdateItemList()
