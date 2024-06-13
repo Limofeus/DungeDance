@@ -27,11 +27,6 @@ namespace Shop
                 item.OnSelect += ItemSelected;
                 item.OnClick += TryBuyItem;
             }
-
-            if (_saveData.shopMustBeChanged)
-            {
-                UpdateItemList();
-            }
         }
 
         private void OnDisable()
@@ -46,7 +41,10 @@ namespace Shop
         }
         private void Start()
         {
-            UpdateItemList();
+            if (_saveData.shopMustBeChanged)
+            {
+                UpdateItemList();
+            }
             MoneyChanged?.Invoke(_saveData.moneyAmount);
         }
 

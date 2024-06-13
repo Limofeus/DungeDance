@@ -45,8 +45,12 @@ namespace Shop
                 Price /= 2;
             _discountSprite.gameObject.SetActive(isDiscount);
             _priceText.text = Price.ToString();
+            if (_collider == null)
+                _collider = GetComponent<Collider2D>();
             _collider.enabled = true;
 
+            if (_animator == null)
+                _animator = GetComponent<Animator>();
             _animator.SetTrigger(_isStart);
         }
 
