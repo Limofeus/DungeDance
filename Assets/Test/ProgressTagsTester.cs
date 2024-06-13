@@ -12,6 +12,8 @@ public class ProgressTagsTester : MonoBehaviour
     public bool loadsData;
     public bool savesData;
     public SaveData saveData;
+    [SerializeField] private SceneHintPopupManager sceneHintPopupManager;
+    [SerializeField] private bool activateHintPopup;
     void Update()
     {
         if (loadsData) { LoadSaveData(); loadsData = false; }
@@ -19,6 +21,7 @@ public class ProgressTagsTester : MonoBehaviour
         if (addTag) { saveData.progressTags.AddTag(tagName); addTag = false;  }
         if (removeTag) { saveData.progressTags.RemoveTag(tagName); removeTag = false; }
         if (checkForTag) { checkForTagResult = saveData.progressTags.ContainsTag(tagName); checkForTag = false; }
+        if (activateHintPopup) { sceneHintPopupManager.TryShowPopup(tagName); activateHintPopup = false; }
     }
     private void LoadSaveData()
     {

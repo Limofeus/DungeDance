@@ -37,6 +37,7 @@ public class SaveData
     public int[] shopItemIds;
     [SerializeField] public bool shopMustBeChanged;
 
+    public SaveData() { }
     public SaveData(SaveData saveData)
     {
         playerName = saveData.playerName;
@@ -65,6 +66,7 @@ public class LevelData
     [SerializeField]
     public int maxScore;
 
+    public LevelData() { }
     public LevelData(LevelData levelData)
     {
         completed = levelData.completed;
@@ -79,6 +81,7 @@ public class StorageChestData
     [SerializeField]
     public int[] storageItemIds;
 
+    public StorageChestData() { }
     public StorageChestData(StorageChestData storageChestData)
     {
         storageChestLevel = storageChestData.storageChestLevel;
@@ -147,6 +150,7 @@ public class SettingsData
     public float soundVolume;
     public float musicVolume;
 
+    public SettingsData() { }
     public SettingsData(SettingsData settingsData)
     {
         soundVolume = settingsData.soundVolume;
