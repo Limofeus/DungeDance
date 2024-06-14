@@ -20,5 +20,14 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Test/DemoRuzer.unity
     guid: 2ce05c58dd638764a85ecddce028ebc0
+  - enabled: 1
+    path: Assets/Scenes/Specials/Fishing.unity
+    guid: 49e65981f83f5be4ca54905502ca005f
+  - enabled: 1
+    path: Assets/Scenes/Specials/CloningAltar.unity
+    guid: 4bd0cca89faca4442929b0510def975f
+  - enabled: 1
+    path: Assets/Scenes/Shop.unity
+    guid: aac87acbb9beb0946abdff5e55de416e
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 6930f2c2ee7f632489364d0d24a09698, type: 2}

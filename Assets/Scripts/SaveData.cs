@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+using System.Linq;
 
 [System.Serializable]
 public class SaveData
@@ -24,9 +26,16 @@ public class SaveData
     [SerializeField]
     public LevelData[] levelDatas;
     [SerializeField]
+    public ProgressTags progressTags;
+    [SerializeField]
+    public FishData[] fishDatas;
+    [SerializeField]
     public StorageChestData storageChestData;
     [SerializeField]
     public SettingsData settingsData;
+    [SerializeField]
+    public int[] shopItemIds;
+    [SerializeField] public bool shopMustBeChanged;
 
     public SaveData() { }
     public SaveData(SaveData saveData)
@@ -40,8 +49,12 @@ public class SaveData
         itemUnlockDatas = saveData.itemUnlockDatas;
         moneyAmount = saveData.moneyAmount;
         levelDatas = saveData.levelDatas;
+        progressTags = saveData.progressTags;
+        fishDatas = saveData.fishDatas;
         storageChestData = saveData.storageChestData;
         settingsData = saveData.settingsData;
+        shopItemIds = saveData.shopItemIds;
+        shopMustBeChanged = saveData.shopMustBeChanged;
     }
 }
 
@@ -73,6 +86,60 @@ public class StorageChestData
     {
         storageChestLevel = storageChestData.storageChestLevel;
         storageItemIds = storageChestData.storageItemIds;
+    }
+}
+[System.Serializable]
+public class ProgressTags
+{
+    [SerializeField]
+    private string[] tags = new string[0];
+
+    public bool ContainsTag(string tag)
+    {
+        bool contains = false;
+        foreach(string tagToCheck in tags)
+        {
+            if(tagToCheck == tag) contains = true;
+        }
+        return contains;
+    }
+    public void AddTag(string tag)
+    {
+        List<string> tagsList = tags.ToList();
+        tagsList.Add(tag);
+        tags = tagsList.ToArray();
+    }
+    public void RemoveTag(string tag)
+    {
+        List<string> tagsList = tags.ToList();
+        tagsList.Remove(tag);
+        tags = tagsList.ToArray();
+    }
+    public ProgressTags(ProgressTags progressTags)
+    {
+        tags = progressTags.tags;
+    }
+}
+[System.Serializable]
+public class FishData
+{
+    [SerializeField]
+    public int fishUnlockment;
+    [SerializeField]
+    public float maxWeightCaught;
+
+    public void UpdateUnlockment(int newUnlockment)
+    {
+        fishUnlockment = Math.Max(fishUnlockment, newUnlockment);
+    }
+    public void UpdateFishSize(float newSize)
+    {
+        maxWeightCaught = Mathf.Max(maxWeightCaught, newSize);
+    }
+    public FishData(FishData fishData)
+    {
+        fishUnlockment = fishData.fishUnlockment;
+        maxWeightCaught = fishData.maxWeightCaught;
     }
 }
 

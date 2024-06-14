@@ -23,7 +23,7 @@ public class CloningAltar : MonoBehaviour
     void Start()
     {
         if (MenuDataManager.saveData != null)
-            saveData = new SaveData(MenuDataManager.saveData);
+            saveData = MenuDataManager.saveData;
         else
             saveData = SaveSystem.Load();
 
