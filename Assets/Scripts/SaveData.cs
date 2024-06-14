@@ -115,6 +115,8 @@ public class ProgressTags
         tagsList.Remove(tag);
         tags = tagsList.ToArray();
     }
+
+    public ProgressTags() { }
     public ProgressTags(ProgressTags progressTags)
     {
         tags = progressTags.tags;
@@ -136,6 +138,8 @@ public class FishData
     {
         maxWeightCaught = Mathf.Max(maxWeightCaught, newSize);
     }
+
+    public FishData() { }
     public FishData(FishData fishData)
     {
         fishUnlockment = fishData.fishUnlockment;

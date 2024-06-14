@@ -20,7 +20,7 @@ public class LocalisationSystem
     public static Dictionary<string, string> localizedDictionary;
     public static bool isInit = false;
 
-    private const bool useSqlite = true;
+    private const bool useSqlite = false;
     private const bool sqliteNoPreload = true;
     private const string dbTableName = "Locales";
     private static IDbConnection dbConnection;
