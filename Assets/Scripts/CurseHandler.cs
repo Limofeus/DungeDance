@@ -16,11 +16,12 @@ public class CurseHandler : MonoBehaviour
     [SerializeField] private VolumeProfile rageCurseVolumeProfile;
     [HideInInspector] public bool preCursed { get; private set; }
     [HideInInspector] public bool fullCursed { get; private set; }
-    [HideInInspector] public int currentCurseId { get; private set; } //0 - Shadow, 1 - Rage
+    [HideInInspector] public int currentCurseId { get; private set; } = -1; //0 - Shadow, 1 - Rage
     private CurseVisual currentCurseVisual;
 
     [SerializeField] private MainManager _mainManager;
 
+    private string randomDebugLine = "Hey hi hello, I'm very very PRIVATE!!!";
     public void ToggleCurse(bool enabled)
     {
         cursesEnabled = enabled;
@@ -29,6 +30,32 @@ public class CurseHandler : MonoBehaviour
     {
         CastRageCurse(false);
         CastShadowCurse(false);
+    }
+    public void TryForceSkipCurse(int curseId)
+    {
+        if(currentCurseId == curseId)
+        {
+            if (preCursed)
+            {
+                preCursed = false;
+                CurseCounter++;
+                if (fullCursed)
+                {
+                    fullCursed = false;
+                    CastCurse(false);
+                }
+                FullCurseCounter++;
+            }
+            else
+            {
+                if (fullCursed)
+                {
+                    fullCursed = false;
+                    CastCurse(false);
+                    FullCurseCounter++;
+                }
+            }
+        }
     }
     public void HandleCurses(float timer, float timeToGo)
     {

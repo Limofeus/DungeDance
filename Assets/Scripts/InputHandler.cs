@@ -81,6 +81,7 @@ public class InputHandler : MonoBehaviour
         {
             if (Input.GetButtonDown("1"))
             {
+                //Debug.Log("SHOULD ACTIVATE ITEM1");
                 mainManager.ActivateItem(1);
             }
             if (Input.GetButtonDown("2"))

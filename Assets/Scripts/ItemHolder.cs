@@ -8,6 +8,7 @@ public class ItemHolder : MonoBehaviour
     public GameObject item2HolderGameObject;
     public GameObject item3HolderGameObject;
     public GameObject[] itemUsePrefabs;
+    [SerializeField] private int[] itemIdToPrefabMap;
     public MainManager mainManager;
     public int item1Id;
     public int item2Id;
@@ -257,23 +258,21 @@ public class ItemHolder : MonoBehaviour
     }
     private void ItemAction(int itemId)
     {
-        switch (itemId)
+        if(itemId < itemIdToPrefabMap.Length)
         {
-            case -1:
-                Debug.Log("NO ITEM!");
-                break;
-            case 0:
-                break;
-            case 1:
-                break;
-            case 2:
-                break;
-            case 3:
-                Instantiate(itemUsePrefabs[0], Vector3.zero, Quaternion.identity);
-                break;
-            default:
-                Debug.LogWarning("No such item");
-                break;
+            int prefabId = itemIdToPrefabMap[itemId];
+            if(prefabId >= 0)
+            {
+                Instantiate(itemUsePrefabs[prefabId], Vector3.zero, Quaternion.identity);
+            }
+            else
+            {
+                Debug.Log("Item use not implemented");
+            }
+        }
+        else
+        {
+            Debug.Log("Id to Prefab map does not support this item");
         }
     }
 }

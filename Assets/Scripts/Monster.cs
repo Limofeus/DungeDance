@@ -8,6 +8,7 @@ public class Monster : MonoBehaviour
     public Animator Animator;
     protected MainManager MainMan;
     protected PlayerStats playerStats;
+    public bool arrowChangeBlock = false;
     public GameObject[] ArrowPrefabs;
     public string[] animationNames;
     public GameObject killText;

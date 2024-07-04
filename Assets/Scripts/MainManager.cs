@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Rendering;
 using System.Linq;
+//using System;
 
 public class MainManager : MonoBehaviour
 {
@@ -21,7 +22,8 @@ public class MainManager : MonoBehaviour
     private float multiplier = 1f;
     private bool greatCombo = true;
     public Horde[] hordes;
-    [SerializeField] private CurseHandler curseHandler;
+    [SerializeField] private SyncTestScript sTS;
+    [SerializeField] public CurseHandler curseHandler;
     [SerializeField] private LocationItemHandler locationItemHandler;
     [SerializeField] private MainUiHandler mainUiHandler;
     public ArrowHandler arrowHandler;
@@ -47,7 +49,7 @@ public class MainManager : MonoBehaviour
     public bool disableMoving;
     public bool disableItemUse;
     public bool DisableSpawn;
-    public bool disableTimer;
+    private bool disableTimer;
     public string levelName;
     public string songName;
     public int levelId;
@@ -100,6 +102,11 @@ public class MainManager : MonoBehaviour
     public static List<GameObject> Arrows = new List<GameObject>();
     public float Timer;
 
+    private float _audioSourceLastFrameTime = -1f;
+    private int _newTimerBeatCount = 0;
+    private float _nextBeatTimeNew = 0f;
+    private int _trackRepeatCounter = 0;
+
     //Debug
     public bool useDebugPlayerData;
     public SaveData debugPlayerData; // Does save money and values after the end of the level?
@@ -122,6 +129,7 @@ public class MainManager : MonoBehaviour
         hordeCounter = 0;
         crazycolor2 = CC2;
         Timer = -3f;
+        //_newTimerStartTime = Time.time + 3f; //Cus level will start after 3 seconds
         MonsterHordeCounter = 0;
         timeBetweenBeats = 60f / BPM;
         SyncTempoAnimator.speedForAnimator = 1f / timeBetweenBeats;
@@ -196,6 +204,34 @@ public class MainManager : MonoBehaviour
         UpdateMonsterCounter();
     }
 
+    private void HandleBeatsOld()
+    {
+        if (nextBeatTime < Timer + (arrowHandler.spawnerOffset / arrowHandler.arrowSpeed))
+        {
+            nextBeatTime += timeBetweenBeats;
+            Debug.Log("OLD - NextBeat");
+            //Beat();
+        }
+    }
+
+    private void HandleBeatsNew()
+    {
+        _nextBeatTimeNew = (_newTimerBeatCount * timeBetweenBeats) + Offset;
+        if(audioSource.time < _audioSourceLastFrameTime)
+        {
+            _trackRepeatCounter++;
+        }
+
+        if (audioSource.time + (_trackRepeatCounter * audioSource.clip.length) + (arrowHandler.spawnerOffset / arrowHandler.arrowSpeed) > _nextBeatTimeNew)
+        {
+            Debug.Log("NEW - NextBeat");
+            _newTimerBeatCount++;
+            sTS?.EmulateOnArrowHit((arrowHandler.spawnerOffset / arrowHandler.arrowSpeed));
+            Beat();
+        }
+        _audioSourceLastFrameTime = audioSource.time;
+    }
+
     void Update()
     {
         arrowTravelTime = arrowHandler.spawnerOffset / arrowHandler.arrowSpeed;
@@ -204,11 +240,11 @@ public class MainManager : MonoBehaviour
         //if (NextBeatTime < Time.time - (SpawnerOffset / AroowSpeed)) <- is this the thing that causes THE BUG?
         //AND YES IT FUCKING WAS!!!!!!!!!!!!!
         //P.S. for some unknown reason Time.time resets on scene change in editor but still goes in build. How the fuck was i suppost to know this?
-        if (nextBeatTime < Timer - (arrowHandler.spawnerOffset / arrowHandler.arrowSpeed))
-        {
-            nextBeatTime += timeBetweenBeats;
-            Beat();
-        }
+
+        //HandleBeatsOld();
+        HandleBeatsNew();
+
+        sTS?.SetTexts(Offset, Timer, audioSource.time, nextBeatTime, _newTimerBeatCount, nextBeatTime - (Timer + (arrowHandler.spawnerOffset / arrowHandler.arrowSpeed)), _nextBeatTimeNew - (audioSource.time + (_trackRepeatCounter * audioSource.clip.length) + (arrowHandler.spawnerOffset / arrowHandler.arrowSpeed)), _nextBeatTimeNew, 0f);
 
         curseHandler.HandleCurses(Timer, arrowTravelTime);
         bottomTextHandler.HandleDialogue();
@@ -837,12 +873,22 @@ public class MainManager : MonoBehaviour
         arrowHandler.notSpawnArrows = true;
         arrowHandler.arrowSpeed += speedChange;
         speedChangeVisual.Popup();
-        yield return new WaitForSeconds(nextBeatTime - Timer + timeBetweenBeats);
+        //
+        foreach (GameObject arow in Arrows) // I just copied this thing from below... hoping It'll help..
+        {
+            Destroy(arow);
+        }
+        Arrows.Clear();
+        //
+        //Maybe I should uncomment the thing after this but Idk...
+        /*
+        yield return new WaitForSeconds(_nextBeatTimeNew - Timer + timeBetweenBeats);
         foreach (GameObject arow in Arrows)
         {
             Destroy(arow);
         }
         Arrows.Clear();
+        */
         yield return new WaitForSeconds(sleepFor);
         arrowHandler.notSpawnArrows = startNSA;
     }
