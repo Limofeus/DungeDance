@@ -6,6 +6,7 @@ public class WindowShowAndHide : MonoBehaviour
 {
     [SerializeField] private float showScaleMult = 1f;
     [SerializeField] private float lerpPow = 50f;
+    [SerializeField] private float changeUiLockValue = 0f;
     private bool shown = false;
 
     void Update()
@@ -16,5 +17,10 @@ public class WindowShowAndHide : MonoBehaviour
     public void ShowHideToggle()
     {
         shown = !shown;
+        if(changeUiLockValue != 0f)
+        {
+            MenuDataManager.uiLockValue = shown ? changeUiLockValue : 0f;
+            Debug.Log(MenuDataManager.uiLockValue);
+        }
     }
 }

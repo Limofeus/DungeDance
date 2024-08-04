@@ -26,8 +26,11 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Specials/CloningAltar.unity
     guid: 4bd0cca89faca4442929b0510def975f
-  - enabled: 1
-    path: Assets/Scenes/Shop.unity
+  - enabled: 0
+    path: Assets/Scenes/OldShop.unity
     guid: aac87acbb9beb0946abdff5e55de416e
+  - enabled: 1
+    path: Assets/Scenes/Specials/Shop.unity
+    guid: 3111818a92e33274eb2e95e85462c2b0
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 6930f2c2ee7f632489364d0d24a09698, type: 2}

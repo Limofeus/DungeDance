@@ -13,6 +13,7 @@ public class Button : MonoBehaviour
     public bool sendMessageOnClick;
     public GameObject messageRessiver;
     public string messageItem;
+    [SerializeField] private float uiLockValueCheck = 0f;
     private void Awake()
     {
         startScale = transform.localScale;
@@ -35,7 +36,7 @@ public class Button : MonoBehaviour
                 transform.localScale = Vector3.Lerp(transform.localScale, startScale, Time.deltaTime * scaleMultiplierMultiplier);
             }
         }
-        if ((Input.GetMouseButtonDown(0) /*|| (Input.touches.Length > 0 && Input.touches[0].phase == TouchPhase.Began)*/) && mouseOver) //Comment the mobile thing off, the other one is in the level selector script
+        if ((Input.GetMouseButtonDown(0) /*|| (Input.touches.Length > 0 && Input.touches[0].phase == TouchPhase.Began)*/) && mouseOver/* && MenuDataManager.uiLockValue <= uiLockValueCheck*/) //Comment the mobile thing off, the other one is in the level selector script
         {
             if (sendMessageOnClick)
                 messageRessiver.SendMessage(messageItem);
@@ -43,12 +44,15 @@ public class Button : MonoBehaviour
     }
     private void OnMouseEnter()
     {
+        if (MenuDataManager.uiLockValue > uiLockValueCheck) return;
+        //Debug.Log($"MDMuiLock: {MenuDataManager.uiLockValue}, CurrBTN: {gameObject.name}, ButnLock: {uiLockValueCheck}");
         mouseOver = true;
         if(!lerpScaling)
             animator.SetBool("Over",true);
     }
     private void OnMouseExit()
     {
+        if (MenuDataManager.uiLockValue > uiLockValueCheck) return;
         mouseOver = false;
         if(!lerpScaling)
             animator.SetBool("Over", false);

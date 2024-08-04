@@ -37,6 +37,7 @@ public class LevelSelector : MonoBehaviour
     private float itemUnlocksLength;
     private bool moreThenFour;
     private bool movinRight;
+    [SerializeField] private float uiLockValueCheck = 0f;
     // Start is called before the first frame update
     void Start()
     {
@@ -117,12 +118,15 @@ public class LevelSelector : MonoBehaviour
 
     private void OnMouseEnter()
     {
+        if (MenuDataManager.uiLockValue > uiLockValueCheck) return;
+        //Debug.Log($"MDMuiLock: {MenuDataManager.uiLockValue}, CurrSEL: {gameObject.name}, ButnLock: {uiLockValueCheck}");
         animator.SetBool("MouseOver", true);
         MapMusicPlayer.mapMusicPlayer.MouseOverTrack(true, mapPlayerMusic, mapMusicPlayerTime);
         selected = true;
     }
     private void OnMouseExit()
     {
+        if (MenuDataManager.uiLockValue > uiLockValueCheck) return;
         animator.SetBool("MouseOver", false);
         MapMusicPlayer.mapMusicPlayer.MouseOverTrack(false, mapPlayerMusic, mapMusicPlayerTime);
         selected = false;

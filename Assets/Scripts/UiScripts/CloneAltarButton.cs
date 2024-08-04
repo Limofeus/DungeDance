@@ -31,6 +31,8 @@ public class CloneAltarButton : MonoBehaviour
 
     private bool mouseOver;
 
+    [SerializeField] private float uiLockValueCheck = 0f; //YAH, THSURE THING LETSA JUST SLAP THAT SHIT ON ALL OF THE FUCKIN UI ELEMENTS (man havent heard of ingeritanse or something), actually, as I already said somewhere in the comments this code is SO SHIT that I DO NOT CARE ANYMORE AT ALLLL ALALALLALALA LALALALAL; <- dont forget the semicallon or wfat ever this thing is calllld
+
     private void Start()
     {
         scalingTransform.localScale = Vector3.zero;
@@ -93,11 +95,13 @@ public class CloneAltarButton : MonoBehaviour
 
     private void OnMouseEnter()
     {
+        if (MenuDataManager.uiLockValue > uiLockValueCheck) return;
         mouseOver = true;
     }
 
     private void OnMouseExit()
     {
+        if (MenuDataManager.uiLockValue > uiLockValueCheck) return;
         mouseOver = false;
     }
 }

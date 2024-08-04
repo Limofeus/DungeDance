@@ -1108,7 +1108,7 @@ MonoBehaviour:
   songName: Teminite - Work
   levelId: 0
   musicSource: {fileID: 177484241}
-  Music: {fileID: 8300000, guid: 02da731597123e24ba9df66898f112c5, type: 3}
+  Music: {fileID: 8300000, guid: 617e5e04c0801544dbb675a8023a828c, type: 3}
   BPM: 110
   Offset: 0
   AMiSM: 0
@@ -1177,9 +1177,9 @@ MonoBehaviour:
     playerName: Abobus
     playerLevel: 0
     playerXp: 12
-    item1Id: 17
-    item2Id: 18
-    item3Id: 3
+    item1Id: 12
+    item2Id: 16
+    item3Id: 25
     itemUnlockDatas: 
     moneyAmount: 123
     levelDatas: []
@@ -1189,12 +1189,42 @@ MonoBehaviour:
     storageChestData:
       storageChestLevel: 0
       storageItemIds: 
+    shopData:
+      shopLevel: 0
+      shopItemDatas: []
     settingsData:
       soundVolume: 0.1
       musicVolume: 0.2
-    shopItemIds: 
-    shopMustBeChanged: 0
+      offsetValue: 0
   debugPlayerLevelupXps: 00000000e8030000f2030000fc030000d0070000f8070000fc0700002a080000b80b00008813000010270000204e0000a86100003075000050c30000
+  bonusesAndMultiplers:
+    scoreMonsterBonus: 0
+    scoreHitType0Bonus: 0
+    scoreHitType1Bonus: 0
+    scoreHitType2Bonus: 0
+    scoreHitType3Bonus: 0
+    scoreAllHitBonus: 0
+    scoreMonsterMultiplier: 1
+    scoreHitType0Multiplier: 1
+    scoreHitType1Multiplier: 1
+    scoreHitType2Multiplier: 1
+    scoreHitType3Multiplier: 1
+    scoreAllHitMultiplier: 1
+    joyHitType0Bonus: 0
+    joyHitType1Bonus: 0
+    joyHitType2Bonus: 0
+    joyHitType3Bonus: 0
+    joyAllHitBonus: 0
+    joyHitType0Multiplier: 1
+    joyHitType1Multiplier: 1
+    joyHitType2Multiplier: 1
+    joyHitType3Multiplier: 1
+    joyAllHitMultiplier: 1
+    joyDynamicHitMultiplier: 1
+    followMonsterToScoreMultiplier: 1
+    followMonsterToJoyMultiplier: 1
+    attractionToScoreMultiplier: 1
+    attractionToJoyMultiplier: 1
 --- !u!4 &177484240
 Transform:
   m_ObjectHideFlags: 0
@@ -4411,6 +4441,7 @@ MonoBehaviour:
   mainManager: {fileID: 177484239}
   monsterPrefab: {fileID: 5161696983825405977, guid: 4cbbe5f5476a1d540a7b98758fff65f3, type: 3}
   minimonAwayPrefab: {fileID: 5403832564142266669, guid: 7f09f6ce250eb514297fb98b69026323, type: 3}
+  maxMiniMonsterCount: 5
   miniMonsters: []
   animators: []
   followPowers: 
@@ -8982,6 +9013,18 @@ PrefabInstance:
       propertyPath: mainManager
       value: 
       objectReference: {fileID: 177484239}
+    - target: {fileID: 773799882732145178, guid: 8c28190ad0ee8a8458652df6e724c214, type: 3}
+      propertyPath: itemUsePrefabs.Array.size
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 773799882732145178, guid: 8c28190ad0ee8a8458652df6e724c214, type: 3}
+      propertyPath: itemUsePrefabs.Array.data[17]
+      value: 
+      objectReference: {fileID: 631655555126739427, guid: 29681c926e6b714438a911336b9156b9, type: 3}
+    - target: {fileID: 773799882732145178, guid: 8c28190ad0ee8a8458652df6e724c214, type: 3}
+      propertyPath: itemIdToPrefabMap.Array.data[12]
+      value: 17
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8c28190ad0ee8a8458652df6e724c214, type: 3}
 --- !u!1001 &2760915084007953339

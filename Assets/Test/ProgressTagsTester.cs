@@ -5,6 +5,8 @@ using UnityEngine;
 public class ProgressTagsTester : MonoBehaviour
 {
     public string tagName;
+    [SerializeField] private SceneHintPopupManager sceneHintPopupManager;
+    [SerializeField] private bool activateHintPopup;
     public bool addTag;
     public bool removeTag;
     public bool checkForTag;
@@ -12,8 +14,6 @@ public class ProgressTagsTester : MonoBehaviour
     public bool loadsData;
     public bool savesData;
     public SaveData saveData;
-    [SerializeField] private SceneHintPopupManager sceneHintPopupManager;
-    [SerializeField] private bool activateHintPopup;
     void Update()
     {
         if (loadsData) { LoadSaveData(); loadsData = false; }

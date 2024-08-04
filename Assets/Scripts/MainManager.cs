@@ -106,6 +106,7 @@ public class MainManager : MonoBehaviour
     private int _newTimerBeatCount = 0;
     private float _nextBeatTimeNew = 0f;
     private int _trackRepeatCounter = 0;
+    private float _playerSetOffset = 0f;
 
     //Debug
     public bool useDebugPlayerData;
@@ -133,7 +134,7 @@ public class MainManager : MonoBehaviour
         MonsterHordeCounter = 0;
         timeBetweenBeats = 60f / BPM;
         SyncTempoAnimator.speedForAnimator = 1f / timeBetweenBeats;
-        nextBeatTime = Offset;
+        nextBeatTime = Offset; //Looks like this thing isnt really used anywhere... Guess I can leave it as is, without applying settings offset..
     }
 
     void Start()
@@ -158,6 +159,7 @@ public class MainManager : MonoBehaviour
             item1Id = MenuDataManager.saveData.item1Id;
             item2Id = MenuDataManager.saveData.item2Id;
             item3Id = MenuDataManager.saveData.item3Id;
+            _playerSetOffset = (MenuDataManager.saveData.settingsData.offsetValue / 1000f);
             //Debug.Log("PLEAEESEE!!");
             ChangeStageVolume(MenuDataManager.saveData.settingsData.soundVolume, MenuDataManager.saveData.settingsData.musicVolume);
         }
@@ -168,6 +170,7 @@ public class MainManager : MonoBehaviour
             item2Id = debugPlayerData.item2Id;
             item3Id = debugPlayerData.item3Id;
             itemHolder.noAutosave = true;
+            _playerSetOffset = (debugPlayerData.settingsData.offsetValue / 1000f);
             //Debug.Log("FUUUCK!!");
             ChangeStageVolume(debugPlayerData.settingsData.soundVolume, debugPlayerData.settingsData.musicVolume);
         }
@@ -216,7 +219,7 @@ public class MainManager : MonoBehaviour
 
     private void HandleBeatsNew()
     {
-        _nextBeatTimeNew = (_newTimerBeatCount * timeBetweenBeats) + Offset;
+        _nextBeatTimeNew = (_newTimerBeatCount * timeBetweenBeats) + Offset + _playerSetOffset;
         if(audioSource.time < _audioSourceLastFrameTime)
         {
             _trackRepeatCounter++;

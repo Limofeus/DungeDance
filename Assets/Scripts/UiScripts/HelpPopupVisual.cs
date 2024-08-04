@@ -13,21 +13,30 @@ public class HelpPopupVisual : MonoBehaviour
     [SerializeField] private float closeLerpPow = 20f;
     private bool closeOnAction = false;
     private bool closing = false;
-
+    private SceneHintPopupManager sHPM;
+    private float uiLockValueToSet = 2f;
+    private bool uiLockfired = false;
     private void Update()
     {
         if(closeOnAction && Input.anyKeyDown)
         {
             closing = true;
+            if (!uiLockfired)
+            {
+                MenuDataManager.uiLockValue = 0f;
+                uiLockfired = true;
+            }
+            sHPM?.HintClosed();
         }
         if(closeOnAction)
         {
             transform.localScale = Vector3.Lerp(transform.localScale, closing ? Vector3.zero : Vector3.one, Time.deltaTime * closeLerpPow);
         }
     }
-    public void InitializeHint(string hintPopupTag, Dictionary<string, HintPopupPerTagInfo> hintPopupDict, bool closeOnActionV = false)
+    public void InitializeHint(string hintPopupTag, Dictionary<string, HintPopupPerTagInfo> hintPopupDict, bool closeOnActionV = false, SceneHintPopupManager sceneHintPopupManager = null)
     {
         HintPopupPerTagInfo thisHintInfo = hintPopupDict[hintPopupTag];
+        sHPM = sceneHintPopupManager;
         if (thisHintInfo.sprite != null) 
         {
             SetPopupTextImage(thisHintInfo.upperText, thisHintInfo.lowerText, thisHintInfo.sprite);
@@ -40,6 +49,7 @@ public class HelpPopupVisual : MonoBehaviour
         {
             closeOnAction = closeOnActionV;
             transform.localScale = Vector3.zero;
+            MenuDataManager.uiLockValue = uiLockValueToSet;
         }
     }
     private void SetPopupTextLong(string upperString, string mainString)

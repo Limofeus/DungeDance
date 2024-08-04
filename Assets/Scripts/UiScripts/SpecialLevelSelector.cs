@@ -22,6 +22,7 @@ public class SpecialLevelSelector : MonoBehaviour
     [SerializeField] private float mapMusicPlayerTime;
     private bool selected = false;
     private bool levelKnown = false;
+    [SerializeField] private float uiLockValueCheck = 0f;
 
     private void Update()
     {
@@ -63,6 +64,8 @@ public class SpecialLevelSelector : MonoBehaviour
     }
     private void OnMouseEnter()
     {
+        if (MenuDataManager.uiLockValue > uiLockValueCheck) return;
+        //Debug.Log($"MDMuiLock: {MenuDataManager.uiLockValue}, CurrSLS: {gameObject.name}, ButnLock: {uiLockValueCheck}");
         animator.SetBool("MouseOver", true);
         if(mapPlayerMusic != null && levelKnown)
             MapMusicPlayer.mapMusicPlayer.MouseOverTrack(true, mapPlayerMusic, mapMusicPlayerTime);
@@ -70,6 +73,7 @@ public class SpecialLevelSelector : MonoBehaviour
     }
     private void OnMouseExit()
     {
+        if (MenuDataManager.uiLockValue > uiLockValueCheck) return;
         animator.SetBool("MouseOver", false);
         if (mapPlayerMusic != null && levelKnown)
             MapMusicPlayer.mapMusicPlayer.MouseOverTrack(false, mapPlayerMusic, mapMusicPlayerTime);

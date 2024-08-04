@@ -18,6 +18,7 @@ public class ItemInfoIcon : MonoBehaviour
     private bool mouseOver;
     public static bool animatingStart;
     public static bool animating;
+    [SerializeField] private float uiLockValueCheck = 0f;
 
     private void Start()
     {
@@ -38,12 +39,14 @@ public class ItemInfoIcon : MonoBehaviour
     }
     private void OnMouseEnter()
     {
-        if(!animatingStart)
+        if (MenuDataManager.uiLockValue > uiLockValueCheck) return;
+        if (!animatingStart)
             animator.SetBool("MouseOver", true);
         mouseOver = true;
     }
     private void OnMouseExit()
     {
+        if (MenuDataManager.uiLockValue > uiLockValueCheck) return;
         animator.SetBool("MouseOver", false);
         mouseOver = false;
     }

@@ -682,7 +682,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 12477.648}
+  m_AnchoredPosition: {x: 0, y: 12891.589}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &189247628
@@ -939,6 +939,8 @@ MonoBehaviour:
   defaultSceneId: 1
   preloadScene: 1
   blackScreenAnimator: {fileID: 531679669}
+  additionalMessageObj: {fileID: 0}
+  additionalMessage: 
 --- !u!1 &331624616
 GameObject:
   m_ObjectHideFlags: 0
@@ -994,6 +996,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   showScaleMult: 0.8
   lerpPow: 25
+  changeUiLockValue: 1
 --- !u!114 &331624619
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3256,6 +3259,8 @@ MonoBehaviour:
   hintPopupPrefab: {fileID: 3480471652626478419, guid: 468de597096c25e45ad0f59532e15af9, type: 3}
   hintPopupHolderTransform: {fileID: 189247627}
   popupCanvasTransform: {fileID: 2023596335}
+  usePopupQueue: 0
+  characterLevelToHintPopup: {fileID: 0}
 --- !u!4 &1094947545
 Transform:
   m_ObjectHideFlags: 0
@@ -3409,6 +3414,7 @@ MonoBehaviour:
   sendMessageOnClick: 1
   messageRessiver: {fileID: 331624616}
   messageItem: ShowHideToggle
+  uiLockValueCheck: 1
 --- !u!61 &1140227932
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3552,6 +3558,7 @@ MonoBehaviour:
   unselectedSelectedScale: {x: 1, y: 1.2}
   interactMode: 0
   targetBgColor: {r: 0, g: 0, b: 0, a: 1}
+  uiLockValueCheck: 0
 --- !u!58 &1162874854
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -4680,11 +4687,13 @@ MonoBehaviour:
     storageChestData:
       storageChestLevel: 0
       storageItemIds: 
+    shopData:
+      shopLevel: 0
+      shopItemDatas: []
     settingsData:
       soundVolume: 0
       musicVolume: 0
-    shopItemIds: 
-    shopMustBeChanged: 0
+      offsetValue: 0
 --- !u!114 &1900815560
 MonoBehaviour:
   m_ObjectHideFlags: 0

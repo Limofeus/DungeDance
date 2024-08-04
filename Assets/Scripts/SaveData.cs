@@ -32,10 +32,10 @@ public class SaveData
     [SerializeField]
     public StorageChestData storageChestData;
     [SerializeField]
-    public SettingsData settingsData;
+    public ShopData shopData;
     [SerializeField]
-    public int[] shopItemIds;
-    [SerializeField] public bool shopMustBeChanged;
+    public SettingsData settingsData;
+
 
     public SaveData(SaveData saveData)
     {
@@ -51,9 +51,8 @@ public class SaveData
         progressTags = saveData.progressTags;
         fishDatas = saveData.fishDatas;
         storageChestData = saveData.storageChestData;
+        shopData = saveData.shopData;
         settingsData = saveData.settingsData;
-        shopItemIds = saveData.shopItemIds;
-        shopMustBeChanged = saveData.shopMustBeChanged;
     }
 }
 
@@ -146,10 +145,38 @@ public class SettingsData
     [SerializeField]
     public float soundVolume;
     public float musicVolume;
+    public float offsetValue;
 
     public SettingsData(SettingsData settingsData)
     {
         soundVolume = settingsData.soundVolume;
         musicVolume = settingsData.musicVolume;
+        offsetValue = settingsData.offsetValue;
+    }
+}
+
+[Serializable]
+public class ShopData
+{
+    public int shopLevel;
+    public ShopItemData[] shopItemDatas;
+
+    public ShopData(ShopData shopData)
+    {
+        shopLevel = shopData.shopLevel;
+        shopItemDatas = shopData.shopItemDatas;
+    }
+}
+
+[Serializable]
+public class ShopItemData
+{
+    public int shopItemId; //-1 - restocking; -2 - slot locked; -3 - no suitable items!!!
+    public float timeTillItemRestock; //In seconds
+
+    public ShopItemData(ShopItemData shopItemData)
+    {
+        shopItemId = shopItemData.shopItemId;
+        timeTillItemRestock = shopItemData.timeTillItemRestock;
     }
 }

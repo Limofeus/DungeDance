@@ -18,6 +18,7 @@
 "ui_settings_label_settings", "SETTINGS", "НАСТРОЙКИ"
 "ui_settings_label_music_volume", "Music volume", "Громкость музыки"
 "ui_settings_label_sound_volume", "Sound volume", "Громкость звука"
+"ui_settings_label_offset", "Offset", "Смещение"
 "ui_iteminfoicon_dropdesc", "RMB - Drop the item", "ПКМ - Выбросить этот предмет"
 "ui_levelselect_completed", "Completed", "Пройдено"
 "ui_levelselect_not_completed", "Not Completed", "Не Пройдено"

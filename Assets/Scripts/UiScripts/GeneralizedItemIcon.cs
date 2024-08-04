@@ -19,6 +19,7 @@ public class GeneralizedItemIcon : MonoBehaviour
     [SerializeField] private Animator animator;
     private bool mouseOver;
     [HideInInspector] public bool isShown = true;
+    [SerializeField] private float uiLockValueCheck = 0f;
     private void Update()
     {
         if ((Input.GetMouseButtonDown(0) || Input.touchCount == 1) && mouseOver)
@@ -48,11 +49,13 @@ public class GeneralizedItemIcon : MonoBehaviour
     }
     private void OnMouseEnter()
     {
+        if (MenuDataManager.uiLockValue > uiLockValueCheck) return;
         animator.SetBool("MouseOver", true);
         mouseOver = true;
     }
     private void OnMouseExit()
     {
+        if (MenuDataManager.uiLockValue > uiLockValueCheck) return;
         animator.SetBool("MouseOver", false);
         mouseOver = false;
     }

@@ -7,13 +7,14 @@ public class MonsterFollow : MonoBehaviour
     public MainManager mainManager;
     public GameObject monsterPrefab;
     public GameObject minimonAwayPrefab;
+    [SerializeField] private int maxMiniMonsterCount = 5;
     private int monsterCount = 0;
     public List<GameObject> miniMonsters = new List<GameObject>();
     public List<Animator> animators = new List<Animator>();
     public List<int> followPowers = new List<int>();
     public Sprite[] Textures;
 
-    public void AddMonster(int TextureId, int followPower)
+    public void AddMonster(int TextureId, int followPower, float customFollowTime = -1f)
     {
         mainManager.soundSource.PlayOtherSound(0);
         foreach(GameObject MiniMonster in miniMonsters)
@@ -30,13 +31,20 @@ public class MonsterFollow : MonoBehaviour
         animators.Add(MonsAni);
         followPowers.Add(followPower);
         mainManager.ChangeAttr(followPower, 1);
-        if(miniMonsters.Count > 5)
+        if(miniMonsters.Count > maxMiniMonsterCount)
         {
             AwayLastFollow();
         }
         else
         {
-            StartCoroutine(TimeOutFollow(MainManager.followTime));
+            if(customFollowTime >= 0f)
+            {
+                StartCoroutine(TimeOutFollow(customFollowTime));
+            }
+            else
+            {
+                StartCoroutine(TimeOutFollow(MainManager.followTime));
+            }
         }
         monsterCount++;
         UpdateMainmanMonCount();

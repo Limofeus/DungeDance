@@ -2117,6 +2117,7 @@ GameObject:
   - component: {fileID: 9029118266122061770}
   - component: {fileID: 521739534195021128}
   - component: {fileID: 243023378276315087}
+  - component: {fileID: 6608852884908211241}
   m_Layer: 0
   m_Name: LevelNameMini
   m_TagString: Untagged
@@ -2280,6 +2281,22 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_renderer: {fileID: 521739534195021128}
   m_maskType: 0
+--- !u!114 &6608852884908211241
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4032673524011585768}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0456b72180d6f748bc2d9666f3c68ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textMesh: {fileID: 243023378276315087}
+  timeTillFullMap: 1
+  fullMapPosLimit: 7.75
+  lerpPow: 20
 --- !u!1 &4310610852563730792
 GameObject:
   m_ObjectHideFlags: 0

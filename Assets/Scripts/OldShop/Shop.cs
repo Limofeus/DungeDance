@@ -41,11 +41,14 @@ namespace Shop
         }
         private void Start()
         {
+            // OLD SHOP!!!! DEPRICATED!!!!
+            /*
             if (_saveData.shopMustBeChanged)
             {
                 UpdateItemList();
             }
             MoneyChanged?.Invoke(_saveData.moneyAmount);
+            */
         }
 
         private void ItemSelected(int cellId)

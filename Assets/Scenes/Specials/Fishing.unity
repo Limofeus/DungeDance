@@ -746,6 +746,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   showScaleMult: 1
   lerpPow: 25
+  changeUiLockValue: 1
 --- !u!1 &29352029
 GameObject:
   m_ObjectHideFlags: 0
@@ -5379,6 +5380,7 @@ MonoBehaviour:
   sendMessageOnClick: 1
   messageRessiver: {fileID: 59704765}
   messageItem: TryHookFish
+  uiLockValueCheck: 0
 --- !u!1 &334931985
 GameObject:
   m_ObjectHideFlags: 0
@@ -8233,6 +8235,7 @@ MonoBehaviour:
   sendMessageOnClick: 1
   messageRessiver: {fileID: 59704765}
   messageItem: StartFishingPressed
+  uiLockValueCheck: 0
 --- !u!1 &520660003
 GameObject:
   m_ObjectHideFlags: 0
@@ -8982,6 +8985,8 @@ MonoBehaviour:
   hintPopupPrefab: {fileID: 3480471652626478419, guid: 468de597096c25e45ad0f59532e15af9, type: 3}
   hintPopupHolderTransform: {fileID: 1454390786}
   popupCanvasTransform: {fileID: 646858874}
+  usePopupQueue: 0
+  characterLevelToHintPopup: {fileID: 0}
 --- !u!1 &576465247
 GameObject:
   m_ObjectHideFlags: 0
@@ -12750,6 +12755,7 @@ MonoBehaviour:
   sendMessageOnClick: 1
   messageRessiver: {fileID: 1335071531}
   messageItem: OpenCloseUI
+  uiLockValueCheck: 0
 --- !u!61 &789165362
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -17080,6 +17086,8 @@ MonoBehaviour:
   defaultSceneId: 1
   preloadScene: 1
   blackScreenAnimator: {fileID: 2137048032}
+  additionalMessageObj: {fileID: 0}
+  additionalMessage: 
 --- !u!4 &1060869632
 Transform:
   m_ObjectHideFlags: 0
@@ -22395,7 +22403,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 11291.062}
+  m_AnchoredPosition: {x: 0, y: 11655.324}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1454390787
@@ -22890,6 +22898,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tagName: 
+  sceneHintPopupManager: {fileID: 565297099}
+  activateHintPopup: 0
   addTag: 0
   removeTag: 0
   checkForTag: 0
@@ -22912,13 +22922,13 @@ MonoBehaviour:
     storageChestData:
       storageChestLevel: 0
       storageItemIds: 
+    shopData:
+      shopLevel: 0
+      shopItemDatas: []
     settingsData:
       soundVolume: 0
       musicVolume: 0
-    shopItemIds: 
-    shopMustBeChanged: 0
-  sceneHintPopupManager: {fileID: 565297099}
-  activateHintPopup: 0
+      offsetValue: 0
 --- !u!1 &1500657568
 GameObject:
   m_ObjectHideFlags: 0
@@ -26640,7 +26650,7 @@ MonoBehaviour:
   fishView: {fileID: 1273000420}
   fishCollectionUI: {fileID: 1335071534}
   canDropFish: 1
-  itemToFishRatio: 0.9
+  itemToFishRatio: 0.1
   fishingDrops:
   - isItem: 0
     fishOrItemId: 0
@@ -26805,11 +26815,13 @@ MonoBehaviour:
     storageChestData:
       storageChestLevel: 0
       storageItemIds: 
+    shopData:
+      shopLevel: 0
+      shopItemDatas: []
     settingsData:
       soundVolume: 0
       musicVolume: 0
-    shopItemIds: 
-    shopMustBeChanged: 0
+      offsetValue: 0
 --- !u!1 &1725042989
 GameObject:
   m_ObjectHideFlags: 0
@@ -30029,6 +30041,7 @@ MonoBehaviour:
   sendMessageOnClick: 1
   messageRessiver: {fileID: 28505226}
   messageItem: ShowHideToggle
+  uiLockValueCheck: 1
 --- !u!61 &1936199485
 BoxCollider2D:
   m_ObjectHideFlags: 0

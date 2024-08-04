@@ -25,6 +25,7 @@ public class MenuDataManager : MonoBehaviour
     public static SaveData saveData; // I SHOULD NOT FORGET TO USE THIS ONE
     public static bool dataLoaded;
     public static bool rankXpsLoaded;
+    public static float uiLockValue = 0f;
     private void Awake()
     {
         if(!rankXpsLoaded)

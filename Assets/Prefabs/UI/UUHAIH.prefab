@@ -254,7 +254,15 @@ MonoBehaviour:
   - {fileID: 351798901953647490, guid: 0e9b6f794425ea5469e128b392c08ea4, type: 3}
   - {fileID: 9053874428758541598, guid: 8c247c7e6203d174d83034df2dcee3dd, type: 3}
   - {fileID: 1740587241392074843, guid: 8c535c0c2bf46df4498490cf697d994a, type: 3}
-  itemIdToPrefabMap: 02000000010000000500000000000000040000000300000006000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0800000007000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+  - {fileID: 5007845866673787222, guid: 818168ed4181502439add7a1c082d71d, type: 3}
+  - {fileID: 4725091265210882164, guid: 342eb3966e004a449831a81f431c90c0, type: 3}
+  - {fileID: 295609278479985625, guid: cbfc99a81645a724092f7ac41da1430e, type: 3}
+  - {fileID: 4791592992404790776, guid: 90cf0da994c31ce49a7557013cc91be6, type: 3}
+  - {fileID: 1800574875022985297, guid: d0fbebf78ebeaa742840a5f06d2fd4b1, type: 3}
+  - {fileID: 5037612713055960489, guid: fdbba4e67600b5b40bd26fda91dd2aba, type: 3}
+  - {fileID: 7507590294253975849, guid: c29cf039d175e674f8cef1805761cd5a, type: 3}
+  - {fileID: 3694372134900326034, guid: 296dbfd8e1a18c24ba26a77207180bb3, type: 3}
+  itemIdToPrefabMap: 02000000010000000500000000000000040000000300000006000000ffffffff09000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff100000000800000007000000ffffffffffffffff0c0000000f0000000e000000ffffffff0b000000ffffffffffffffffffffffff0d000000ffffffffffffffffffffffff0a000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff
   mainManager: {fileID: 0}
   item1Id: -1
   item2Id: -1

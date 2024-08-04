@@ -22,8 +22,14 @@ public class SceneHintPopupManager : MonoBehaviour
     [SerializeField] private GameObject hintPopupPrefab;
     [SerializeField] private Transform hintPopupHolderTransform;
     [SerializeField] private Transform popupCanvasTransform;
+    [SerializeField] private bool usePopupQueue;
     private Dictionary<string, HintPopupPerTagInfo> hintPopupDict = new Dictionary<string, HintPopupPerTagInfo> ();
     private SaveData saveData;
+
+    private List<string> popupQueue = new List<string>();
+    private bool popupShown = false; //Used for popup queue;
+
+    [SerializeField] private CharacterLevelToHintPopup characterLevelToHintPopup;
     void Start()
     {
         for(int i = 0; i < tagsForHintPopups.Length; i++)
@@ -37,6 +43,8 @@ public class SceneHintPopupManager : MonoBehaviour
         {
             TryShowPopup(onSceneStartTag);
         }
+
+        characterLevelToHintPopup?.CheckLevelsAndSendTags(this);
     }
 
     public void TryShowPopup(string popupTag)
@@ -45,12 +53,42 @@ public class SceneHintPopupManager : MonoBehaviour
         {
             saveData.progressTags.AddTag(popupTag);
 
-            HelpPopupVisual newPopup = CreatePopupVisual(popupCanvasTransform);
-            newPopup.InitializeHint(popupTag, hintPopupDict, true);
+            if (!usePopupQueue)
+            {
+                HelpPopupVisual newPopup = CreatePopupVisual(popupCanvasTransform);
+                newPopup.InitializeHint(popupTag, hintPopupDict, true);
+            }
+            else
+            {
+                if(popupQueue.Count == 0 && popupShown == false)
+                {
+                    HelpPopupVisual newPopup = CreatePopupVisual(popupCanvasTransform);
+                    newPopup.InitializeHint(popupTag, hintPopupDict, true, this);
+                    popupShown = true;
+                }
+                else
+                {
+                    popupQueue.Add(popupTag);
+                }
+            }
 
 
             ApplySaveData();
             UpdateHintHolder();
+        }
+    }
+
+    public void HintClosed()
+    {
+        if(popupQueue.Count > 0)
+        {
+            HelpPopupVisual newPopup = CreatePopupVisual(popupCanvasTransform);
+            newPopup.InitializeHint(popupQueue[0], hintPopupDict, true, this);
+            popupQueue.RemoveAt(0);
+        }
+        else
+        {
+            popupShown = false;
         }
     }
     private void LoadSaveData()

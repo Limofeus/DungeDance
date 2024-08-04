@@ -7,7 +7,9 @@ public class QuickSceneChange : MonoBehaviour
 {
     [SerializeField] private int defaultSceneId;
     [SerializeField] private bool preloadScene;
-    [SerializeField] private Animator blackScreenAnimator; 
+    [SerializeField] private Animator blackScreenAnimator;
+    [SerializeField] private GameObject additionalMessageObj;
+    [SerializeField] private string additionalMessage;
     private AsyncOperation asyncLoad;
 
 
@@ -36,6 +38,10 @@ public class QuickSceneChange : MonoBehaviour
     {
         blackScreenAnimator.SetTrigger("Fade");
         yield return new WaitForSeconds(0.45f);
+        if(additionalMessageObj != null)
+        {
+            additionalMessageObj.SendMessage(additionalMessage);
+        }
         asyncLoad.allowSceneActivation = true;
     }
 }
