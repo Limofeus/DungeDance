@@ -19,6 +19,10 @@ public class ShopModel : MonoBehaviour
     [SerializeField] private float itemRestockTime;
     [SerializeField] private int rerollPrice;
 
+    [SerializeField] private TextMeshPro rerollTMP;
+    [SerializeField] private Color rerollEnoughMoneyColor;
+    [SerializeField] private Color rerollNotEnoughMoneyColor;
+
     //[SerializeField] private ShopItemData[] shopItems;
 
     private SaveData saveData;
@@ -76,6 +80,11 @@ public class ShopModel : MonoBehaviour
     {
         moneyTmpro.text = saveData.moneyAmount.ToString();
     }
+    private void UpdateRerollLabel()
+    {
+        rerollTMP.text = rerollPrice.ToString();
+        rerollTMP.color = ((rerollPrice <= saveData.moneyAmount) ? rerollEnoughMoneyColor : rerollNotEnoughMoneyColor);
+    }
     private void ShopLevelBasedUpdate()
     {
         noInvSpaceWarning.SetVisibility(!PlayerHasFreeSpace());
@@ -98,6 +107,8 @@ public class ShopModel : MonoBehaviour
         {
             investPriceLabel.text = LocalisationSystem.GetLocalizedValue("shop_invest_max_level");
         }
+
+        UpdateRerollLabel();
 
         //Updating each slot
         bool itemIdsChangedFlag = false;
@@ -253,7 +264,9 @@ public class ShopModel : MonoBehaviour
         }
         saveData.shopData.shopItemDatas[itemButId].shopItemId = -1;
         saveData.shopData.shopItemDatas[itemButId].timeTillItemRestock = itemRestockTime;
+        shopKeepVisual.ItemBoughtAnim();
         ApplySaveData();
+        UpdateRerollLabel();
         UpdateMoneyLabel();
         UpdatePlayerInventoryItems();
         noInvSpaceWarning.SetVisibility(!PlayerHasFreeSpace());
@@ -267,6 +280,7 @@ public class ShopModel : MonoBehaviour
             {
                 saveData.shopData.shopItemDatas[i].timeTillItemRestock = 0f;
             }
+            shopKeepVisual.ShowItemsAnim();
             RerollAllShopItems();
             ApplySaveData();
             UpdateMoneyLabel();
@@ -286,9 +300,11 @@ public class ShopModel : MonoBehaviour
                 {
                     saveData.shopData.shopItemDatas[i].timeTillItemRestock = shopSlotButtons[i].restockTime;
                 }
+                shopKeepVisual.InvestAnim();
                 ShopLevelBasedUpdate();
                 ApplySaveData();
                 UpdateMoneyLabel();
+                UpdateRerollLabel();
             }
         }
     }

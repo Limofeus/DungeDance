@@ -9,6 +9,7 @@ public class BongoItemUse : MonoBehaviour
     {
         StartCoroutine(DeleteAfterTime()); 
         Monster currentMonster = MainManager.thisMainManager.MonsterComp;
+        MainManager.thisMainManager.bonusesAndMultiplers.scoreAllHitMultiplier -= 0.1f;
         if (currentMonster == null) return;
         if (!currentMonster.arrowChangeBlock)
         {
@@ -22,7 +23,8 @@ public class BongoItemUse : MonoBehaviour
 
     IEnumerator DeleteAfterTime()
     {
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(10f);
+        MainManager.thisMainManager.bonusesAndMultiplers.scoreAllHitMultiplier += 0.1f;
         Destroy(gameObject);
     }
 }

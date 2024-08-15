@@ -51,8 +51,8 @@ public class SpecialLevelSelector : MonoBehaviour
         if(specialKnownTag == "" || saveData.progressTags.ContainsTag(specialKnownTag))
         {
             levelKnown = true;
-            nameTextMeshPro.text = actualLevelname;
-            descTextMeshPro.text = actualLevelDesc;
+            nameTextMeshPro.text = LocalisationSystem.GetLocalizedValue(actualLevelname);
+            descTextMeshPro.text = LocalisationSystem.GetLocalizedValue(actualLevelDesc);
             QuestionMarkSr.gameObject.SetActive(false);
         }
         else

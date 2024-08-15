@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/LangSelect.unity
+    guid: 9621a7af1f412114ba036c7dc4113b6f
+  - enabled: 1
     path: Assets/Scenes/MainMenu.unity
     guid: d5d258ff2bd50ec45b0d866d9c067f9d
   - enabled: 1
@@ -15,22 +18,22 @@ EditorBuildSettings:
     path: Assets/Scenes/StorageChest.unity
     guid: 350e42d083f8cb640aee930aa89a7401
   - enabled: 1
-    path: Assets/Scenes/Main.unity
-    guid: 2cda990e2423bbf4892e6590ba056729
-  - enabled: 1
-    path: Assets/Scenes/Test/DemoRuzer.unity
-    guid: 2ce05c58dd638764a85ecddce028ebc0
-  - enabled: 1
     path: Assets/Scenes/Specials/Fishing.unity
     guid: 49e65981f83f5be4ca54905502ca005f
   - enabled: 1
     path: Assets/Scenes/Specials/CloningAltar.unity
     guid: 4bd0cca89faca4442929b0510def975f
-  - enabled: 0
-    path: Assets/Scenes/OldShop.unity
-    guid: aac87acbb9beb0946abdff5e55de416e
   - enabled: 1
     path: Assets/Scenes/Specials/Shop.unity
     guid: 3111818a92e33274eb2e95e85462c2b0
+  - enabled: 1
+    path: Assets/Scenes/Main.unity
+    guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Scenes/Test/DemoRuzer.unity
+    guid: 2ce05c58dd638764a85ecddce028ebc0
+  - enabled: 0
+    path: Assets/Scenes/OldShop.unity
+    guid: aac87acbb9beb0946abdff5e55de416e
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 6930f2c2ee7f632489364d0d24a09698, type: 2}

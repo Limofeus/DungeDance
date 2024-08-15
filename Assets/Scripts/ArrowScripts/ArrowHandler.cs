@@ -27,12 +27,12 @@ public class ArrowHandler : MonoBehaviour
         {
             GameObject Arrow;
             Horde currentHorde = mainManager.GetCurrentHorde();
-            var arrowPrefabs = mainManager.MonsterComp.ArrowPrefabs;
             //GameObject Arrow = Instantiate(ArrowPrefabs[Random.Range(0, ArrowPrefabs.Length)], Spawner.position, Quaternion.identity);
             if (mainManager.timeRemaining > mainManager.arrowTravelTime)
             {
                 if (currentHorde.HordeType == "")
                 {
+                    var arrowPrefabs = mainManager.MonsterComp.ArrowPrefabs;
                     Arrow = Instantiate(arrowPrefabs[Random.Range(0, arrowPrefabs.Length)], arrowSpawner.position, arrowSpawner.rotation, mainManager.allUiHolder);
                 }
                 else

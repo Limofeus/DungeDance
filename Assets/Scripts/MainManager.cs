@@ -14,7 +14,7 @@ public class MainManager : MonoBehaviour
     private DanceStyle[] selectedDanceStyles = new DanceStyle[1] {new DefaultDanceStyle()};
     //public int playerStartMoney; // <- sussy amogass 1 (wont use for now)
     [HideInInspector] public int playerStartXp { get; private set; }
-    public int maxCombo = 0;
+    [HideInInspector] public int maxCombo = 0;
     [HideInInspector] public int[] hitCounts;
     private int score = 0;
     private int combo = 0;

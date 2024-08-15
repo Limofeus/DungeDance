@@ -20,6 +20,8 @@ public class MainMenuScene : MonoBehaviour
     private bool takesButtons= true;
     private bool settingsOpen;
 
+    [SerializeField] private int levelSelectSceneId;
+
     private void Start()
     {
         StartCoroutine(ShowLogo());
@@ -155,7 +157,7 @@ public class MainMenuScene : MonoBehaviour
     {
         yield return new WaitForSeconds(2.1f);
         MapMusicPlayer.menuTrackMoment = audioVolumeMultiply.audioSource.time;
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(levelSelectSceneId);
         yield return null;
     }
     IEnumerator ShowLogo()

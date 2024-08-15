@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 public class MapLevelManager : MonoBehaviour
 {
     public Animator menuAnimator;
+    [SerializeField] private int storageSceneId;
+    [SerializeField] private int menuSceneId;
 
     private void Update()
     {
@@ -22,13 +24,13 @@ public class MapLevelManager : MonoBehaviour
     {
         MapMusicPlayer.mapMusicPlayer.FadeOut();
         menuAnimator.SetTrigger("Fade");
-        StartCoroutine(ChangeScene(0));
+        StartCoroutine(ChangeScene(menuSceneId));
     }
     public void ToStorage()
     {
         MapMusicPlayer.mapMusicPlayer.FadeOut();
         menuAnimator.SetTrigger("Fade");
-        StartCoroutine(ChangeScene(2)); //FUUUUUCKKKK, MAYBE I CAN SOMEHOW FIX IT BY NOT UNLOADING THIS ONEEEADAWDAWDD
+        StartCoroutine(ChangeScene(storageSceneId)); //FUUUUUCKKKK, MAYBE I CAN SOMEHOW FIX IT BY NOT UNLOADING THIS ONEEEADAWDAWDD
     }
     IEnumerator ChangeScene(int levelId)
     {

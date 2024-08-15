@@ -6,9 +6,10 @@ using UnityEngine.SceneManagement;
 public class EndWindowButtonManager : MonoBehaviour
 {
     public Animator blackScreenAnimator;
+    const int levelSelectSceneId = 2;
     public void Menu()
     {
-        StartCoroutine(LoadScene(1));
+        StartCoroutine(LoadScene(levelSelectSceneId));
     }
     public void Retry()
     {

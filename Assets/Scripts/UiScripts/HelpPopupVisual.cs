@@ -58,8 +58,8 @@ public class HelpPopupVisual : MonoBehaviour
         lowerTextShort.gameObject.SetActive(false);
         lowerTextLong.gameObject.SetActive(true);
 
-        upperText.text = upperString;
-        lowerTextLong.text = mainString;
+        upperText.text = LocalisationSystem.GetLocalizedValue(upperString);
+        lowerTextLong.text = LocalisationSystem.GetLocalizedValue(mainString);
     }
 
     private void SetPopupTextImage(string upperString, string mainString, Sprite sprite)
@@ -68,8 +68,8 @@ public class HelpPopupVisual : MonoBehaviour
         lowerTextShort.gameObject.SetActive(true);
         lowerTextLong.gameObject.SetActive(false);
 
-        upperText.text = upperString;
-        lowerTextShort.text = mainString;
+        upperText.text = LocalisationSystem.GetLocalizedValue(upperString);
+        lowerTextShort.text = LocalisationSystem.GetLocalizedValue(mainString);
         popupImage.sprite = sprite;
     }
 }

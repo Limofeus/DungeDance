@@ -31,7 +31,7 @@ public class CloningAltar : MonoBehaviour
         UpdateItemsFromSaveData();
         UpdateMoneySlotsLabels();
 
-        playerItemIcons[0].UpdateItem(saveData.item1Id, 0, "ËÊÌ - âûáğàòü");
+        playerItemIcons[0].UpdateItem(saveData.item1Id, 0, LocalisationSystem.GetLocalizedValue("ui_lmb_to_select"));
     }
     public void TestMethod(int id)
     {
@@ -92,15 +92,15 @@ public class CloningAltar : MonoBehaviour
 
             if(clonePrice <= saveData.moneyAmount && CheckForStorage() >= 0)
             {
-                cloneHintText.text = "ÊËÎÍÈĞÎÂÀÒÜ ÏĞÅÄÌÅÒ??!!!?71717!??!?";
+                cloneHintText.text = LocalisationSystem.GetLocalizedValue("ui_cloning_room_ready_to_clone");
                 cloneAltarButton.ChangeMode(CloneAltarButton.InteractMode.Normal);
             }
             else
             {
                 if(CheckForStorage() >= 0)
-                    cloneHintText.text = "ÍÅÒ ÄÅÍßÊ";
+                    cloneHintText.text = LocalisationSystem.GetLocalizedValue("ui_cloning_room_not_enough_money");
                 else
-                    cloneHintText.text = "ÍÅÒ ÌÅÑÒÀ Â ÑÓÍÄÓÊÅ";
+                    cloneHintText.text = LocalisationSystem.GetLocalizedValue("ui_cloning_room_no_room_in_chest");
                 cloneAltarButton.ChangeMode(CloneAltarButton.InteractMode.Locked);
             }
         }
@@ -118,7 +118,7 @@ public class CloningAltar : MonoBehaviour
             selectedItemSlot = 0;
             selectedItemId = -1;
 
-            cloneHintText.text = "";
+            cloneHintText.text = LocalisationSystem.GetLocalizedValue("ui_cloning_room_select_item_to_clone");
         }
         UpdateCloneButton();
     }
@@ -178,17 +178,17 @@ public class CloningAltar : MonoBehaviour
     private void UpdateItemsFromSaveData()
     {
         if (saveData.item1Id >= 0)
-            playerItemIcons[0].UpdateItem(saveData.item1Id, 0, "ËÊÌ - âûáğàòü");
+            playerItemIcons[0].UpdateItem(saveData.item1Id, 0, LocalisationSystem.GetLocalizedValue("ui_lmb_to_select"));
         else
             playerItemIcons[0].gameObject.SetActive(false);
 
         if (saveData.item2Id >= 0)
-            playerItemIcons[1].UpdateItem(saveData.item2Id, 1, "ËÊÌ - âûáğàòü");
+            playerItemIcons[1].UpdateItem(saveData.item2Id, 1, LocalisationSystem.GetLocalizedValue("ui_lmb_to_select"));
         else
             playerItemIcons[1].gameObject.SetActive(false);
 
         if (saveData.item3Id >= 0)
-            playerItemIcons[2].UpdateItem(saveData.item3Id, 2, "ËÊÌ - âûáğàòü");
+            playerItemIcons[2].UpdateItem(saveData.item3Id, 2, LocalisationSystem.GetLocalizedValue("ui_lmb_to_select"));
         else
             playerItemIcons[2].gameObject.SetActive(false);
     }

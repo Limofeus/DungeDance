@@ -10,9 +10,14 @@ public class LocalisationSystem
         Russian,
         Japanise
     }
-    public static Language language = Language.Russian;
+    public static Language language = Language.English;
     public static Dictionary<string, string> localizedDictionary;
     public static bool isInit = false;
+
+    public static void SetLang(int langId)
+    {
+        language = (Language)langId;
+    }
 
     public static void Init()
     {
@@ -33,6 +38,11 @@ public class LocalisationSystem
                 break;
         }
         isInit = true;
+    }
+
+    public static bool IsInit()
+    {
+        return isInit;
     }
 
     public static string GetLocalizedValue(string key)

@@ -9690,6 +9690,7 @@ MonoBehaviour:
   uiShown: 0
   canHide: 0
   firstTimeOpen: 0
+  levelSelectSceneId: 2
 --- !u!95 &1456993974
 Animator:
   serializedVersion: 5
@@ -9770,6 +9771,7 @@ MonoBehaviour:
       soundVolume: 0.3
       musicVolume: 0.3
       offsetValue: 0
+      langId: 0
   textMeshPro: {fileID: 1868400262}
   mainMenuScene: {fileID: 1456993973}
 --- !u!1 &1463677447

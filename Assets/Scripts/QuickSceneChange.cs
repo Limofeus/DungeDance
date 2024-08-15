@@ -34,6 +34,14 @@ public class QuickSceneChange : MonoBehaviour
         }
     }
 
+    public void InstaChange()
+    {
+        if (additionalMessageObj != null)
+        {
+            additionalMessageObj.SendMessage(additionalMessage);
+        }
+        asyncLoad.allowSceneActivation = true;
+    }
     IEnumerator AnimateAndExit()
     {
         blackScreenAnimator.SetTrigger("Fade");
@@ -44,4 +52,5 @@ public class QuickSceneChange : MonoBehaviour
         }
         asyncLoad.allowSceneActivation = true;
     }
+
 }

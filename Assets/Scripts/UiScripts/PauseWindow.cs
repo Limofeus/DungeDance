@@ -10,6 +10,7 @@ public class PauseWindow : MonoBehaviour
     public PauseSummoner pauseSummoner;
     public AudioSource musicSource;
     private bool animating;
+    const int levelSelectSceneId = 2;
     void Start()
     {
         musicSource = MainManager.thisMainManager.musicSource;
@@ -42,7 +43,7 @@ public class PauseWindow : MonoBehaviour
     public void Menu()
     {
         animating = true;
-        StartCoroutine(LoadScene(1));
+        StartCoroutine(LoadScene(levelSelectSceneId));
     }
 
     IEnumerator LoadScene(int sceneIndex)

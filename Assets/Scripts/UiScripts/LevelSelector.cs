@@ -41,7 +41,7 @@ public class LevelSelector : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        levelNameText.text = levelName;
+        levelNameText.text = LocalisationSystem.GetLocalizedValue(levelName);
         difficultyMaskHolder.localScale = new Vector3(difficulty / 5f, 1f, 1f);
         if(lengthSeconds % 60 < 10)
             lengthText.text = LocalisationSystem.GetLocalizedValue("ui_levelselect_length") + (lengthSeconds / 60).ToString() + ":0" + (lengthSeconds % 60);

@@ -146,12 +146,14 @@ public class SettingsData
     public float soundVolume;
     public float musicVolume;
     public float offsetValue;
+    public int langId;
 
     public SettingsData(SettingsData settingsData)
     {
         soundVolume = settingsData.soundVolume;
         musicVolume = settingsData.musicVolume;
         offsetValue = settingsData.offsetValue;
+        langId = settingsData.langId;
     }
 }
 

@@ -72,6 +72,8 @@ MonoBehaviour:
   nextTrigger: {fileID: 4791592992404790781}
   destroyWhenDone: 0
   duration: 10
+  itemAttrBoostPower: 5
+  itemAttrBoostTime: 10
   bonusMultAdd:
     scoreMonsterBonus: 10
     scoreHitType0Bonus: 2
@@ -118,7 +120,9 @@ MonoBehaviour:
   nextTriggerDelay: 0
   nextTrigger: {fileID: 4791592992404790780}
   destroyWhenDone: 0
-  duration: 8
+  duration: 10
+  itemAttrBoostPower: 0
+  itemAttrBoostTime: 0
   bonusMultAdd:
     scoreMonsterBonus: 0
     scoreHitType0Bonus: 0
@@ -166,6 +170,8 @@ MonoBehaviour:
   nextTrigger: {fileID: 0}
   destroyWhenDone: 1
   duration: 0.5
+  itemAttrBoostPower: 0
+  itemAttrBoostTime: 0
   bonusMultAdd:
     scoreMonsterBonus: 0
     scoreHitType0Bonus: 0

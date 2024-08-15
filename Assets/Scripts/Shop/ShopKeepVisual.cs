@@ -5,6 +5,11 @@ using UnityEngine;
 public class ShopKeepVisual : MonoBehaviour
 {
     [SerializeField] private Transform shopKeepHandTrans;
+    [SerializeField] private Transform animHandTrans;
+
+    [SerializeField] private ShopKeepBodyMoove bodyMoove;
+
+    [SerializeField] private Animator shopKeepAnim;
 
     [SerializeField] private float handLerpPower;
     [SerializeField] private Vector3 firstItemPos;
@@ -18,6 +23,8 @@ public class ShopKeepVisual : MonoBehaviour
     private int selectedItemNum = 0;
 
     private bool handShown;
+
+    private bool animatedHandOverride;
 
     private void Update()
     {
@@ -42,7 +49,17 @@ public class ShopKeepVisual : MonoBehaviour
 
     private void HandScale()
     {
-        shopKeepHandTrans.localScale = Vector3.Lerp(shopKeepHandTrans.localScale, handShown ? Vector3.one : Vector3.zero, Time.deltaTime * handLerpPower);
+        shopKeepHandTrans.localScale = Vector3.Lerp(shopKeepHandTrans.localScale, (handShown && (!animatedHandOverride)) ? Vector3.one : Vector3.zero, Time.deltaTime * handLerpPower);
+        animHandTrans.localScale = Vector3.Lerp(animHandTrans.localScale, animatedHandOverride ? Vector3.one : Vector3.zero, Time.deltaTime * handLerpPower);
+    }
+
+    private void SwitchAnimDynamHand(bool useAnimatedHand)
+    {
+        animatedHandOverride = useAnimatedHand;
+        if (useAnimatedHand)
+            bodyMoove.bmTarget = animHandTrans;
+        else
+            bodyMoove.bmTarget = shopKeepHandTrans;
     }
 
     public void UpdateSelectedItem(int newSelectedItemNum)
@@ -57,10 +74,27 @@ public class ShopKeepVisual : MonoBehaviour
         }
         else
         {
+            SwitchAnimDynamHand(false);
             handShown = true;
             itemSelected = true;
             selectedItemNum = newSelectedItemNum;
             timeSinceDeselect = 0f;
         }
+    }
+
+    public void ItemBoughtAnim()
+    {
+        shopKeepAnim.SetTrigger("Happy");
+    }
+
+    public void InvestAnim()
+    {
+        shopKeepAnim.SetTrigger("Surprised");
+    }
+
+    public void ShowItemsAnim()
+    {
+        shopKeepAnim.SetTrigger("ShowItems");
+        SwitchAnimDynamHand(true);
     }
 }

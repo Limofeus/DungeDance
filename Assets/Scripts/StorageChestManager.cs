@@ -36,6 +36,7 @@ public class StorageChestManager : MonoBehaviour
     private float itemNameLen = 0f;
     private float itemDescLen = 0f;
     private AsyncOperation asyncLoad;
+    const int levelSelectSceneId = 2;
     void Start()
     {
         if (MenuDataManager.saveData != null)
@@ -49,7 +50,7 @@ public class StorageChestManager : MonoBehaviour
         UpdateSlotCount();
         InitialPlayerItemUpdate();
         InitialStorageItemUpdate();
-        asyncLoad = SceneManager.LoadSceneAsync(1); // Fuck it all, I'll just preload the scene and then activate it when the time comes
+        asyncLoad = SceneManager.LoadSceneAsync(levelSelectSceneId); // Fuck it all, I'll just preload the scene and then activate it when the time comes
         asyncLoad.allowSceneActivation = false;
     }
     private void UpdateSlotCount()
