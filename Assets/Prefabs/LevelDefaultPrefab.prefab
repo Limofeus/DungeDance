@@ -1412,7 +1412,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 16, y: 0.7}
+  m_SizeDelta: {x: 16, y: 0.75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!23 &1453835061230513265
 MeshRenderer:
@@ -1504,8 +1504,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 5.5
-  m_fontSizeBase: 5.5
+  m_fontSize: 5
+  m_fontSizeBase: 5
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1546,7 +1546,7 @@ MonoBehaviour:
   _SortingLayer: 0
   _SortingLayerID: 0
   _SortingOrder: 11
-  m_hasFontAssetChanged: 1
+  m_hasFontAssetChanged: 0
   m_renderer: {fileID: 1453835061230513265}
   m_maskType: 0
 --- !u!1 &1453835061232216687
@@ -4809,7 +4809,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   notSpawnArrows: 0
   arrowSpeed: 10
-  autoMod: 1
+  autoMod: 0
   beatsLeft: 0
   beatsToWait: 0
   arrowSpawner: {fileID: 1453835062719125853}

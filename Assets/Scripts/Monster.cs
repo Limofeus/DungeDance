@@ -19,6 +19,7 @@ public class Monster : MonoBehaviour
     public float AnimatorSpeed;
     public float DefaultJoy;
     public float maxJoy;
+    public float joyMultToAddToScoreOrSomething = 0f;
     public SpriteRenderer EffectSR;
     public GameObject coin1;
     public GameObject coin2;
@@ -38,6 +39,8 @@ public class Monster : MonoBehaviour
         MainMan.curretMaxJoy = maxJoy;
         MainMan.ArrowPrefabs = ArrowPrefabs;
         MainMan.ArrowChance = ArrowChance;
+        //to make some monsters joy change faster
+        MainMan.bonusesAndMultiplers.joyAllHitMultiplier += joyMultToAddToScoreOrSomething;
     }
     public virtual void ArrowSpawned(Arrow arrow)
     {
@@ -188,23 +191,31 @@ public class Monster : MonoBehaviour
 
     public void GoodAway()
     {
+        MainMan.bonusesAndMultiplers.joyAllHitMultiplier -= joyMultToAddToScoreOrSomething;
+
         Instantiate(GoodText, transform.position, transform.rotation);
         Instantiate(GoAway, transform.position, Quaternion.identity).GetComponent<GoAwayScript>().REEEOVEE(animationNames[0]);
     }
 
     public void NormalAway()
     {
+        MainMan.bonusesAndMultiplers.joyAllHitMultiplier -= joyMultToAddToScoreOrSomething;
+
         Instantiate(NormalText, transform.position, transform.rotation);
         Instantiate(GoAway, transform.position, Quaternion.identity).GetComponent<GoAwayScript>().REEEOVEE(animationNames[1]);
     }
     public void BadAway()
     {
+        MainMan.bonusesAndMultiplers.joyAllHitMultiplier -= joyMultToAddToScoreOrSomething;
+
         Instantiate(BadText, transform.position, transform.rotation);
         Instantiate(GoAway, transform.position, Quaternion.identity).GetComponent<GoAwayScript>().REEEOVEE(animationNames[2]);
     }
 
     public void KillAway()
     {
+        MainMan.bonusesAndMultiplers.joyAllHitMultiplier -= joyMultToAddToScoreOrSomething;
+
         Instantiate(killText, transform.position, transform.rotation);
         Instantiate(GoAway, transform.position, Quaternion.identity).GetComponent<GoAwayScript>().REEEOVEE(animationNames[3]);
     }

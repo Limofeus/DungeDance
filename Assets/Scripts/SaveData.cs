@@ -26,6 +26,8 @@ public class SaveData
     [SerializeField]
     public LevelData[] levelDatas;
     [SerializeField]
+    public int currentMapTab;
+    [SerializeField]
     public ProgressTags progressTags;
     [SerializeField]
     public FishData[] fishDatas;
@@ -48,6 +50,7 @@ public class SaveData
         itemUnlockDatas = saveData.itemUnlockDatas;
         moneyAmount = saveData.moneyAmount;
         levelDatas = saveData.levelDatas;
+        currentMapTab = saveData.currentMapTab;
         progressTags = saveData.progressTags;
         fishDatas = saveData.fishDatas;
         storageChestData = saveData.storageChestData;

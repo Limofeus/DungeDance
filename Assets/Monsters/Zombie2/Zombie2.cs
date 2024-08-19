@@ -36,7 +36,7 @@ public class Zombie2 : Monster
             DropMoney(Random.Range(18, 22));
             MainMan.AddScore(185);
         }
-        else if ((Joy >= 10f && attraction >= 45) || (Joy >= 15f && attraction >= 20) || (Joy >= 18f))
+        else if ((Joy >= 10f && attraction >= 45) || (Joy >= 15f && attraction >= 20) || (Joy >= 22f))
         {
             BadAway();
             MainMan.AddScore(12);

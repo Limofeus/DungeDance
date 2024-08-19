@@ -12,6 +12,7 @@ public class MapContentAnimAppear : MonoBehaviour
     [SerializeField] private Vector2 animTimeDelay;
     [SerializeField] private bool autoUpdStartScales;
     [SerializeField] private GameObject[] gameObjChain;
+    [SerializeField] private GameObject[] gameObjInsta;
     [SerializeField] private GameObject[] objsToHide;
     private Vector3[] gameObjScales;
     void Start()
@@ -20,13 +21,20 @@ public class MapContentAnimAppear : MonoBehaviour
         {
             UpdScales();
         }
+        CheckAndAnimate();
+    }
+
+    public void CheckAndAnimate()
+    {
         if (!IsLevelCompleted())
         {
             Debug.Log($"LevelNotComplete, id: {levelIdToCheckCompletion}");
             SetAllShownHidden(false);
+            SetInstaShowHidden(false);
         }
         else
         {
+            SetInstaShowHidden(true);
             HideObjsToHide();
             if (useTagAndAnimate && (!SaveHasAnimTag()))
             {
@@ -96,6 +104,14 @@ public class MapContentAnimAppear : MonoBehaviour
     private void SetAllShownHidden(bool isShown)
     {
         foreach (GameObject gameObj in gameObjChain)
+        {
+            gameObj.SetActive(isShown);
+        }
+    }
+
+    private void SetInstaShowHidden(bool isShown)
+    {
+        foreach (GameObject gameObj in gameObjInsta)
         {
             gameObj.SetActive(isShown);
         }

@@ -10,10 +10,24 @@ public class MapMover : MonoBehaviour
     public float lerpSpeed;
     public Transform mapContent;
 
+    const float pageDist = 18f;
+
     // Update is called once per frame
     void Update()
     {
-        mapContent.localPosition = Vector3.Lerp(mapContent.localPosition ,Vector3.left * page * 18f, lerpSpeed * Time.deltaTime);
+        mapContent.localPosition = Vector3.Lerp(mapContent.localPosition ,Vector3.left * page * pageDist, lerpSpeed * Time.deltaTime);
+    }
+
+    private void OnDisable()
+    {
+        Debug.Log("On map mover Disabled callback!");
+        MenuDataManager.saveData.currentMapTab = page;
+    }
+
+    public void SetMapMoverPageToSaveDataPage()
+    {
+        page = MenuDataManager.saveData.currentMapTab;
+        mapContent.localPosition = Vector3.left * page * pageDist;
     }
 
     public void moveRight()

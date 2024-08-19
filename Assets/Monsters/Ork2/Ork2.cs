@@ -37,7 +37,7 @@ public class Ork2 : Monster
             DropMoney(Random.Range(19, 24));
             MainMan.AddScore(205);
         }
-        else if((Joy >= 10f && attraction >= 45) || (Joy >= 15f && attraction >= 20) || (Joy >= 18f))
+        else if((Joy >= 10f && attraction >= 45) || (Joy >= 15f && attraction >= 20) || (Joy >= 22f))
         {
             BadAway();
             MainMan.AddScore(15);

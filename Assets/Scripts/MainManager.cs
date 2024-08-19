@@ -147,7 +147,7 @@ public class MainManager : MonoBehaviour
         if (characterYes)
             CharacComp.Init(timeBetweenBeats);
 
-        mainUiHandler.UpdateLevelname(levelName, songName);
+        mainUiHandler.UpdateLevelname(LocalisationSystem.GetLocalizedValue(levelName), songName);
 
         int item1Id;
         int item2Id;

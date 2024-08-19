@@ -38,6 +38,11 @@ public class LevelSelector : MonoBehaviour
     private bool moreThenFour;
     private bool movinRight;
     [SerializeField] private float uiLockValueCheck = 0f;
+
+    [SerializeField] private SpriteRenderer levelSpriteSR;
+    [SerializeField] private GameObject padlockObj;
+    [SerializeField] private Color levelLockedColor;
+    private bool playerLevelSuficient = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -84,7 +89,7 @@ public class LevelSelector : MonoBehaviour
             }
         }
         //Debug.Log("TouchCount: " + Input.touches.Length.ToString() + " FirstTouchPhaze: " + (Input.touches.Length > 0?Input.touches[0].phase.ToString():"NoSuch"));
-        if((Input.GetMouseButtonDown(0)/* || (Input.touches.Length > 0 && Input.touches[0].phase == TouchPhase.Began)*/) && selected)
+        if((Input.GetMouseButtonDown(0)/* || (Input.touches.Length > 0 && Input.touches[0].phase == TouchPhase.Began)*/) && selected && playerLevelSuficient)
         {
             int[] itemUnlockDatas = MenuDataManager.saveData.itemUnlockDatas; //Welp, this was the problem all along
             for (int i = 0; i < itemUnlocksIds.Length;i++)
@@ -162,6 +167,14 @@ public class LevelSelector : MonoBehaviour
         }
         personalBestText.text = LocalisationSystem.GetLocalizedValue("ui_levelselect_personal_best") + levelData.maxScore.ToString();
         //Debug.Log("Level updated: " + levelData.ToString() + " " + maxScoreInt.ToString());
+        UpdateLevelUnlockment(MenuDataManager.saveData.playerLevel + 1 >= levelRequired);
+    }
+
+    private void UpdateLevelUnlockment(bool isUnlocked)
+    {
+        levelSpriteSR.color = isUnlocked ? Color.white : levelLockedColor;
+        padlockObj.SetActive(!isUnlocked);
+        playerLevelSuficient = isUnlocked;
     }
     public void UpdateItemUnlockment(int[] itemUnlockmentData)
     {

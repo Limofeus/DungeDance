@@ -7,7 +7,7 @@ public class Chest : MonoBehaviour
     public int moneyMax;
     public int moneyMin;
     private int money;
-    public GameObject itemDropPrefab;
+    public GameObject[] itemDropPrefabs;
     public GameObject coin1;
     public GameObject coin2;
     public GameObject coin3;
@@ -15,7 +15,7 @@ public class Chest : MonoBehaviour
     public GameObject coin5;
     public Transform spawnPoint;
     public MainManager mainManager;
-    public int chestType;
+    public int chestType; //I created this variable like 2-4 years ago and.. afaik it does ABSOLUTELY NOTHING!
     void Start()
     {
         money = Random.Range(moneyMin, moneyMax);
@@ -92,7 +92,7 @@ public class Chest : MonoBehaviour
     public void Loot()
     {
         DoMoney();
-        Instantiate(itemDropPrefab, Vector3.zero, Quaternion.identity);
+        Instantiate(itemDropPrefabs[Random.Range(0, itemDropPrefabs.Length)], Vector3.zero, Quaternion.identity);
     }
 
     IEnumerator WaitLoot()

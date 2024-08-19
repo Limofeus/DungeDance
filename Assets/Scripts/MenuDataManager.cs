@@ -18,6 +18,7 @@ public class MenuDataManager : MonoBehaviour
     public SpecialLevelSelector[] specialLevelSelectors; //ids could be whatever here (I think..)
     public int[] assignRankXps;
     public static int[] rankXps;
+    [SerializeField] private MapMover mapMover;
     public bool debugSave;
     public bool debugUpdateData;
     public bool debugUpdateVisuals;
@@ -50,6 +51,7 @@ public class MenuDataManager : MonoBehaviour
         itemInfoIcon1.menuDataManager = this;
         itemInfoIcon2.menuDataManager = this;
         itemInfoIcon3.menuDataManager = this;
+        mapMover.SetMapMoverPageToSaveDataPage();
         UpdateCharacter();
         UpdateItems();
         UpdateLevelSelectors();
