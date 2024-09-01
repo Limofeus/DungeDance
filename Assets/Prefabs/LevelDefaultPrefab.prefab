@@ -1224,6 +1224,7 @@ MonoBehaviour:
     itemUnlockDatas: 
     moneyAmount: 123
     levelDatas: []
+    currentMapTab: 0
     progressTags:
       tags: []
     fishDatas: []
@@ -1267,6 +1268,7 @@ MonoBehaviour:
     followMonsterToJoyMultiplier: 1
     attractionToScoreMultiplier: 1
     attractionToJoyMultiplier: 1
+  hiddenMonsterJoyMult: 1
 --- !u!114 &1453835061210431337
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2756,6 +2758,7 @@ MonoBehaviour:
   Textures:
   - {fileID: 21300000, guid: 483806bf3844e8842b703f76777021db, type: 3}
   - {fileID: 21300000, guid: 92883aa80c0ca0c4192a6f495000ac9c, type: 3}
+  - {fileID: 21300000, guid: 52ac1156ad8b98c42ac11575f12b8ab9, type: 3}
 --- !u!1 &1453835061662510848
 GameObject:
   m_ObjectHideFlags: 0

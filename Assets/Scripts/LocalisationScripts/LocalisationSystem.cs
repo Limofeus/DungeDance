@@ -10,7 +10,7 @@ public class LocalisationSystem
         Russian,
         Japanise
     }
-    public static Language language = Language.Russian;
+    public static Language language = Language.English;
     public static Dictionary<string, string> localizedDictionary;
     public static bool isInit = false;
 

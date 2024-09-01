@@ -64,7 +64,7 @@ public class EndWindow : MonoBehaviour
         playerXp = saveData.playerXp;
         playerStartXp = mainManager.playerStartXp;
 
-        levelName.text = mainManager.levelName;
+        levelName.text = LocalisationSystem.GetLocalizedValue(mainManager.levelName);
         songName.text = LocalisationSystem.GetLocalizedValue("ui_endwindow_label_music") + mainManager.songName;
 
         maxCombo.text = LocalisationSystem.GetLocalizedValue("ui_endwindow_label_maxcombo") + (mainManager.maxCombo).ToString();

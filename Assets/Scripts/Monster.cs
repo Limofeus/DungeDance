@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Monster : MonoBehaviour
 {
-    public float ArrowChance;
+    public float ArrowChance; // This thing funcking does NOTHING AHAHAHHAHAHHA HHAHAHHAHA (I wrote this code 4 years ago)
     public Animator Animator;
     protected MainManager MainMan;
     protected PlayerStats playerStats;
@@ -40,7 +40,7 @@ public class Monster : MonoBehaviour
         MainMan.ArrowPrefabs = ArrowPrefabs;
         MainMan.ArrowChance = ArrowChance;
         //to make some monsters joy change faster
-        MainMan.bonusesAndMultiplers.joyAllHitMultiplier += joyMultToAddToScoreOrSomething;
+        MainMan.hiddenMonsterJoyMult += joyMultToAddToScoreOrSomething;
     }
     public virtual void ArrowSpawned(Arrow arrow)
     {
@@ -191,32 +191,36 @@ public class Monster : MonoBehaviour
 
     public void GoodAway()
     {
-        MainMan.bonusesAndMultiplers.joyAllHitMultiplier -= joyMultToAddToScoreOrSomething;
+        MainMan.hiddenMonsterJoyMult -= joyMultToAddToScoreOrSomething;
 
         Instantiate(GoodText, transform.position, transform.rotation);
+        if (GoAway == null) return;
         Instantiate(GoAway, transform.position, Quaternion.identity).GetComponent<GoAwayScript>().REEEOVEE(animationNames[0]);
     }
 
     public void NormalAway()
     {
-        MainMan.bonusesAndMultiplers.joyAllHitMultiplier -= joyMultToAddToScoreOrSomething;
+        MainMan.hiddenMonsterJoyMult -= joyMultToAddToScoreOrSomething;
 
         Instantiate(NormalText, transform.position, transform.rotation);
+        if (GoAway == null) return;
         Instantiate(GoAway, transform.position, Quaternion.identity).GetComponent<GoAwayScript>().REEEOVEE(animationNames[1]);
     }
     public void BadAway()
     {
-        MainMan.bonusesAndMultiplers.joyAllHitMultiplier -= joyMultToAddToScoreOrSomething;
+        MainMan.hiddenMonsterJoyMult -= joyMultToAddToScoreOrSomething;
 
         Instantiate(BadText, transform.position, transform.rotation);
+        if (GoAway == null) return;
         Instantiate(GoAway, transform.position, Quaternion.identity).GetComponent<GoAwayScript>().REEEOVEE(animationNames[2]);
     }
 
     public void KillAway()
     {
-        MainMan.bonusesAndMultiplers.joyAllHitMultiplier -= joyMultToAddToScoreOrSomething;
+        MainMan.hiddenMonsterJoyMult -= joyMultToAddToScoreOrSomething;
 
         Instantiate(killText, transform.position, transform.rotation);
+        if (GoAway == null) return;
         Instantiate(GoAway, transform.position, Quaternion.identity).GetComponent<GoAwayScript>().REEEOVEE(animationNames[3]);
     }
 }

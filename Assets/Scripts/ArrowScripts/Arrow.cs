@@ -14,6 +14,7 @@ public class Arrow : MonoBehaviour
     public bool Auto;
     public bool sent;
     public bool lastArrow = false;
+    protected float additionalNonDestroyDist = 0f;
     public virtual void starto()
     {
         if(directions == null)
@@ -51,7 +52,7 @@ public class Arrow : MonoBehaviour
             ArrowHit("POH");
             ArrowHitStop();
         }
-        if (transform.localPosition.x < -15)
+        if (transform.localPosition.x < -(15f + additionalNonDestroyDist))
             Despawn();
         if (transform.localPosition.x < 1 && !sent)
         {

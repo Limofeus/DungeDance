@@ -15,6 +15,7 @@ public class HoldArrow : Arrow
 
         Debug.Log($"Float: {beatsToHold}, Floored int: {Mathf.FloorToInt(beatsToHold)}");
 
+        additionalNonDestroyDist = arrowSpeed * mainManager.timeBetweenBeats * beatsToHold;
         holdIndicator.InitializeIndicator(arrowSpeed * mainManager.timeBetweenBeats * beatsToHold);
 
         if (directions == null)
@@ -74,6 +75,7 @@ public class HoldArrow : Arrow
             float offset = Mathf.Abs(transform.localPosition.x + (arrowSpeed * mainManager.timeBetweenBeats * beatsToHold));
             mainManager.ArrowHit(offset, arrowSpeed, true, transform.position + (Vector3.right * arrowSpeed * mainManager.timeBetweenBeats * beatsToHold), true);
             holdIndicator.CalculateEndColor(offset / arrowSpeed);
+            holdIndicator.UpdateHoldProgress(1f);
         }
     }
 }

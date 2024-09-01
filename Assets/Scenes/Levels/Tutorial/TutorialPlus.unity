@@ -2748,7 +2748,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1453835061210431348, guid: fff8ecf804200004e8e604034f0a3529, type: 3}
       propertyPath: hordes.Array.data[4].hordeLenght
-      value: 8
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 1453835061210431348, guid: fff8ecf804200004e8e604034f0a3529, type: 3}
       propertyPath: hordes.Array.data[5].hordeLenght

@@ -28,6 +28,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -46,8 +47,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   npcPrefabs:
   - {fileID: 8436924140419463202, guid: 9026fa7aee6690641854e834fa77bfa8, type: 3}
+  - {fileID: 8436924140419463202, guid: bf8b086b51e6f874eb61b07724955a82, type: 3}
+  - {fileID: 8436924140419463202, guid: c10353c2d3b10704198ca2a55ee1da08, type: 3}
   npc: {fileID: 0}
   npcPrefabId: 0
+  beatSpeed: 0
 --- !u!114 &3142149873986255181
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -65,3 +69,5 @@ MonoBehaviour:
   objectToSpawn: {fileID: 0}
   npcAwayPrefabs:
   - {fileID: 8436924140419463202, guid: 3621ee4f1124cc44e8e899c08aa2964d, type: 3}
+  - {fileID: 8436924140419463202, guid: 501ed01acf9137845ba6f59ad8174e6c, type: 3}
+  - {fileID: 8436924140419463202, guid: 501ed01acf9137845ba6f59ad8174e6c, type: 3}

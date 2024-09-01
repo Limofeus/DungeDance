@@ -2643,6 +2643,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 440721510}
     - target: {fileID: 1453835061210431348, guid: fff8ecf804200004e8e604034f0a3529, type: 3}
+      propertyPath: songName
+      value: Artist name - Music name
+      objectReference: {fileID: 0}
+    - target: {fileID: 1453835061210431348, guid: fff8ecf804200004e8e604034f0a3529, type: 3}
       propertyPath: levelName
       value: level_name_tutorial_3
       objectReference: {fileID: 0}
@@ -2677,11 +2681,11 @@ PrefabInstance:
     - target: {fileID: 1453835061210431348, guid: fff8ecf804200004e8e604034f0a3529, type: 3}
       propertyPath: MonsterTypes.L1.Array.data[0]
       value: 
-      objectReference: {fileID: 8630589285503436905, guid: eb001b1e394169c4db3c3ee5a88fc8d8, type: 3}
+      objectReference: {fileID: 8630589285503436905, guid: ce2b08ba2445a85489b8e4a3a28ba0d4, type: 3}
     - target: {fileID: 1453835061210431348, guid: fff8ecf804200004e8e604034f0a3529, type: 3}
       propertyPath: MonsterTypes.L1.Array.data[1]
       value: 
-      objectReference: {fileID: 2782794794020562679, guid: 5162808624e0b1f4595cb90020a6fd66, type: 3}
+      objectReference: {fileID: 2782794794020562679, guid: 38d5de2c994a96540b829eb11e09fb1d, type: 3}
     - target: {fileID: 1453835061210431348, guid: fff8ecf804200004e8e604034f0a3529, type: 3}
       propertyPath: MonsterTypes.L2.Array.data[0]
       value: 

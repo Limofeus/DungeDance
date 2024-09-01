@@ -115,6 +115,8 @@ public class MainManager : MonoBehaviour
 
     [HideInInspector] public ScoreJoyBonuses bonusesAndMultiplers = new ScoreJoyBonuses();
 
+    [HideInInspector] public float hiddenMonsterJoyMult = 1f;
+
     void Awake()
     {
         //Debug.Log(useDebugPlayerData);
@@ -313,10 +315,10 @@ public class MainManager : MonoBehaviour
         arrowHandler.notSpawnArrows = true;
         NoTimeout = true;
         disableMoving = true;
-        if (!(hordes[hordeCounter].notAnimatemovingToTime > 0))
+        if ((hordes[hordeCounter].notAnimatemovingToTime == 0))
             CharacComp.MoveLocation(true);
         MonsterHordeCounter = 0;
-        if (!(hordes[hordeCounter].notAnimatemovingToTime > 0))
+        if ((hordes[hordeCounter].notAnimatemovingToTime == 0))
             Location.Move();
         if (hordes[hordeCounter].HordeType == "End")
         {
@@ -630,6 +632,7 @@ public class MainManager : MonoBehaviour
                 firstAmmount *= bonusesAndMultiplers.joyHitType3Multiplier + bonusesAndMultiplers.joyAllHitMultiplier - 1f + ((firstAmmount > 0f )? (bonusesAndMultiplers.joyDynamicHitMultiplier - 1f) : 0f);
                 break;
         }
+        firstAmmount *= hiddenMonsterJoyMult;
         int roundedJoy = Mathf.RoundToInt(firstAmmount);
         Joy = Mathf.Clamp(Joy + roundedJoy, 0, curretMaxJoy);
     }
@@ -904,11 +907,15 @@ public class MainManager : MonoBehaviour
             arrowHandler.notSpawnArrows = false;
             yield return new WaitForSeconds(arrowTravelTime - 0.1f);
         }
-        else
+        else if(standingTime == 0f)
         {
             yield return new WaitForSeconds(2.1f - arrowTravelTime);
             arrowHandler.notSpawnArrows = false;
             yield return new WaitForSeconds(arrowTravelTime - 0.1f);
+        }
+        else
+        { //WARNING!, This shit's UNSTABLE!!! (Probably, I'm pretty sure tho)
+            arrowHandler.notSpawnArrows = false;
         }
         NoTimeout = false;
         OnNewLocation();

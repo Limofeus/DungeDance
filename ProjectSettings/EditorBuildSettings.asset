@@ -47,5 +47,17 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Levels/Tutorial/TutorialPlus.unity
     guid: a358459c655c95b47abe92bcf7d0da78
+  - enabled: 1
+    path: Assets/Scenes/Levels/Sewers/Sewers1.unity
+    guid: a40cf5f025d4d8f4c8913225f2061e26
+  - enabled: 1
+    path: Assets/Scenes/Levels/Sewers/Sewers2.unity
+    guid: ccc8178b0fb6f2f46938fc5c30237211
+  - enabled: 1
+    path: Assets/Scenes/Levels/Sewers/Sewers3.unity
+    guid: f802f93c435bdf44fa45ad08fd6ff27a
+  - enabled: 1
+    path: Assets/Scenes/Levels/Sewers/SewersBoss.unity
+    guid: 3a1f3f8b60f2bd34b907d31a4504cfa2
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 6930f2c2ee7f632489364d0d24a09698, type: 2}

@@ -5,6 +5,7 @@ using UnityEngine;
 public class MapContentAnimAppear : MonoBehaviour
 {
     [SerializeField] private int levelIdToCheckCompletion;
+    [SerializeField] private string tagToCheckInstead = "";
     [SerializeField] private bool useTagAndAnimate;
     [SerializeField] private string tagName;
     [SerializeField] private AnimationCurve animCurve;
@@ -52,13 +53,20 @@ public class MapContentAnimAppear : MonoBehaviour
     private bool IsLevelCompleted()
     {
         Debug.Log($"Loading save data in anim script, SD!=null: {MenuDataManager.saveData != null}, dataLoaded: {MenuDataManager.dataLoaded}");
+        SaveData dataToCkeck;
         if(MenuDataManager.saveData != null)
         {
-            return MenuDataManager.saveData.levelDatas[levelIdToCheckCompletion].completed;
+            dataToCkeck = MenuDataManager.saveData;
         }
         else
         {
-            return SaveSystem.Load().levelDatas[levelIdToCheckCompletion].completed;
+            dataToCkeck = SaveSystem.Load();
+        }
+        if(tagToCheckInstead == "")
+            return dataToCkeck.levelDatas[levelIdToCheckCompletion].completed;
+        else
+        {
+            return dataToCkeck.progressTags.ContainsTag(tagToCheckInstead);
         }
     }
     private bool SaveHasAnimTag()

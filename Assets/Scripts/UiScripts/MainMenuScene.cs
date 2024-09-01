@@ -19,6 +19,7 @@ public class MainMenuScene : MonoBehaviour
     public bool firstTimeOpen;
     private bool takesButtons= true;
     private bool settingsOpen;
+    private bool thanksWindowOpen = false;
 
     [SerializeField] private int levelSelectSceneId;
 
@@ -137,6 +138,15 @@ public class MainMenuScene : MonoBehaviour
             buttonHolder.SetBool("Shown", false);
             logoAnimator.SetBool("Shown", false);
         }
+    }
+
+    public void ThanksWindow()
+    {
+        thanksWindowOpen = !thanksWindowOpen;
+        canHide = !thanksWindowOpen;
+        mainHolderAnimator.SetBool("ThanksWindow", thanksWindowOpen);
+        buttonHolder.SetBool("Shown", !thanksWindowOpen);
+        logoAnimator.SetBool("Shown", !thanksWindowOpen);
     }
     public void HideSettings()
     {
