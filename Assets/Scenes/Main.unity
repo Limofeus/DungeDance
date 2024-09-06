@@ -2549,14 +2549,14 @@ PrefabInstance:
     - target: {fileID: 1453835061210431348, guid: fff8ecf804200004e8e604034f0a3529, type: 3}
       propertyPath: MonsterTypes.O.Array.data[0]
       value: 
-      objectReference: {fileID: 6391756213666169518, guid: dd716a74939cb7647afc04ee1081296e, type: 3}
+      objectReference: {fileID: 6391756213666169518, guid: 41f2d81a17b104348bb0c0be6558292e, type: 3}
     - target: {fileID: 1453835061210431348, guid: fff8ecf804200004e8e604034f0a3529, type: 3}
       propertyPath: hordes.Array.data[0].npcKind
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1453835061210431348, guid: fff8ecf804200004e8e604034f0a3529, type: 3}
       propertyPath: hordes.Array.data[1].npcKind
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1453835061210431348, guid: fff8ecf804200004e8e604034f0a3529, type: 3}
       propertyPath: hordes.Array.data[2].npcKind
@@ -2564,11 +2564,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1453835061210431348, guid: fff8ecf804200004e8e604034f0a3529, type: 3}
       propertyPath: hordes.Array.data[0].HordeType
-      value: NPC
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 1453835061210431348, guid: fff8ecf804200004e8e604034f0a3529, type: 3}
       propertyPath: hordes.Array.data[1].HordeType
-      value: 
+      value: NPC
       objectReference: {fileID: 0}
     - target: {fileID: 1453835061210431348, guid: fff8ecf804200004e8e604034f0a3529, type: 3}
       propertyPath: hordes.Array.data[2].HordeType
@@ -2628,19 +2628,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1453835061210431348, guid: fff8ecf804200004e8e604034f0a3529, type: 3}
       propertyPath: hordes.Array.data[0].npcLines.Array.size
-      value: 4
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1453835061210431348, guid: fff8ecf804200004e8e604034f0a3529, type: 3}
       propertyPath: hordes.Array.data[1].npcLines.Array.size
-      value: 0
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1453835061210431348, guid: fff8ecf804200004e8e604034f0a3529, type: 3}
       propertyPath: hordes.Array.data[2].npcLines.Array.size
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1453835061210431348, guid: fff8ecf804200004e8e604034f0a3529, type: 3}
-      propertyPath: hordes.Array.data[1].notAnimatemovingToTime
+      propertyPath: hordes.Array.data[0].notAnimatemovingToTime
       value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1453835061210431348, guid: fff8ecf804200004e8e604034f0a3529, type: 3}
+      propertyPath: hordes.Array.data[1].notAnimatemovingToTime
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1453835061210431348, guid: fff8ecf804200004e8e604034f0a3529, type: 3}
       propertyPath: hordes.Array.data[1].npcLines.Array.data[0]
@@ -2696,11 +2700,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1453835061210431348, guid: fff8ecf804200004e8e604034f0a3529, type: 3}
       propertyPath: hordes.Array.data[0].MonsterTypes.Array.size
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1453835061210431348, guid: fff8ecf804200004e8e604034f0a3529, type: 3}
       propertyPath: hordes.Array.data[1].MonsterTypes.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1453835061210431348, guid: fff8ecf804200004e8e604034f0a3529, type: 3}
       propertyPath: hordes.Array.data[2].MonsterTypes.Array.size
@@ -2760,11 +2764,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1453835061210431348, guid: fff8ecf804200004e8e604034f0a3529, type: 3}
       propertyPath: hordes.Array.data[0].npcLinesRandomizer.Array.size
-      value: 4
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1453835061210431348, guid: fff8ecf804200004e8e604034f0a3529, type: 3}
       propertyPath: hordes.Array.data[1].npcLinesRandomizer.Array.size
-      value: 0
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1453835061210431348, guid: fff8ecf804200004e8e604034f0a3529, type: 3}
       propertyPath: hordes.Array.data[2].npcLinesRandomizer.Array.size
